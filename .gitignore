@@ -1,0 +1,30 @@
+*.gem
+*.rbc
+.mise.toml
+.rdbg.breakpoints
+/.config
+/.vendor
+/InstalledFiles
+/coverage/
+/doc/
+/Gemfile.lock
+/pkg/
+/spec/examples.txt
+/spec/reports/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+# Used by dotenv library to load environment variables.
+# .env
+
+## Documentation cache and generated files:
+/.yardoc/
+/_yardoc/
+/rdoc/
+
+## Environment normalization:
+/.bundle/
+/.ruby-version
+/.vendor
+/lib/bundler/man/
