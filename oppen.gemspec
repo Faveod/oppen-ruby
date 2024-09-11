@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'oppen'
-  spec.version       = '1.0.0'
+  spec.version       = '1.0.0' # managed by release.sh
   spec.authors       = ['Amine Mike El Maalouf']
   spec.email         = ['amine.el-maalouf@epita.fr']
 
