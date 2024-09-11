@@ -6,6 +6,7 @@ require_relative 'oppen/version'
 module Oppen
   module_function
 
+  # Hello world
   def hello_world
     puts 'Hello World!'
   end
