@@ -1,6 +1,10 @@
-name: ci
+name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - "master"
 
 jobs:
   ci:
@@ -10,7 +14,6 @@ jobs:
         ruby: [3.3]
         platform:
           - { os: ubuntu, target: linux-x64 }
-          # - { os: macos,  target: macos-arm64 }
     runs-on: ${{ matrix.platform.os }}-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,13 +35,3 @@ jobs:
         run: just doc
       - name: package gem
         run: just gem
-      - name: github release
-        if: github.event_name != 'pull_request'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref }}-${{ steps.vars.outputs.sha_short }}
-          draft: true
-          files: |
-            ./pkg/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
