@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Oppen
+# Oppen.
 module Oppen
-  # Stack used by the scan in the Oppen algorithm
+  # A fixed-size stack that can be popped from top and bottom.
   class ScanStack
     def initialize(size)
       @stack = Array.new(size)
@@ -10,14 +10,17 @@ module Oppen
       @top = @bottom = 0
     end
 
+    # @return [Boolean]
     def empty?
       @empty
     end
 
+    # @return [Integer]
     def length
       @stack.length
     end
 
+    # @return [Object]
     def top
       if empty?
         raise 'Accessing empty stack'
@@ -26,6 +29,7 @@ module Oppen
       @stack[@top]
     end
 
+    # @return [Object]
     def bottom
       if empty?
         raise 'Accessing empty stack'
@@ -34,14 +38,29 @@ module Oppen
       @stack[@bottom]
     end
 
+    # Increment index (no overflow).
+    #
+    # @param index [Integer]
+    #
+    # @return [Integer]
     def increment(index)
       (index + 1) % length
     end
 
+    # Decrement index (no overflow).
+    #
+    # @param index [Integer]
+    #
+    # @return [Integer]
     def decrement(index)
       (index - 1) % length
     end
 
+    # Push a value to the top.
+    #
+    # @param value [Object]
+    #
+    # @return [Nil]
     def push(value)
       if empty?
         @empty = false
@@ -54,6 +73,9 @@ module Oppen
       @stack[@top] = value
     end
 
+    # Pop a value from the top.
+    #
+    # @return [Nil]
     def pop
       if empty?
         raise 'Popping empty stack'
@@ -68,6 +90,9 @@ module Oppen
       res
     end
 
+    # Pop a value from the bottom.
+    #
+    # @return [Nil]
     def pop_bottom
       if empty?
         raise 'Popping empty stack'
