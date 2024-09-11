@@ -44,8 +44,8 @@ lint:
   bundle exec rubocop --config .rubocop.yml
 
 [group('publish')]
-publish: gem
-  gem -C {{PKG_OUT}} push {{GEM_FILE}}
+publish version:
+  gem -C {{PKG_OUT}} push {{GEM_NAME}}-{{version}}.gem
 
 [group('develop')]
 repl:
