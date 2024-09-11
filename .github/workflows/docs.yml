@@ -34,15 +34,12 @@ jobs:
           tool: just
       - name: set up ruby
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.3
-          bundler-cache: true
       - name: Generate docs
         run: just doc
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "rdoc"
+          path: "doc"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
