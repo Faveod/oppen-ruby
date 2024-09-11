@@ -3,13 +3,14 @@
 Gem::Specification.new do |spec|
   spec.name          = 'oppen'
   spec.version       = '0.1.0' # managed by release.sh
-  spec.authors       = ['Amine Mike El Maalouf']
-  spec.email         = ['amine.el-maalouf@epita.fr']
+  spec.authors       = [
+    'Amine Mike El Maalouf <amine.el-maalouf@epita.fr>',
+    'Firas al-Khalil <firasalkhalil@gmail.com>',
+  ]
 
   spec.summary       = 'Oppen pretty printer'
-  spec.description   = 'Implementation of the pretty printing algorithm ' \
-                       'present in the appendix of Oppen\'s paper'
-  spec.homepage      = 'http://github.com/Amine_Mike/oppen'
+  spec.description   = "Implementation of the Oppen's pretty printing algorithm"
+  spec.homepage      = 'http://github.com/Faveod/oppen-ruby'
   spec.license       = 'MIT'
 
   # spec.metadata = {
