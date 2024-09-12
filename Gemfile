@@ -6,6 +6,7 @@ gemspec
 
 group :development, :test do
   gem 'bundler'
+  gem 'colored'
   gem 'debug'
   gem 'irb'
   gem 'rake'
