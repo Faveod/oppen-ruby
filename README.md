@@ -19,3 +19,9 @@ not raise exceptions when we overflow the margin.
 
 The only exceptions that we raise indicate a bug in the implementation. Please
 report them.
+
+## Related projects
+
+1. [Python implementation](https://github.com/stevej2608/oppen-pretty-printer)
+as a library.
+1. [rustc implementation](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast_pretty/pp/index.html)
