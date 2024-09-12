@@ -1,4 +1,9 @@
 # Oppen's Pretty Printer
+[![CI badge]][CI]
+<!-- [![rubygems.org badge]][rubygems.org] -->
+
+[CI badge]: https://github.com/Faveod/oppen-ruby/actions/workflows/ci.yml/badge.svg
+[CI]: https://github.com/Faveod/oppen-ruby/actions/workflows/ci.yml
 
 An implementation of the pretty printing algorithm described by
 [Derek C. Oppen](https://dl.acm.org/doi/pdf/10.1145/357114.357115).
