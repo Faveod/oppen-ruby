@@ -131,11 +131,7 @@ module Oppen
     #
     # @see Token::String
     def handle_string(token, token_length)
-      if token_length > @space
-        raise 'Line too long'
-      end
-
-      @space -= token_length
+      @space = [0, @space - token_length].max
       puts_ token.value
     end
 
