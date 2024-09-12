@@ -178,7 +178,7 @@ module Oppen
     #
     # @return [Nil]
     def print_new_line(amount)
-      puts_ '\n'
+      puts_ "\n"
       indent amount
     end
 
