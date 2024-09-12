@@ -21,4 +21,4 @@ list = [
   Oppen::Token::EOF.new,
 ]
 
-puts Oppen.pretty_print_tokens tokens: list, line_width: 25
+puts Oppen.print tokens: list, line_width: 25
