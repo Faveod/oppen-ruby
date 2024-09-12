@@ -8,8 +8,6 @@ require_relative 'oppen/version'
 
 # Oppen.
 module Oppen
-  module_function
-
   # Entry point of the pretty printer.
   #
   # @param tokens [Array[Token]] the list of tokens to be printed
@@ -17,7 +15,7 @@ module Oppen
   # @param line_delimiter [String] the delimiter between lines
   #
   # @return [StringIO] output of the pretty printer
-  def print(tokens: [], line_width: 80, line_delimiter: "\n")
+  def self.print(tokens: [], line_width: 80, line_delimiter: "\n")
     pretty_printer = PrettyPrinter.new line_width, line_delimiter
     tokens.each do |token|
       pretty_printer.pretty_print token
