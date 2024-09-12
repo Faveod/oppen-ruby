@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'oppen/version'
 require_relative 'oppen/pretty_printer'
+require_relative 'oppen/print_stack'
+require_relative 'oppen/scan_stack'
+require_relative 'oppen/token'
+require_relative 'oppen/version'
 
 # Oppen.
 module Oppen
