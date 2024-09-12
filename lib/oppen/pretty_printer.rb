@@ -13,7 +13,8 @@ module Oppen
     # @note Called PrettyPrintInit in the original paper.
     #
     # @param line_width [Integer]  maximum line width desired.
-    def initialize(line_width)
+    # @param line_delimiter [String] the delimiter between lines
+    def initialize(line_width, line_delimiter)
       # Maximum size if the stacks
       n = 3 * line_width
 
@@ -43,7 +44,7 @@ module Oppen
       @left = @right = 0
 
       # @note Called printStack as well in the original paper.
-      @print_stack = PrintStack.new line_width
+      @print_stack = PrintStack.new line_width, line_delimiter
     end
 
     # @return [StringIO]

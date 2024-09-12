@@ -21,7 +21,7 @@ module Oppen
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
-    def initialize(line_width)
+    def initialize(line_width, line_delimiter)
       # Array representing the stack of PrintStackEntries.
       @items = []
 
@@ -33,6 +33,9 @@ module Oppen
 
       # IO element that builds the output.
       @output = StringIO.new
+
+      # Delimiter between lines in output
+      @line_delimiter = line_delimiter
     end
 
     # Returns the output of the print stack
@@ -174,7 +177,7 @@ module Oppen
     #
     # @return [Nil]
     def print_new_line(amount)
-      puts_ "\n"
+      puts_ @line_delimiter
       indent amount
     end
 

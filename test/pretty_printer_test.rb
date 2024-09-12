@@ -54,6 +54,20 @@ describe 'PrettyPrinter tests' do
       LANG
   end
 
+  it 'must work with different delimiter' do
+    list = [
+      Oppen::Token::Begin.new,
+      *'XXXXXXXXXX + YYYYYYYYYY + ZZZZZZZZZZ'.tokens,
+      Oppen::Token::End.new,
+      Oppen::Token::EOF.new,
+    ]
+
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 25, line_delimiter: '\n'))
+      .must_equal 'XXXXXXXXXX + YYYYYYYYYY +\n  ZZZZZZZZZZ'
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20, line_delimiter: '\n'))
+      .must_equal 'XXXXXXXXXX +\n  YYYYYYYYYY +\n  ZZZZZZZZZZ'
+  end
+
   it 'must work with a string larger than line width' do
     list = [
       Oppen::Token::Begin.new,
