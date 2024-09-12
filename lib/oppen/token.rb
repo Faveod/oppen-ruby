@@ -40,7 +40,7 @@ module Oppen
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(blank_space = 1, offset = 0)
+      def initialize(blank_space: 1, offset: 0)
         @blank_space = blank_space
         @offset = offset
       end
@@ -48,7 +48,7 @@ module Oppen
 
     # Distinguished instance of Break which forces a line break.
     class LineBreak < Break
-      def initialize(offset = 0)
+      def initialize(offset: 0)
         super(blank_space: 9999, offset:)
       end
     end
@@ -60,7 +60,7 @@ module Oppen
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(break_type = BreakType::INCONSISTENT, offset = 2)
+      def initialize(break_type: BreakType::INCONSISTENT, offset: 2)
         @offset = offset
         @break_type = break_type
       end

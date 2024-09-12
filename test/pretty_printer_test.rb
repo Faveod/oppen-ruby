@@ -5,14 +5,14 @@ require_relative 'lib'
 describe 'PrettyPrinter tests' do
   it 'must work with an empty list' do
     list = [Oppen::Token::EOF.new]
-    _(Oppen.pretty_print_tokens(list)).must_equal ''
+    _(Oppen.pretty_print_tokens(tokens: list)).must_equal ''
 
     list = [
       Oppen::Token::Begin.new,
       Oppen::Token::End.new,
       Oppen::Token::EOF.new,
     ]
-    _(Oppen.pretty_print_tokens(list)).must_equal ''
+    _(Oppen.pretty_print_tokens(tokens: list)).must_equal ''
   end
 
   it 'must work with a simple string' do
@@ -20,7 +20,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::String.new('XXXXXXXXXX'),
       Oppen::Token::EOF.new,
     ]
-    _(Oppen.pretty_print_tokens(list)).must_equal 'XXXXXXXXXX'
+    _(Oppen.pretty_print_tokens(tokens: list)).must_equal 'XXXXXXXXXX'
 
     list = [
       Oppen::Token::Begin.new,
@@ -28,7 +28,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::End.new,
       Oppen::Token::EOF.new,
     ]
-    _(Oppen.pretty_print_tokens(list)).must_equal 'XXXXXXXXXX'
+    _(Oppen.pretty_print_tokens(tokens: list)).must_equal 'XXXXXXXXXX'
   end
 
   it 'must work with string addition' do
@@ -39,8 +39,8 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new,
     ]
 
-    _(Oppen.pretty_print_tokens(list, 40)).must_equal 'XXXXXXXXXX + YYYYYYYYYY + ZZZZZZZZZZ'
-    _(Oppen.pretty_print_tokens(list, 25)).must_equal 'XXXXXXXXXX + YYYYYYYYYY +\n  ZZZZZZZZZZ'
-    _(Oppen.pretty_print_tokens(list, 20)).must_equal 'XXXXXXXXXX +\n  YYYYYYYYYY +\n  ZZZZZZZZZZ'
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 40)).must_equal 'XXXXXXXXXX + YYYYYYYYYY + ZZZZZZZZZZ'
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 25)).must_equal 'XXXXXXXXXX + YYYYYYYYYY +\n  ZZZZZZZZZZ'
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20)).must_equal 'XXXXXXXXXX +\n  YYYYYYYYYY +\n  ZZZZZZZZZZ'
   end
 end
