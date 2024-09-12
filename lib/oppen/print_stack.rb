@@ -53,7 +53,7 @@ module Oppen
     # @param token_length [Integer]
     #
     # @return [Nil]
-    def print_(token, token_length)
+    def print(token, token_length)
       case token
       in Token::Begin
         handle_begin token, token_length
