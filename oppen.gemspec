@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
     'Firas al-Khalil <firasalkhalil@gmail.com>',
   ]
 
-  spec.summary       = 'Oppen pretty printer'
+  spec.summary       = 'Pretty-printing library'
   spec.description   = "Implementation of the Oppen's pretty printing algorithm"
   spec.homepage      = 'http://github.com/Faveod/oppen-ruby'
   spec.license       = 'MIT'
