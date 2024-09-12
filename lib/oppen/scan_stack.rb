@@ -23,7 +23,7 @@ module Oppen
     # @return [Object]
     def top
       if empty?
-        raise 'Accessing empty stack'
+        raise 'Accessing empty stack from top'
       end
 
       @stack[@top]
@@ -32,7 +32,7 @@ module Oppen
     # @return [Object]
     def bottom
       if empty?
-        raise 'Accessing empty stack'
+        raise 'Accessing empty stack from bottom'
       end
 
       @stack[@bottom]
@@ -78,7 +78,7 @@ module Oppen
     # @return [Nil]
     def pop
       if empty?
-        raise 'Popping empty stack'
+        raise 'Popping empty stack from top'
       end
 
       res = @stack[@top]
@@ -95,7 +95,7 @@ module Oppen
     # @return [Nil]
     def pop_bottom
       if empty?
-        raise 'Popping empty stack'
+        raise 'Popping empty stack from bottom'
       end
 
       res = @stack[@bottom]
