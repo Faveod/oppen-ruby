@@ -18,31 +18,36 @@ module Oppen
       end
     end
 
+    # IO element that builds the output.
+    attr_reader :buffer
+
+    # Array representing the stack of PrintStackEntries.
+    attr_reader :items
+
+    # Delimiter between lines in output
+    attr_reader :line_delimiter
+
+    # Page margin (Called length in the original paper).
+    attr_reader :margin
+
+    # Current available space (Called index in the original paper).
+    #
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
     def initialize(line_width, line_delimiter)
-      # Array representing the stack of PrintStackEntries.
+      @buffer = StringIO.new
       @items = []
-
-      # Current available space (Called index in the original paper).
-      @space = line_width
-
-      # Page margin (Called length in the original paper).
-      @margin = line_width
-
-      # IO element that builds the output.
-      @output = StringIO.new
-
-      # Delimiter between lines in output
       @line_delimiter = line_delimiter
+      @margin = line_width
+      @space = line_width
     end
 
     # Returns the output of the print stack
     #
     # @return [StringIO]
     def output
-      @output.string
+      buffer.string
     end
 
     # Core method responsible for building the print stack and the output string.
@@ -75,14 +80,14 @@ module Oppen
     #
     # @see Token::Begin
     def handle_begin(token, token_length)
-      if token_length > @space
+      if token_length > space
         type =
           if token.break_type == Token::BreakType::CONSISTENT
             Token::BreakType::CONSISTENT
           else
             Token::BreakType::INCONSISTENT
           end
-        push PrintStackEntry.new @space - token.offset, type
+        push PrintStackEntry.new space - token.offset, type
       else
         push PrintStackEntry.new 0, Token::BreakType::FITS
       end
@@ -113,11 +118,11 @@ module Oppen
         indent token.blank_space
       in Token::BreakType::CONSISTENT
         @space = block.offset - token.offset
-        print_new_line @margin - @space
+        print_new_line margin - space
       in Token::BreakType::INCONSISTENT
-        if token_length > @space
+        if token_length > space
           @space = block.offset - token.offset
-          print_new_line @margin - @space
+          print_new_line margin - space
         else
           @space -= token.blank_space
           indent token.blank_space
@@ -134,7 +139,7 @@ module Oppen
     #
     # @see Token::String
     def handle_string(token, token_length)
-      @space = [0, @space - token_length].max
+      @space = [0, space - token_length].max
       puts_ token.value
     end
 
@@ -144,29 +149,29 @@ module Oppen
     #
     # @return [Nil]
     def push(print_stack_entry)
-      @items.append(print_stack_entry)
+      items.append(print_stack_entry)
     end
 
     # Pop a PrintStackEntry from the stack.
     #
     # @return [PrintStackEntry]
     def pop
-      if @items.empty?
+      if items.empty?
         raise 'Popping empty stack'
       end
 
-      @items.pop
+      items.pop
     end
 
     # Get the element at the top of the stack.
     #
     # @return [PrintStackEntry]
     def top
-      if @items.empty?
+      if items.empty?
         raise 'Accessing empty stack'
       end
 
-      @items.last
+      items.last
     end
 
     # Add a new line to the output.
@@ -177,7 +182,7 @@ module Oppen
     #
     # @return [Nil]
     def print_new_line(amount)
-      puts_ @line_delimiter
+      puts_ line_delimiter
       indent amount
     end
 
@@ -187,7 +192,7 @@ module Oppen
     #
     # @return [Nil]
     def puts_(string)
-      @output.write(string)
+      buffer.write(string)
     end
 
     # Add indentation by `amount`.
