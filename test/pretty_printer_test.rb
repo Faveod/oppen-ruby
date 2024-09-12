@@ -182,4 +182,36 @@ describe 'PrettyPrinter tests' do
           end;
       LANG
   end
+
+  it 'must work for chaining of operators' do
+    list = [
+      Oppen::Token::Begin.new,
+      Oppen::Token::String.new('hello'),
+      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.world'),
+      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.foo'),
+      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.bar'),
+      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.baz'),
+      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.42()'),
+      Oppen::Token::End.new,
+      Oppen::Token::EOF.new
+    ]
+
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20))
+      .must_equal <<~LANG.chomp
+        hello.world.foo.bar
+          .baz.42()
+      LANG
+
+    list[0] = Oppen::Token::Begin.new(break_type: Oppen::Token::BreakType::CONSISTENT)
+
+    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20))
+      .must_equal <<~LANG.chomp
+        hello
+          .world
+          .foo
+          .bar
+          .baz
+          .42()
+      LANG
+  end
 end
