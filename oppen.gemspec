@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) if !$LOAD_PATH.include?(lib)
+
+require 'oppen/version'
+
 Gem::Specification.new do |spec|
   spec.name          = 'oppen'
-  spec.version       = '0.1.0' # managed by release.sh
+  spec.version       = Oppen::VERSION
   spec.authors       = [
     'Amine Mike El Maalouf <amine.el-maalouf@epita.fr>',
     'Firas al-Khalil <firasalkhalil@gmail.com>',

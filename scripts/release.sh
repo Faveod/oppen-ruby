@@ -17,7 +17,7 @@ just lint
 just test
 # update the version
 msg="# managed by release.sh"
-sed -E -i "s/^(\s+spec\.version\s+= ).*\s+$msg$/\1'${version#v}' $msg/" oppen.gemspec
+sed -E -i "s/^(\s+VERSION = ).*$msg$/\1'${version#v}' $msg/" lib/oppen/version.rb
 git add -A && git commit -m "release: $version"
 git show
 git tag -a "$version" -m "Release $version"
