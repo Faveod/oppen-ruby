@@ -5,9 +5,10 @@ module Oppen
   # A fixed-size stack that can be popped from top and bottom.
   class ScanStack
     def initialize(size)
-      @stack = Array.new(size)
+      @bottom = 0
       @empty = true
-      @top = @bottom = 0
+      @stack = Array.new(size)
+      @top = 0
     end
 
     # @return [Boolean]
