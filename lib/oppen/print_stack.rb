@@ -140,7 +140,7 @@ module Oppen
     # @see Token::String
     def handle_string(token, token_length)
       @space = [0, space - token_length].max
-      puts_ token.value
+      write token.value
     end
 
     # Push a PrintStackEntry into the stack.
@@ -182,7 +182,7 @@ module Oppen
     #
     # @return [Nil]
     def print_new_line(amount)
-      puts_ line_delimiter
+      write line_delimiter
       indent amount
     end
 
@@ -191,7 +191,7 @@ module Oppen
     # @param string [String]
     #
     # @return [Nil]
-    def puts_(string)
+    def write(string)
       buffer.write(string)
     end
 
@@ -203,7 +203,7 @@ module Oppen
     #
     # @return [Nil]
     def indent(amount)
-      puts_ ' ' * amount
+      write ' ' * amount
     end
   end
 end
