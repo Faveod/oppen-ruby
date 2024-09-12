@@ -82,7 +82,7 @@ module Oppen
         raise 'Popping empty stack from top'
       end
 
-      res = @stack[@top]
+      res = top
       if @top == @bottom
         @empty = true
       else
@@ -99,7 +99,7 @@ module Oppen
         raise 'Popping empty stack from bottom'
       end
 
-      res = @stack[@bottom]
+      res = bottom
       if @top == @bottom
         @empty = true
       else
