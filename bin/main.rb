@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# require 'oppen'
-require_relative '../lib/oppen'
-require_relative '../lib/oppen/token'
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) if !$LOAD_PATH.include?(lib)
+
+require 'oppen'
 
 list = [
   Oppen::Token::Begin.new,
