@@ -16,7 +16,7 @@ module Oppen
   # @param line_width [Integer] maximum line width desired
   #
   # @return [StringIO] output of the pretty printer
-  def pretty_print_tokens(tokens = [], line_width = 80)
+  def pretty_print_tokens(tokens: [], line_width: 80)
     pretty_printer = PrettyPrinter.new line_width
     tokens.each do |token|
       pretty_printer.pretty_print token
