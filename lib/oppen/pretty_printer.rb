@@ -132,7 +132,7 @@ module Oppen
     # @see Token::End
     def handle_end(token)
       if scan_stack.empty?
-        print_stack.print_ token, 0
+        print_stack.print token, 0
       else
         advance_right
         tokens[right] = token
@@ -169,7 +169,7 @@ module Oppen
     # @see Token::String
     def handle_string(token)
       if scan_stack.empty?
-        print_stack.print_ token, token.length
+        print_stack.print token, token.length
       else
         advance_right
         tokens[right] = token
@@ -217,7 +217,7 @@ module Oppen
     def advance_left(token, token_length)
       return if token_length.negative?
 
-      print_stack.print_ token, token_length
+      print_stack.print token, token_length
 
       case token
       when Token::Break
