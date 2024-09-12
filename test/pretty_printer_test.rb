@@ -5,14 +5,14 @@ require_relative 'lib'
 describe 'PrettyPrinter tests' do
   it 'must work with an empty list' do
     list = [Oppen::Token::EOF.new]
-    _(Oppen.pretty_print_tokens(tokens: list)).must_equal ''
+    _(Oppen.print(tokens: list)).must_equal ''
 
     list = [
       Oppen::Token::Begin.new,
       Oppen::Token::End.new,
       Oppen::Token::EOF.new,
     ]
-    _(Oppen.pretty_print_tokens(tokens: list)).must_equal ''
+    _(Oppen.print(tokens: list)).must_equal ''
   end
 
   it 'must work with a simple string' do
@@ -20,7 +20,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::String.new('XXXXXXXXXX'),
       Oppen::Token::EOF.new,
     ]
-    _(Oppen.pretty_print_tokens(tokens: list)).must_equal 'XXXXXXXXXX'
+    _(Oppen.print(tokens: list)).must_equal 'XXXXXXXXXX'
 
     list = [
       Oppen::Token::Begin.new,
@@ -28,7 +28,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::End.new,
       Oppen::Token::EOF.new,
     ]
-    _(Oppen.pretty_print_tokens(tokens: list)).must_equal 'XXXXXXXXXX'
+    _(Oppen.print(tokens: list)).must_equal 'XXXXXXXXXX'
   end
 
   it 'must work with string addition' do
@@ -39,14 +39,14 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new,
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 40))
+    _(Oppen.print(tokens: list, line_width: 40))
       .must_equal 'XXXXXXXXXX + YYYYYYYYYY + ZZZZZZZZZZ'
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 25))
+    _(Oppen.print(tokens: list, line_width: 25))
       .must_equal <<~LANG.chomp
         XXXXXXXXXX + YYYYYYYYYY +
           ZZZZZZZZZZ
       LANG
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20))
+    _(Oppen.print(tokens: list, line_width: 20))
       .must_equal <<~LANG.chomp
         XXXXXXXXXX +
           YYYYYYYYYY +
@@ -62,9 +62,9 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new,
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 25, line_delimiter: '\n'))
+    _(Oppen.print(tokens: list, line_width: 25, line_delimiter: '\n'))
       .must_equal 'XXXXXXXXXX + YYYYYYYYYY +\n  ZZZZZZZZZZ'
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20, line_delimiter: '\n'))
+    _(Oppen.print(tokens: list, line_width: 20, line_delimiter: '\n'))
       .must_equal 'XXXXXXXXXX +\n  YYYYYYYYYY +\n  ZZZZZZZZZZ'
   end
 
@@ -76,7 +76,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new,
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 9))
+    _(Oppen.print(tokens: list, line_width: 9))
       .must_equal <<~LANG.chomp
         XXXXXXXXXX
           +
@@ -96,7 +96,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 75))
+    _(Oppen.print(tokens: list, line_width: 75))
       .must_equal <<~LANG.chomp
         cases 1 : XXXXX
               2 : YYYYY
@@ -117,13 +117,13 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 75))
+    _(Oppen.print(tokens: list, line_width: 75))
       .must_equal <<~LANG.chomp
         begin
           x := f(x); y := f(y); z := f(z); w := f(w);
           end;
       LANG
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 24))
+    _(Oppen.print(tokens: list, line_width: 24))
       .must_equal <<~LANG.chomp
         begin
           x := f(x); y := f(y);
@@ -133,7 +133,7 @@ describe 'PrettyPrinter tests' do
 
     list[0] = Oppen::Token::Begin.new break_type: Oppen::Token::BreakType::CONSISTENT
 
-    _(Oppen.pretty_print_tokens(tokens: list))
+    _(Oppen.print(tokens: list))
       .must_equal <<~LANG.chomp
         begin
           x := f(x);
@@ -168,7 +168,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 75))
+    _(Oppen.print(tokens: list, line_width: 75))
       .must_equal <<~LANG.chomp
         procedure test(x, y: Integer);
           begin
@@ -196,7 +196,7 @@ describe 'PrettyPrinter tests' do
       Oppen::Token::EOF.new
     ]
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20))
+    _(Oppen.print(tokens: list, line_width: 20))
       .must_equal <<~LANG.chomp
         hello.world.foo.bar
           .baz.42()
@@ -204,7 +204,7 @@ describe 'PrettyPrinter tests' do
 
     list[0] = Oppen::Token::Begin.new(break_type: Oppen::Token::BreakType::CONSISTENT)
 
-    _(Oppen.pretty_print_tokens(tokens: list, line_width: 20))
+    _(Oppen.print(tokens: list, line_width: 20))
       .must_equal <<~LANG.chomp
         hello
           .world
