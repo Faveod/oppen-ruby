@@ -21,11 +21,11 @@ list = [
   Oppen::Token::EOF.new,
 ]
 
-puts Oppen.print tokens: list, line_width: 25
+puts Oppen.print tokens: list, margin: 25
 
 puts '--------------------------------------'
 
-wadler = Oppen::Wadler.new(line_width: 25)
+wadler = Oppen::Wadler.new(margin: 25)
 
 wadler.nest {
   wadler.text 'XXXXXXXXXX'

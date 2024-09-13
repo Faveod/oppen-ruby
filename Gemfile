@@ -20,4 +20,5 @@ group :test do
   gem 'minitest'
   gem 'minitest-focus'
   gem 'minitest-reporters'
+  gem 'prettyprint'
 end
