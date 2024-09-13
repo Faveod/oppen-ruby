@@ -11,12 +11,12 @@ module Oppen
   # Entry point of the pretty printer.
   #
   # @param tokens [Array[Token]] the list of tokens to be printed
-  # @param line_width [Integer] maximum line width desired
-  # @param line_delimiter [String] the delimiter between lines
+  # @param margin [Integer] maximum line width desired
+  # @param new_line [String] the delimiter between lines
   #
   # @return [StringIO] output of the pretty printer
-  def self.print(tokens: [], line_width: 80, line_delimiter: "\n")
-    printer = Printer.new line_width, line_delimiter
+  def self.print(tokens: [], margin: 80, new_line: "\n")
+    printer = Printer.new margin, new_line
     tokens.each do |token|
       printer.print token
     end

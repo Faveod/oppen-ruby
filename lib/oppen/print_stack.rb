@@ -25,7 +25,7 @@ module Oppen
     attr_reader :items
 
     # Delimiter between lines in output
-    attr_reader :line_delimiter
+    attr_reader :new_line
 
     # Page margin (Called length in the original paper).
     attr_reader :margin
@@ -35,12 +35,12 @@ module Oppen
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
-    def initialize(line_width, line_delimiter)
+    def initialize(margin, new_line)
       @buffer = StringIO.new
       @items = []
-      @line_delimiter = line_delimiter
-      @margin = line_width
-      @space = line_width
+      @new_line = new_line
+      @margin = margin
+      @space = margin
     end
 
     # Returns the output of the print stack
@@ -182,7 +182,7 @@ module Oppen
     #
     # @return [Nil]
     def print_new_line(amount)
-      write line_delimiter
+      write new_line
       indent amount
     end
 
