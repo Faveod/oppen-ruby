@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: set up ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
       - name: Install just
         uses: taiki-e/install-action@v2
         with:
@@ -38,11 +42,11 @@ jobs:
           tag_name: ${{ github.ref_name }}
           fail_on_unmatched_files: true
           files: |
-            pkg/oppen-${VERSION}.gem
+            pkg/oppen-${{ env.VERSION }}.gem
 
       - name: Publish to rubygems.org
         uses: cadwallion/publish-rubygems-action@master
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
-          RELEASE_COMMAND: just publish
+          RELEASE_COMMAND: gem push pkg/oppen-${{ env.VERSION }}.gem
