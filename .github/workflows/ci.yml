@@ -24,7 +24,9 @@ jobs:
       - name: Install just
         uses: taiki-e/install-action@v2
         with:
-          tool: just
+          tool: just,typos
+      - name: typos
+        run: just typos
       - name: setup
         run: just setup
       - name: lint
