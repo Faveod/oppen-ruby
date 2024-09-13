@@ -9,7 +9,7 @@ require_relative 'print_stack'
 module Oppen
   # Oppen pretty-printer.
   class Printer
-    # Ring buffer left indexe.
+    # Ring buffer left index.
     #
     # @note Called left as well in the original paper.
     attr_reader :left
@@ -22,7 +22,7 @@ module Oppen
     # @note Called printStack as well in the original paper.
     attr_reader :print_stack
 
-    # Ring buffer right indexe.
+    # Ring buffer right index.
     #
     # @note Called right as well in the original paper.
     attr_reader :right
