@@ -10,6 +10,6 @@ and triggered by pushing a tag.
 2. Push the changes: `git push origin master`
 3. Check if [Continuous Integration](https://github.com/Faveod/oppen-ruby/actions)
    workflow is completed successfully.
-4. Push the tags: `git push orgin ref/tags/v[X.Y.Z]`
+4. Push the tags: `git push origin ref/tags/v[X.Y.Z]`
 5. Wait for [Release](https://github.com/Faveod/oppen-ruby/actions)
    workflow to finish.

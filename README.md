@@ -11,7 +11,7 @@ An implementation of the pretty printing algorithm described by
 > [!WARNING]
 > This is still under development.
 
-## Difference with the orignal algorithm
+## Difference with the original algorithm
 
 We decided to diverge from Oppen's original algorithm to provide a more
 idiomatic Ruby experience, in one particular aspect: exceptions/errors: we do

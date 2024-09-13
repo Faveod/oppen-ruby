@@ -40,12 +40,12 @@ module Oppen
 
     # Size buffer, initially filled with nil.
     #
-    # @note Called size as well in the orginal paper.
+    # @note Called size as well in the original paper.
     attr_reader :size
 
     # Token buffer, initially filled with nil.
     #
-    # @note Called token in the orginal paper.
+    # @note Called token in the original paper.
     attr_reader :tokens
 
     # @note Called PrettyPrintInit in the original paper.

@@ -12,7 +12,7 @@ require 'oppen'
 
 Minitest::Reporters.use!
 
-# Tests inspired by the python implementaion of the Oppen algorithm.
+# Tests inspired by the python implementation of the Oppen algorithm.
 # https://github.com/stevej2608/oppen-pretty-printer/tree/master/tests
 
 class String
