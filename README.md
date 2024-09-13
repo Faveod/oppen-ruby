@@ -25,8 +25,16 @@ not raise exceptions when we overflow the margin.
 The only exceptions that we raise indicate a bug in the implementation. Please
 report them.
 
+## Difference with ruby's PrettyPrint library
+
+Our implementation had as a goal to mimic the usage of ruby's PrettyPrint library, we decided to
+inspire some tests of our test suite from ruby's PrettyPrint library test suite.
+We however had to slightly modify some tests due to the fact that Oppen's algorithm and
+ruby's PrettyPrint do not have the same starting positions for a group's indentation.
+
 ## Related projects
 
 1. [Python implementation](https://github.com/stevej2608/oppen-pretty-printer)
 as a library.
 1. [rustc implementation](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast_pretty/pp/index.html)
+1. [ruby PrettyPrint library](https://github.com/ruby/prettyprint/tree/master)
