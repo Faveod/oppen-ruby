@@ -1,9 +1,12 @@
 # Oppen's Pretty Printer
 [![CI badge]][CI]
+[![Docs latest badge]][Docs latest]
 <!-- [![rubygems.org badge]][rubygems.org] -->
 
 [CI badge]: https://github.com/Faveod/oppen-ruby/actions/workflows/test.yml/badge.svg
 [CI]: https://github.com/Faveod/oppen-ruby/actions/workflows/test.yml
+[Docs latest badge]: https://github.com/Faveod/oppen-ruby/actions/workflows/docs.yml/badge.svg
+[Docs latest]: https://faveod.github.io/oppen-ruby/
 
 An implementation of the pretty printing algorithm described by
 [Derek C. Oppen](https://dl.acm.org/doi/pdf/10.1145/357114.357115).
