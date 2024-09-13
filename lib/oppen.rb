@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'oppen/pretty_printer'
+require_relative 'oppen/printer'
 require_relative 'oppen/print_stack'
 require_relative 'oppen/scan_stack'
 require_relative 'oppen/token'
@@ -16,10 +16,10 @@ module Oppen
   #
   # @return [StringIO] output of the pretty printer
   def self.print(tokens: [], line_width: 80, line_delimiter: "\n")
-    pretty_printer = PrettyPrinter.new line_width, line_delimiter
+    printer = Printer.new line_width, line_delimiter
     tokens.each do |token|
-      pretty_printer.pretty_print token
+      printer.print token
     end
-    pretty_printer.output
+    printer.output
   end
 end

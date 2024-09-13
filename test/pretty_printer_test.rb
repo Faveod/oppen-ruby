@@ -2,7 +2,7 @@
 
 require_relative 'lib'
 
-describe 'PrettyPrinter tests' do
+describe 'Printer tests' do
   it 'must work with an empty list' do
     list = [Oppen::Token::EOF.new]
     _(Oppen.print(tokens: list)).must_equal ''
