@@ -55,3 +55,12 @@ setup:
 [group('test')]
 test *args:
   bundle exec rake test {{ if args == '' { '' } else { '-- ' + args } }}
+
+[group('lint')]
+typos:
+  typos --sort
+
+[group('lint')]
+typos-fix:
+  typos --write-changes
+
