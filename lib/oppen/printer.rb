@@ -7,9 +7,8 @@ require_relative 'print_stack'
 
 # Oppen.
 module Oppen
-  # PrettyPrinter class responsible for scanning tokens and passing
-  # them to the printer.
-  class PrettyPrinter
+  # Oppen pretty-printer.
+  class Printer
     # Ring buffer left indexe.
     #
     # @note Called left as well in the original paper.
@@ -78,7 +77,7 @@ module Oppen
     # @param token [Token]
     #
     # @return [Nil]
-    def pretty_print(token)
+    def print(token)
       case token
       in Token::EOF
         handle_eof
