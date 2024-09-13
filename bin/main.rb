@@ -22,3 +22,21 @@ list = [
 ]
 
 puts Oppen.print tokens: list, line_width: 25
+
+puts '--------------------------------------'
+
+wadler = Oppen::Wadler.new(line_width: 25)
+
+wadler.nest {
+  wadler.text 'XXXXXXXXXX'
+  wadler.breakable
+  wadler.text '+'
+  wadler.breakable
+  wadler.text 'YYYYYYYYYY'
+  wadler.breakable
+  wadler.text '+'
+  wadler.breakable
+  wadler.text 'ZZZZZZZZZZ'
+}
+
+puts wadler.output
