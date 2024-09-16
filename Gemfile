@@ -10,6 +10,7 @@ group :development, :test do
   gem 'debug'
   gem 'irb'
   gem 'rake'
+  gem 'redcarpet'
   gem 'rubocop'
   gem 'ruby-lsp'
   gem 'webrick'
