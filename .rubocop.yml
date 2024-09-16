@@ -43,6 +43,9 @@ Metrics/MethodLength:
   Exclude:
     - test/**/*
 
+Metrics/ParameterLists:
+  MaxOptionalParameters: 5
+
 Security/Eval:
   Exclude:
     - bin/*
