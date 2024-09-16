@@ -24,6 +24,7 @@ YARD::Rake::YardocTask.new do |t|
   t.options = %w[
     --output-dir doc
     --markup markdown
+    --markup-provider redcarpet
     --fail-on-warning
     --readme README.md
     - LICENSE docs/*
