@@ -46,6 +46,10 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   MaxOptionalParameters: 5
 
+Metrics/PerceivedComplexity:
+  AllowedMethods:
+    - handle_begin
+
 Security/Eval:
   Exclude:
     - bin/*
