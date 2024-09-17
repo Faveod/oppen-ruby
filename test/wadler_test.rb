@@ -92,18 +92,13 @@ describe 'Wadler tests' do
         @children = children
       end
 
-      # Inspired from ruby PrettyPrint library test suite, the difference from
-      # the original being that our implementation of Oppen's algorithm
-      # and PrettyPrint's implementation do not have the same starting
-      # positions for a group's indentation (hence the offset variable).
       def show(out)
-        offset = (out.is_a?(PrettyPrint) && 1) || 0
         out.group {
           out.text string
           out.nest(string.length) {
             unless children.empty?
               out.text '['
-              out.nest(offset) {
+              out.nest(1) {
                 first = true
                 children.each { |t|
                   if first

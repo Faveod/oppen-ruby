@@ -4,12 +4,17 @@
 module Oppen
   # Wadler.
   class Wadler
+    attr_reader :config
     attr_reader :current_indent
     attr_reader :margin
     attr_reader :new_line
     attr_reader :tokens
 
-    def initialize(margin: 80, new_line: "\n")
+    # @param config [Oppen::Config]
+    # @param margin [Integer]
+    # @param new_line [String]
+    def initialize(config: Config.wadler, margin: 80, new_line: "\n")
+      @config = config
       @current_indent = 0
       @margin = margin
       @new_line = new_line
@@ -19,7 +24,7 @@ module Oppen
     # @return [String]
     def output
       tokens << Oppen.eof
-      Oppen.print(tokens:, margin:, new_line:)
+      Oppen.print(tokens:, margin:, new_line:, config:)
     end
 
     # @param indent [Integer] group indentation
