@@ -51,13 +51,14 @@ module Oppen
     #
     # @param margin   [Integer] maximum line width desired.
     # @param new_line [String]  the delimiter between lines.
-    def initialize(margin, new_line)
+    # @param config [Config]
+    def initialize(margin, new_line, config = Config.oppen)
       # Maximum size if the stacks
       n = 3 * margin
 
       @left = 0
       @left_total = 1
-      @print_stack = PrintStack.new margin, new_line
+      @print_stack = PrintStack.new margin, new_line, config
       @right = 0
       @right_total = 1
       @scan_stack = ScanStack.new n

@@ -11,17 +11,50 @@ require_relative 'wadler/print'
 module Oppen
   # Entry point of the pretty printer.
   #
-  # @param tokens [Array[Token]] the list of tokens to be printed
+  # @param config [Config]
   # @param margin [Integer] maximum line width desired
   # @param new_line [String] the delimiter between lines
+  # @param tokens [Array[Token]] the list of tokens to be printed
   #
   # @return [StringIO] output of the pretty printer
-  def self.print(tokens: [], margin: 80, new_line: "\n")
-    printer = Printer.new margin, new_line
+  def self.print(config: Config.oppen, margin: 80, new_line: "\n", tokens: [])
+    printer = Printer.new margin, new_line, config
     tokens.each do |token|
       printer.print token
     end
     printer.output
+  end
+
+  # Config.
+  class Config
+    # IndentAnchor.
+    #
+    # ON_BREAK => anchor on break position (as in Oppen's original paper)
+    # ON_BEGIN => anchor on begin block position
+    module IndentAnchor
+      # @return [Integer]
+      ON_BREAK = 0
+      # @return [Integer]
+      ON_BEGIN = 1
+    end
+
+    attr_accessor :indent_anchor
+
+    def initialize(indent_anchor: IndentAnchor::ON_BREAK)
+      @indent_anchor = indent_anchor
+    end
+
+    # Default config for Oppen usage
+    # @return [Config]
+    def self.oppen
+      new
+    end
+
+    # Default config for Wadler usage
+    # @return [Config]
+    def self.wadler
+      new(indent_anchor: IndentAnchor::ON_BEGIN)
+    end
   end
 
   # @param value [String]

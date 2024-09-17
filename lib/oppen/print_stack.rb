@@ -21,6 +21,9 @@ module Oppen
     # IO element that builds the output.
     attr_reader :buffer
 
+    # Config containing customization flags
+    attr_reader :config
+
     # Array representing the stack of PrintStackEntries.
     attr_reader :items
 
@@ -35,8 +38,9 @@ module Oppen
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
-    def initialize(margin, new_line)
+    def initialize(margin, new_line, config)
       @buffer = StringIO.new
+      @config = config
       @items = []
       @new_line = new_line
       @margin = margin
@@ -87,7 +91,15 @@ module Oppen
           else
             Token::BreakType::INCONSISTENT
           end
-        push PrintStackEntry.new space - token.offset, type
+        if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+          indent = token.offset
+          if !items.empty?
+            indent += top.offset
+          end
+        else
+          indent = space - token.offset
+        end
+        push PrintStackEntry.new indent, type
       else
         push PrintStackEntry.new 0, Token::BreakType::FITS
       end
@@ -183,7 +195,12 @@ module Oppen
     # @return [Nil]
     def print_new_line(amount)
       write new_line
-      indent amount
+      if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+        @space = margin - top.offset
+        indent margin - space
+      else
+        indent amount
+      end
     end
 
     # Write a string to the output.
