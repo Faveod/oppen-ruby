@@ -9,6 +9,7 @@ require 'minitest/autorun'
 require 'minitest/focus'
 require 'minitest/reporters'
 require 'oppen'
+require 'prettyprint'
 
 Minitest::Reporters.use!
 
@@ -29,5 +30,12 @@ class String
       *result,
       Oppen::Token::End.new,
     ]
+  end
+end
+
+class PrettyPrint
+  def break
+    breakable
+    current_group.break
   end
 end
