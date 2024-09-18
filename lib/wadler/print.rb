@@ -23,7 +23,9 @@ module Oppen
 
     # @return [String]
     def output
-      tokens << Oppen.eof
+      if !tokens.last.is_a? Oppen::Token::EOF
+        tokens << Oppen.eof
+      end
       Oppen.print(tokens:, margin:, new_line:, config:)
     end
 
