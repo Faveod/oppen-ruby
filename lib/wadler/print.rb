@@ -59,6 +59,8 @@ module Oppen
           Oppen.begin_inconsistent(offset: indent)
         end
 
+      raise LocalJumpError if !block_given?
+
       block.call
 
       tokens << Oppen.end
