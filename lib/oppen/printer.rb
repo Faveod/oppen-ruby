@@ -240,7 +240,7 @@ module Oppen
     # @param depth [Integer] depth of the group
     #
     # @return [Nil]
-    def check_stack(depth) # rubocop:disable Metrics/AbcSize
+    def check_stack(depth)
       return if scan_stack.empty?
 
       x = scan_stack.top
