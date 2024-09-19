@@ -3,7 +3,7 @@
 # Oppen.
 module Oppen
   # Token.
-  module Token
+  class Token
     # BreakType.
     #
     # FITS => No break is needed (the block fits on the line).
@@ -18,13 +18,20 @@ module Oppen
       CONSISTENT = 2
     end
 
+    # Default token length
+    # @return [Integer]
+    def length
+      0
+    end
+
     # String Token.
-    class String
+    class String < Token
       # @return [String] String value.
       attr_reader :value
 
       def initialize(value)
         @value = value
+        super()
       end
 
       # @return [Integer]
@@ -34,7 +41,7 @@ module Oppen
     end
 
     # Break Token.
-    class Break
+    class Break < Token
       # @return [String] Break strings.
       attr_reader :str
       # @return [Integer] Indentation.
@@ -43,6 +50,12 @@ module Oppen
       def initialize(str: ' ', offset: 0)
         @str = str
         @offset = offset
+        super()
+      end
+
+      # @return [Integer]
+      def length
+        str.length
       end
     end
 
@@ -62,7 +75,7 @@ module Oppen
     end
 
     # Begin Token.
-    class Begin
+    class Begin < Token
       # @return [BreakType]
       attr_reader :break_type
       # @return [Integer] Indentation.
@@ -71,16 +84,17 @@ module Oppen
       def initialize(break_type: BreakType::INCONSISTENT, offset: 2)
         @offset = offset
         @break_type = break_type
+        super()
       end
     end
 
     # End Token
-    class End
+    class End < Token
       nil
     end
 
     # EOF Token
-    class EOF
+    class EOF < Token
       nil
     end
   end
