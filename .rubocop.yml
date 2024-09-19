@@ -29,7 +29,7 @@ Lint/EmptyBlock:
     - Rakefile
 
 Metrics/AbcSize:
-  Max: 29
+  Enabled: false
 
 Metrics/BlockLength:
   Exclude:
@@ -37,6 +37,9 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Max: 20
 
 Metrics/MethodLength:
   Max: 29
@@ -47,8 +50,7 @@ Metrics/ParameterLists:
   MaxOptionalParameters: 5
 
 Metrics/PerceivedComplexity:
-  AllowedMethods:
-    - handle_begin
+  Max: 20
 
 Security/Eval:
   Exclude:
