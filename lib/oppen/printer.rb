@@ -166,7 +166,7 @@ module Oppen
       scan_stack.push right
       tokens[right] = token
       size[right] = -right_total
-      @right_total += token.blank_space
+      @right_total += token.str.length
     end
 
     # Handle String Token.
@@ -228,7 +228,7 @@ module Oppen
 
       case token
       when Token::Break
-        @left_total += token.blank_space
+        @left_total += token.str.length
       when Token::String
         @left_total += token_length
       end

@@ -187,11 +187,11 @@ describe 'Printer tests' do
     list = [
       Oppen::Token::Begin.new,
       Oppen::Token::String.new('hello'),
-      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.world'),
-      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.foo'),
-      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.bar'),
-      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.baz'),
-      Oppen::Token::Break.new(blank_space: 0), Oppen::Token::String.new('.42()'),
+      Oppen::Token::Break.new(str: ''), Oppen::Token::String.new('.world'),
+      Oppen::Token::Break.new(str: ''), Oppen::Token::String.new('.foo'),
+      Oppen::Token::Break.new(str: ''), Oppen::Token::String.new('.bar'),
+      Oppen::Token::Break.new(str: ''), Oppen::Token::String.new('.baz'),
+      Oppen::Token::Break.new(str: ''), Oppen::Token::String.new('.42()'),
       Oppen::Token::End.new,
       Oppen::Token::EOF.new
     ]

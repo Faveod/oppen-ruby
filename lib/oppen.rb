@@ -95,12 +95,12 @@ module Oppen
     Token::String.new(value)
   end
 
-  # @param blank_space [Integer]
+  # @param str [String]
   # @param offset [Integer]
   #
   # @return [Oppen::Token::Break] a new Break token
-  def self.break(blank_space: 1, offset: 0)
-    Token::Break.new(blank_space:, offset:)
+  def self.break(str: ' ', offset: 0)
+    Token::Break.new(str:, offset:)
   end
 
   # @param offset [Integer]
