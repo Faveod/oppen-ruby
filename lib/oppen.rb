@@ -99,8 +99,8 @@ module Oppen
   # @param offset [Integer]
   #
   # @return [Oppen::Token::Break] a new Break token
-  def self.break(str: ' ', offset: 0)
-    Token::Break.new(str:, offset:)
+  def self.break(str = ' ', offset: 0)
+    Token::Break.new(str, offset:)
   end
 
   # @param offset [Integer]
