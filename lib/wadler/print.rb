@@ -34,6 +34,8 @@ module Oppen
     # @param close_obj [String] group closing delimiter
     # @param break_type [Oppen::Token::BreakType] group breaking type
     #
+    # @yield the block of text in a group
+    #
     # @return [Nil]
     def group(indent = 0, open_obj = '', close_obj = '',
               break_type = Oppen::Token::BreakType::CONSISTENT, &)
@@ -52,6 +54,8 @@ module Oppen
 
     # @param indent [Integer] nest indentation
     # @param break_type [Oppen::Token::BreakType] nest breaking type
+    #
+    # @yield the block of text that requires nesting
     #
     # @return [Nil]
     def nest(indent = 2, break_type = Oppen::Token::BreakType::CONSISTENT, &block)
