@@ -9,6 +9,7 @@ require_relative 'print_stack'
 module Oppen
   # Oppen pretty-printer.
   class Printer
+    attr_reader :config
     # Ring buffer left index.
     #
     # @note Called left as well in the original paper.
@@ -56,6 +57,7 @@ module Oppen
       # Maximum size if the stacks
       n = 3 * margin
 
+      @config = config
       @left = 0
       @left_total = 1
       @print_stack = PrintStack.new margin, new_line, config
@@ -138,6 +140,11 @@ module Oppen
         tokens[right] = token
         size[right] = -1
         scan_stack.push right
+        if config&.eager_print &&
+           (!scan_stack.empty? && right_total - left_total < print_stack.space)
+          check_stack 0
+          advance_left tokens[left], size[left]
+        end
       end
     end
 

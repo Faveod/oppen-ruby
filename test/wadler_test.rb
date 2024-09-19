@@ -415,4 +415,36 @@ describe 'Wadler tests' do
       end
     end
   end
+
+  describe 'must work with a tail group' do
+    builder_block = proc { |out|
+      out.group {
+        out.group {
+          out.text 'abc'
+          out.breakable
+          out.text 'def'
+        }
+        out.group {
+          out.text 'ghi'
+          out.breakable
+          out.text 'jkl'
+        }
+      }
+    }
+
+    [
+      [
+        <<~LANG.chomp, [13]
+          abc defghi
+          jkl
+        LANG
+      ],
+    ].each do |expected, vals|
+      vals.each do |margin|
+        it "must work with line width: #{margin}" do
+          check_roundtrip(margin, expected, builder_block)
+        end
+      end
+    end
+  end
 end
