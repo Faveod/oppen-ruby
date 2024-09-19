@@ -39,9 +39,40 @@ module Oppen
     end
 
     attr_accessor :indent_anchor
+    # Print groups eagerly
+    #
+    # @example
+    #  out = Oppen::Wadler.new (margin: 13)
+    #  out.group {
+    #    out.group {
+    #      out.text 'abc'
+    #      out.breakable
+    #      out.text 'def'
+    #    }
+    #    out.group {
+    #      out.text 'ghi'
+    #      out.breakable
+    #      out.text 'jkl'
+    #    }
+    #  }
+    #  out.output
+    #
+    #  # eager_print: false
+    #  # =>
+    #  # abc
+    #  # defghi jkl
+    #  #
+    #  # eager_print: true
+    #  # =>
+    #  # abc defghi
+    #  # jkl
+    #
+    # @return [Boolean]
+    attr_accessor :eager_print
 
-    def initialize(indent_anchor: IndentAnchor::ON_BREAK)
+    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false)
       @indent_anchor = indent_anchor
+      @eager_print = eager_print
     end
 
     # Default config for Oppen usage
@@ -52,8 +83,8 @@ module Oppen
 
     # Default config for Wadler usage
     # @return [Config]
-    def self.wadler
-      new(indent_anchor: IndentAnchor::ON_BEGIN)
+    def self.wadler(eager_print: true)
+      new(indent_anchor: IndentAnchor::ON_BEGIN, eager_print:)
     end
   end
 
