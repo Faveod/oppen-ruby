@@ -47,7 +47,7 @@ module Oppen
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(str: ' ', offset: 0)
+      def initialize(str = ' ', offset: 0)
         @str = str
         @offset = offset
         super()
@@ -70,7 +70,7 @@ module Oppen
       end
 
       def initialize(offset: 0)
-        super(str: LineBreakString.new, offset:)
+        super(LineBreakString.new, offset:)
       end
     end
 

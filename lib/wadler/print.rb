@@ -87,7 +87,7 @@ module Oppen
     #
     # @return [Nil]
     def breakable(str = ' ')
-      tokens << Oppen.break(str:, offset: current_indent)
+      tokens << Oppen.break(str, offset: current_indent)
     end
 
     # @param offset [Integer] indentation of the break
