@@ -130,11 +130,23 @@ module Oppen
         indent token.blank_space
       in Token::BreakType::CONSISTENT
         @space = block.offset - token.offset
-        print_new_line margin - space
+        indent =
+          if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+            token.offset
+          else
+            margin - space
+          end
+        print_new_line indent
       in Token::BreakType::INCONSISTENT
         if token_length > space
           @space = block.offset - token.offset
-          print_new_line margin - space
+          indent =
+            if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+              token.offset
+            else
+              margin - space
+            end
+          print_new_line indent
         else
           @space -= token.blank_space
           indent token.blank_space
@@ -196,7 +208,7 @@ module Oppen
     def print_new_line(amount)
       write new_line
       if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
-        @space = margin - top.offset
+        @space = margin - top.offset - amount
         indent margin - space
       else
         indent amount
