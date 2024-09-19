@@ -38,6 +38,11 @@ module Oppen
       def length
         value.length
       end
+
+      # @return [String]
+      def to_s
+        value
+      end
     end
 
     # Break Token.
@@ -56,6 +61,11 @@ module Oppen
       # @return [Integer]
       def length
         str.length
+      end
+
+      # @return [String]
+      def to_s
+        str
       end
     end
 

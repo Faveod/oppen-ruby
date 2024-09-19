@@ -127,7 +127,7 @@ module Oppen
       case block.break_type
       in Token::BreakType::FITS
         @space -= token.length
-        write token.str
+        write token
       in Token::BreakType::CONSISTENT
         @space = block.offset - token.offset
         indent =
@@ -149,7 +149,7 @@ module Oppen
           print_new_line indent
         else
           @space -= token.length
-          write token.str
+          write token
         end
       end
     end
@@ -164,7 +164,7 @@ module Oppen
     # @see Token::String
     def handle_string(token, token_length)
       @space = [0, space - token_length].max
-      write token.value
+      write token
     end
 
     # Push a PrintStackEntry into the stack.
@@ -217,11 +217,11 @@ module Oppen
 
     # Write a string to the output.
     #
-    # @param string [String]
+    # @param obj [Object]
     #
     # @return [Nil]
-    def write(string)
-      buffer.write(string)
+    def write(obj)
+      buffer.write(obj.to_s)
     end
 
     # Add indentation by `amount`.
