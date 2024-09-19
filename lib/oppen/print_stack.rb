@@ -126,8 +126,8 @@ module Oppen
       block = top
       case block.break_type
       in Token::BreakType::FITS
-        @space -= token.blank_space
-        indent token.blank_space
+        @space -= token.str.length
+        write token.str
       in Token::BreakType::CONSISTENT
         @space = block.offset - token.offset
         indent =
@@ -148,8 +148,8 @@ module Oppen
             end
           print_new_line indent
         else
-          @space -= token.blank_space
-          indent token.blank_space
+          @space -= token.str.length
+          write token.str
         end
       end
     end

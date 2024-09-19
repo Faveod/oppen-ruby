@@ -83,11 +83,11 @@ module Oppen
       tokens << Oppen.string(value)
     end
 
-    # @param blank_space [Integer] number of blank spaces before next token
+    # @param str [String]
     #
     # @return [Nil]
-    def breakable(blank_space = 1)
-      tokens << Oppen.break(blank_space:, offset: current_indent)
+    def breakable(str = ' ')
+      tokens << Oppen.break(str:, offset: current_indent)
     end
 
     # @param offset [Integer] indentation of the break

@@ -35,21 +35,29 @@ module Oppen
 
     # Break Token.
     class Break
-      # @return [Integer] Number of blank spaces.
-      attr_reader :blank_space
+      # @return [String] Break strings.
+      attr_reader :str
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(blank_space: 1, offset: 0)
-        @blank_space = blank_space
+      def initialize(str: ' ', offset: 0)
+        @str = str
         @offset = offset
       end
     end
 
     # Distinguished instance of Break which forces a line break.
     class LineBreak < Break
+      # Mock string that represents an infinite string to force new line.
+      class LineBreakString
+        # @return [Integer]
+        def length
+          999_999
+        end
+      end
+
       def initialize(offset: 0)
-        super(blank_space: 9999, offset:)
+        super(str: LineBreakString.new, offset:)
       end
     end
 
