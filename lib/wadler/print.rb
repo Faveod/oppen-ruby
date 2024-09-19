@@ -39,29 +39,6 @@ module Oppen
     # @return [Nil]
     def group(indent = 0, open_obj = '', close_obj = '',
               break_type = Oppen::Token::BreakType::CONSISTENT, &)
-      if !open_obj.empty?
-        self.break
-        text(open_obj)
-      end
-
-      nest(indent, break_type, &)
-
-      if !close_obj.empty? # rubocop:disable Style/GuardClause
-        self.break
-        text(close_obj)
-      end
-    end
-
-    # @param indent [Integer] nest indentation
-    # @param break_type [Oppen::Token::BreakType] nest breaking type
-    #
-    # @yield the block of text that requires nesting
-    #
-    # @return [Nil]
-    def nest(indent = 2, break_type = Oppen::Token::BreakType::CONSISTENT, &block)
-      previous_indent = current_indent
-      @current_indent = indent
-
       tokens <<
         case break_type
         in Oppen::Token::BreakType::CONSISTENT
@@ -70,12 +47,33 @@ module Oppen
           Oppen.begin_inconsistent(offset: indent)
         end
 
+      if !open_obj.empty?
+        self.break
+        text(open_obj)
+      end
+
+      nest(indent, break_type, &)
+
+      if !close_obj.empty?
+        self.break
+        text(close_obj)
+      end
+
+      tokens << Oppen.end
+    end
+
+    # @param indent [Integer] nest indentation
+    # @param break_type [Oppen::Token::BreakType] nest breaking type
+    #
+    # @return [Nil]
+    def nest(indent, break_type = Oppen::Token::BreakType::CONSISTENT, &block)
+      @current_indent += indent
+
       raise LocalJumpError if !block_given?
 
       block.call
-
-      tokens << Oppen.end
-      @current_indent = previous_indent
+    ensure
+      @current_indent -= indent
     end
 
     # @param value [String]
@@ -89,7 +87,7 @@ module Oppen
     #
     # @return [Nil]
     def breakable(blank_space = 1)
-      tokens << Oppen.break(blank_space:)
+      tokens << Oppen.break(blank_space:, offset: current_indent)
     end
 
     # @param offset [Integer] indentation of the break
