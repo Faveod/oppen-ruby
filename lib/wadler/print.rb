@@ -6,16 +6,25 @@ module Oppen
   class Wadler
     attr_reader :config
     attr_reader :current_indent
+    attr_reader :space
     attr_reader :margin
     attr_reader :new_line
     attr_reader :tokens
 
     # @param config [Oppen::Config]
+    # @param space [String, Proc] could be a String or a callable.
+    #   If it's a string, spaces will be generated with the the
+    #   lambda `->(n){ n * space }`, where `n` is the number of columns
+    #   to indent.
+    #   If it's a callable, it will receive `n` and it needs to return
+    #   a string.
     # @param margin [Integer]
     # @param new_line [String]
-    def initialize(config: Config.wadler, margin: 80, new_line: "\n")
+    def initialize(config: Config.wadler, space: ' ',
+                   margin: 80, new_line: "\n")
       @config = config
       @current_indent = 0
+      @space = space
       @margin = margin
       @new_line = new_line
       @tokens = []
@@ -26,7 +35,7 @@ module Oppen
       if !tokens.last.is_a? Oppen::Token::EOF
         tokens << Oppen.eof
       end
-      Oppen.print(tokens:, margin:, new_line:, config:)
+      Oppen.print(tokens:, margin:, new_line:, config:, space:)
     end
 
     # @param indent [Integer] group indentation

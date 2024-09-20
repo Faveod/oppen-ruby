@@ -12,13 +12,20 @@ module Oppen
   # Entry point of the pretty printer.
   #
   # @param config [Config]
+  # @param space [String, Proc] could be a String or a callable.
+  #   If it's a string, spaces will be generated with the the
+  #   lambda `->(n){ n * space }`, where `n` is the number of columns
+  #   to indent.
+  #   If it's a callable, it will receive `n` and it needs to return
+  #   a string.
   # @param margin [Integer] maximum line width desired
   # @param new_line [String] the delimiter between lines
   # @param tokens [Array[Token]] the list of tokens to be printed
   #
   # @return [StringIO] output of the pretty printer
-  def self.print(config: Config.oppen, margin: 80, new_line: "\n", tokens: [])
-    printer = Printer.new margin, new_line, config
+  def self.print(config: Config.oppen, space: ' ',
+                 margin: 80, new_line: "\n", tokens: [])
+    printer = Printer.new margin, new_line, config, space
     tokens.each do |token|
       printer.print token
     end

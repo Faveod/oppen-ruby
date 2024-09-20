@@ -24,6 +24,9 @@ module Oppen
     # Config containing customization flags
     attr_reader :config
 
+    # Callable that generate spaces
+    attr_reader :genspace
+
     # Array representing the stack of PrintStackEntries.
     attr_reader :items
 
@@ -38,9 +41,18 @@ module Oppen
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
-    def initialize(margin, new_line, config)
+    def initialize(margin, new_line, config, space)
       @buffer = StringIO.new
       @config = config
+      @genspace =
+        if space.respond_to?(:call)
+          raise ArgumentError, 'space argument must be a Proc of arity 1' \
+          if space.to_proc.arity != 1
+
+          space
+        else
+          ->(n) { space * n }
+        end
       @items = []
       @new_line = new_line
       @margin = margin
@@ -232,7 +244,7 @@ module Oppen
     #
     # @return [Nil]
     def indent(amount)
-      write ' ' * amount
+      write genspace.call(amount)
     end
   end
 end
