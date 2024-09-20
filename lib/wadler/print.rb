@@ -9,6 +9,7 @@ module Oppen
     attr_reader :space
     attr_reader :margin
     attr_reader :new_line
+    attr_reader :out
     attr_reader :tokens
 
     # @param config [Oppen::Config]
@@ -20,13 +21,15 @@ module Oppen
     #   a string.
     # @param margin [Integer]
     # @param new_line [String]
+    # @param out [Object] should have a write and string method
     def initialize(config: Config.wadler, space: ' ',
-                   margin: 80, new_line: "\n")
+                   margin: 80, new_line: "\n", out: StringIO.new)
       @config = config
       @current_indent = 0
       @space = space
       @margin = margin
       @new_line = new_line
+      @out = out
       @tokens = []
     end
 
@@ -35,7 +38,7 @@ module Oppen
       if !tokens.last.is_a? Oppen::Token::EOF
         tokens << Oppen.eof
       end
-      Oppen.print(tokens:, margin:, new_line:, config:, space:)
+      Oppen.print(tokens:, margin:, new_line:, config:, space:, out:)
     end
 
     # @param indent [Integer] group indentation

@@ -41,8 +41,8 @@ module Oppen
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
-    def initialize(margin, new_line, config, space)
-      @buffer = StringIO.new
+    def initialize(margin, new_line, config, space, out)
+      @buffer = out
       @config = config
       @genspace =
         if space.respond_to?(:call)
@@ -61,7 +61,7 @@ module Oppen
 
     # Returns the output of the print stack
     #
-    # @return [StringIO]
+    # @return [String]
     def output
       buffer.string
     end
