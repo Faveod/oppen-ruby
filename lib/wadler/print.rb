@@ -64,7 +64,7 @@ module Oppen
         text(open_obj)
       end
 
-      nest(indent, break_type, &)
+      yield
 
       if !close_obj.empty?
         self.break
