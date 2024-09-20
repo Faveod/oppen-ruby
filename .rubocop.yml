@@ -47,7 +47,8 @@ Metrics/MethodLength:
     - test/**/*
 
 Metrics/ParameterLists:
-  MaxOptionalParameters: 5
+  Max: 8
+  MaxOptionalParameters: 8
 
 Metrics/PerceivedComplexity:
   Max: 20
