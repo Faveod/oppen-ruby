@@ -42,7 +42,7 @@ module Oppen
     end
 
     # @param indent [Integer] group indentation
-    # @param open_obj [String] group oppening delimiter
+    # @param open_obj [String] group opening delimiter
     # @param close_obj [String] group closing delimiter
     # @param break_type [Oppen::Token::BreakType] group breaking type
     #
@@ -50,7 +50,7 @@ module Oppen
     #
     # @return [Nil]
     def group(indent = 0, open_obj = '', close_obj = '',
-              break_type = Oppen::Token::BreakType::CONSISTENT, &)
+              break_type = Oppen::Token::BreakType::CONSISTENT)
       tokens <<
         case break_type
         in Oppen::Token::BreakType::CONSISTENT
@@ -75,17 +75,28 @@ module Oppen
     end
 
     # @param indent [Integer] nest indentation
+    # @param open_obj [String] nest opening delimiter
+    # @param close_obj [String] nest closing delimiter
     # @param break_type [Oppen::Token::BreakType] nest breaking type
     #
     # @return [Nil]
-    def nest(indent, break_type = Oppen::Token::BreakType::CONSISTENT, &block)
+    def nest(indent, open_obj = '', close_obj = '',
+             break_type = Oppen::Token::BreakType::CONSISTENT)
       @current_indent += indent
 
-      raise LocalJumpError if !block_given?
+      if !open_obj.empty?
+        text(open_obj)
+        self.break
+      end
 
-      block.call
+      yield
     ensure
       @current_indent -= indent
+
+      if !close_obj.empty?
+        self.break
+        text(close_obj)
+      end
     end
 
     # @param value [String]
@@ -106,7 +117,7 @@ module Oppen
     #
     # @return [Nil]
     def break(offset = 0)
-      tokens << Oppen.line_break(offset:)
+      tokens << Oppen.line_break(offset: current_indent)
     end
   end
 end
