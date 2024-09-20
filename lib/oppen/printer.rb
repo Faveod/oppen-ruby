@@ -59,14 +59,16 @@ module Oppen
     #   to indent.
     #   If it's a callable, it will receive `n` and it needs to return
     #   a string.
-    def initialize(margin, new_line, config = Config.oppen, space = ' ')
+    # @param out [Object] should have a write and string method
+    def initialize(margin, new_line, config = Config.oppen,
+                   space = ' ', out = StringIO.new)
       # Maximum size if the stacks
       n = 3 * margin
 
       @config = config
       @left = 0
       @left_total = 1
-      @print_stack = PrintStack.new margin, new_line, config, space
+      @print_stack = PrintStack.new margin, new_line, config, space, out
       @right = 0
       @right_total = 1
       @scan_stack = ScanStack.new n
@@ -74,7 +76,7 @@ module Oppen
       @tokens = Array.new n
     end
 
-    # @return [StringIO]
+    # @return [String]
     def output
       print_stack.output
     end

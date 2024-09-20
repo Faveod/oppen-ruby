@@ -20,12 +20,13 @@ module Oppen
   #   a string.
   # @param margin [Integer] maximum line width desired
   # @param new_line [String] the delimiter between lines
+  # @param out [Object] should have a write and string method
   # @param tokens [Array[Token]] the list of tokens to be printed
   #
-  # @return [StringIO] output of the pretty printer
+  # @return [String] output of the pretty printer
   def self.print(config: Config.oppen, space: ' ',
-                 margin: 80, new_line: "\n", tokens: [])
-    printer = Printer.new margin, new_line, config, space
+                 margin: 80, new_line: "\n", out: StringIO.new, tokens: [])
+    printer = Printer.new margin, new_line, config, space, out
     tokens.each do |token|
       printer.print token
     end
