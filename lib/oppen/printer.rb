@@ -53,14 +53,20 @@ module Oppen
     # @param margin   [Integer] maximum line width desired.
     # @param new_line [String]  the delimiter between lines.
     # @param config [Config]
-    def initialize(margin, new_line, config = Config.oppen)
+    # @param space [String, Proc] could be a String or a callable.
+    #   If it's a string, spaces will be generated with the the
+    #   lambda `->(n){ n * space }`, where `n` is the number of columns
+    #   to indent.
+    #   If it's a callable, it will receive `n` and it needs to return
+    #   a string.
+    def initialize(margin, new_line, config = Config.oppen, space = ' ')
       # Maximum size if the stacks
       n = 3 * margin
 
       @config = config
       @left = 0
       @left_total = 1
-      @print_stack = PrintStack.new margin, new_line, config
+      @print_stack = PrintStack.new margin, new_line, config, space
       @right = 0
       @right_total = 1
       @scan_stack = ScanStack.new n
