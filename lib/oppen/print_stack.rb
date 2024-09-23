@@ -47,7 +47,7 @@ module Oppen
       @genspace =
         if space.respond_to?(:call)
           raise ArgumentError, 'space argument must be a Proc of arity 1' \
-          if space.to_proc.arity != 1
+            if space.to_proc.arity != 1
 
           space
         else
