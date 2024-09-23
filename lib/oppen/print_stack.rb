@@ -148,6 +148,7 @@ module Oppen
           else
             margin - space
           end
+        write token.line_continuation
         print_new_line indent
       in Token::BreakType::INCONSISTENT
         if token_length > space
@@ -158,6 +159,7 @@ module Oppen
             else
               margin - space
             end
+          write token.line_continuation
           print_new_line indent
         else
           @space -= token.length
