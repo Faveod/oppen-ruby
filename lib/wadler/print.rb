@@ -51,6 +51,9 @@ module Oppen
     # @return [Nil]
     def group(indent = 0, open_obj = '', close_obj = '',
               break_type = Oppen::Token::BreakType::CONSISTENT)
+      raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
+        if open_obj.nil? || close_obj.nil?
+
       tokens <<
         case break_type
         in Oppen::Token::BreakType::CONSISTENT
@@ -82,6 +85,9 @@ module Oppen
     # @return [Nil]
     def nest(indent, open_obj = '', close_obj = '',
              break_type = Oppen::Token::BreakType::CONSISTENT)
+      raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
+        if open_obj.nil? || close_obj.nil?
+
       @current_indent += indent
 
       if !open_obj.empty?
@@ -89,14 +95,16 @@ module Oppen
         self.break
       end
 
-      yield
-    ensure
-      @current_indent -= indent
-
-      if !close_obj.empty?
-        self.break
-        text(close_obj)
+      begin
+        yield
+      ensure
+        @current_indent -= indent
       end
+
+      return if close_obj.empty?
+
+      self.break
+      text(close_obj)
     end
 
     # @param value [String]
