@@ -104,18 +104,20 @@ module Oppen
   end
 
   # @param str [String]
+  # @param line_continuation [String] If a new line is needed display this string before the new line
   # @param offset [Integer]
   #
   # @return [Oppen::Token::Break] a new Break token
-  def self.break(str = ' ', offset: 0)
-    Token::Break.new(str, offset:)
+  def self.break(str = ' ', line_continuation: '', offset: 0)
+    Token::Break.new(str, line_continuation:, offset:)
   end
 
+  # @param line_continuation [String] If a new line is needed display this string before the new line
   # @param offset [Integer]
   #
   # @return [Oppen::Token::LineBreak] a new LineBreak token
-  def self.line_break(offset: 0)
-    Token::LineBreak.new(offset:)
+  def self.line_break(line_continuation: '', offset: 0)
+    Token::LineBreak.new(line_continuation:, offset:)
   end
 
   # @param offset [Integer]

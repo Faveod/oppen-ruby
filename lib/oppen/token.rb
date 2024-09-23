@@ -49,12 +49,17 @@ module Oppen
     class Break < Token
       # @return [String] Break strings.
       attr_reader :str
+      # @return [String] If a new line is needed display this string before the new line
+      attr_reader :line_continuation
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(str = ' ', offset: 0)
-        @str = str
+      def initialize(str = ' ', line_continuation: '', offset: 0)
+        raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
+
+        @line_continuation = line_continuation
         @offset = offset
+        @str = str
         super()
       end
 
@@ -79,8 +84,8 @@ module Oppen
         end
       end
 
-      def initialize(offset: 0)
-        super(LineBreakString.new, offset:)
+      def initialize(line_continuation: '', offset: 0)
+        super(LineBreakString.new, line_continuation:, offset:)
       end
     end
 

@@ -115,17 +115,18 @@ module Oppen
     end
 
     # @param str [String]
+    # @param line_continuation [String] If a new line is needed display this string before the new line
     #
     # @return [Nil]
-    def breakable(str = ' ')
-      tokens << Oppen.break(str, offset: current_indent)
+    def breakable(str = ' ', line_continuation: '')
+      tokens << Oppen.break(str, line_continuation:, offset: current_indent)
     end
 
-    # @param offset [Integer] indentation of the break
+    # @param line_continuation [String] If a new line is needed display this string before the new line
     #
     # @return [Nil]
-    def break(offset = 0)
-      tokens << Oppen.line_break(offset: current_indent)
+    def break(line_continuation: '')
+      tokens << Oppen.line_break(line_continuation:, offset: current_indent)
     end
   end
 end
