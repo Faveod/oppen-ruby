@@ -4,6 +4,7 @@ require 'stringio'
 
 require_relative 'scan_stack'
 require_relative 'print_stack'
+require_relative 'utils'
 
 # Oppen.
 module Oppen
@@ -71,7 +72,7 @@ module Oppen
       @print_stack = PrintStack.new margin, new_line, config, space, out
       @right = 0
       @right_total = 1
-      @scan_stack = ScanStack.new n
+      @scan_stack = ScanStack.new n, config
       @size = Array.new n
       @tokens = Array.new n
     end
@@ -220,7 +221,10 @@ module Oppen
       @right = (right + 1) % scan_stack.length
       return if right != left
 
-      raise 'Token queue full'
+      raise 'Token queue full' if !config.upsize_stack
+
+      @size, = Utils.upsize_circular_array(@size, @left)
+      @tokens, @left, @right = Utils.upsize_circular_array(@tokens, @left)
     end
 
     # Advances the `left` pointer and lets the print stack

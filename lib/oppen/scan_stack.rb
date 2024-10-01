@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require_relative 'utils'
+
 # Oppen.
 module Oppen
   # A fixed-size stack that can be popped from top and bottom.
   class ScanStack
-    def initialize(size)
+    def initialize(size, config)
       @bottom = 0
+      @config = config
       @empty = true
       @stack = Array.new(size)
       @top = 0
@@ -68,7 +71,9 @@ module Oppen
       else
         @top = increment(@top)
         if @top == @bottom
-          raise 'Stack full'
+          raise 'Stack full' if !@config.upsize_stack
+
+          @stack, @bottom, @top = Utils.upsize_circular_array(@stack, @bottom)
         end
       end
       @stack[@top] = value

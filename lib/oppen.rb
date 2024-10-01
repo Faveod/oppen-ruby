@@ -77,10 +77,12 @@ module Oppen
     #
     # @return [Boolean]
     attr_accessor :eager_print
+    attr_accessor :upsize_stack
 
-    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false)
+    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false, upsize_stack: false)
       @indent_anchor = indent_anchor
       @eager_print = eager_print
+      @upsize_stack = upsize_stack
     end
 
     # Default config for Oppen usage
@@ -91,8 +93,8 @@ module Oppen
 
     # Default config for Wadler usage
     # @return [Config]
-    def self.wadler(eager_print: true)
-      new(indent_anchor: IndentAnchor::ON_BEGIN, eager_print:)
+    def self.wadler(eager_print: true, upsize_stack: true)
+      new(indent_anchor: IndentAnchor::ON_BEGIN, eager_print:, upsize_stack:)
     end
   end
 
