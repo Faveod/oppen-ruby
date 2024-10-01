@@ -447,4 +447,91 @@ describe 'Wadler tests' do
       end
     end
   end
+
+  describe 'must not break if stack is full' do
+    it 'must work with a big token list' do
+      wadler = Oppen::Wadler.new(margin: 3)
+      wadler.group(1) {
+        wadler.group(1) {
+          wadler.group(1) {
+            wadler.group(1) {
+              wadler.group(1) {
+                wadler.group(1) {
+                  wadler.group(1) {
+                    wadler.group(1) {
+                      wadler.group(1) {
+                        wadler.group(1) {
+                          wadler.group(1) {
+                            wadler.group(1) {
+                              wadler.group(1) {
+                                wadler.group(1) {
+                                  wadler.group(1) {
+                                    wadler.group(1) {
+                                      wadler.text '1 +'
+                                    }
+                                    wadler.breakable
+                                    wadler.text '2 +'
+                                  }
+                                  wadler.breakable
+                                  wadler.text '3 +'
+                                }
+                                wadler.breakable
+                                wadler.text '4 +'
+                              }
+                              wadler.breakable
+                              wadler.text '5 +'
+                            }
+                            wadler.breakable
+                            wadler.text '6 +'
+                          }
+                          wadler.breakable
+                          wadler.text '7 +'
+                        }
+                        wadler.breakable
+                        wadler.text '8 +'
+                      }
+                      wadler.breakable
+                      wadler.text '9 +'
+                    }
+                    wadler.breakable
+                    wadler.text '10 +'
+                  }
+                  wadler.breakable
+                  wadler.text '11 +'
+                }
+                wadler.breakable
+                wadler.text '12 +'
+              }
+              wadler.breakable
+              wadler.text '13 +'
+            }
+            wadler.breakable
+            wadler.text '14 +'
+          }
+          wadler.breakable
+          wadler.text '15 +'
+        }
+        wadler.breakable
+        wadler.text '16'
+      }
+      _(wadler.output).must_equal <<~LANG.chomp
+        1 +
+                       2 +
+                      3 +
+                     4 +
+                    5 +
+                   6 +
+                  7 +
+                 8 +
+                9 +
+               10 +
+              11 +
+             12 +
+            13 +
+           14 +
+          15 +
+         16
+      LANG
+    end
+  end
 end
