@@ -20,9 +20,7 @@ module Oppen
 
     # Default token length
     # @return [Integer]
-    def length
-      0
-    end
+    def length = 0
 
     # String Token.
     class String < Token
@@ -36,14 +34,10 @@ module Oppen
       end
 
       # @return [Integer]
-      def length
-        @width
-      end
+      def length = @width
 
       # @return [String]
-      def to_s
-        value
-      end
+      def to_s = value
     end
 
     # Break Token.
@@ -66,14 +60,10 @@ module Oppen
       end
 
       # @return [Integer]
-      def length
-        @width
-      end
+      def length = @width
 
       # @return [String]
-      def to_s
-        str
-      end
+      def to_s = str
     end
 
     # Distinguished instance of Break which forces a line break.
@@ -81,9 +71,7 @@ module Oppen
       # Mock string that represents an infinite string to force new line.
       class LineBreakString
         # @return [Integer]
-        def length
-          999_999
-        end
+        def length = 999_999
       end
 
       def initialize(line_continuation: '', offset: 0)
