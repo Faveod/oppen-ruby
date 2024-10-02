@@ -29,14 +29,15 @@ module Oppen
       # @return [String] String value.
       attr_reader :value
 
-      def initialize(value)
+      def initialize(value, width = value.length)
         @value = value
+        @width = width
         super()
       end
 
       # @return [Integer]
       def length
-        value.length
+        @width
       end
 
       # @return [String]
@@ -54,18 +55,19 @@ module Oppen
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(str = ' ', line_continuation: '', offset: 0)
+      def initialize(str = ' ', width = str.length, line_continuation: '', offset: 0)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation
         @offset = offset
         @str = str
+        @width = width
         super()
       end
 
       # @return [Integer]
       def length
-        str.length
+        @width
       end
 
       # @return [String]

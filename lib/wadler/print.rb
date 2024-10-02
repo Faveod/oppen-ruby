@@ -110,16 +110,16 @@ module Oppen
     # @param value [String]
     #
     # @return [Nil]
-    def text(value)
-      tokens << Oppen.string(value)
+    def text(value, width = value.length)
+      tokens << Oppen.string(value, width)
     end
 
     # @param str [String]
     # @param line_continuation [String] If a new line is needed display this string before the new line
     #
     # @return [Nil]
-    def breakable(str = ' ', line_continuation: '')
-      tokens << Oppen.break(str, line_continuation:, offset: current_indent)
+    def breakable(str = ' ', width = str.length, line_continuation: '')
+      tokens << Oppen.break(str, width, line_continuation:, offset: current_indent)
     end
 
     # @param line_continuation [String] If a new line is needed display this string before the new line

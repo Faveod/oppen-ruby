@@ -534,4 +534,60 @@ describe 'Wadler tests' do
       LANG
     end
   end
+
+  describe 'must work with width different from length' do
+    it 'must work with a width smaller than text length' do
+      builder_block = proc { |out|
+        out.group {
+          out.text('This is a long sentence', 1)
+          out.breakable
+          out.text('This is another long sentence.', 1)
+        }
+      }
+      expected = 'This is a long sentence This is another long sentence.'
+      check_roundtrip(10, expected, builder_block)
+    end
+
+    it 'must work with a width bigger than text length' do
+      builder_block = proc { |out|
+        out.group {
+          out.text('This is a small sentence', 500)
+          out.breakable
+          out.text('This is another small sentence.', 500)
+        }
+      }
+      expected = <<~LANG.chomp
+        This is a small sentence
+        This is another small sentence.
+      LANG
+      check_roundtrip(100, expected, builder_block)
+    end
+
+    it 'must work with a width smaller than break length' do
+      builder_block = proc { |out|
+        out.group {
+          out.text('a')
+          out.breakable('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 1)
+          out.text('b')
+        }
+      }
+      expected = 'axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxb'
+      check_roundtrip(5, expected, builder_block)
+    end
+
+    it 'must work with a width bigger than break length' do
+      builder_block = proc { |out|
+        out.group {
+          out.text('This is a small sentence')
+          out.breakable('. ', 500)
+          out.text('This is another small sentence.')
+        }
+      }
+      expected = <<~LANG.chomp
+        This is a small sentence
+        This is another small sentence.
+      LANG
+      check_roundtrip(100, expected, builder_block)
+    end
+  end
 end
