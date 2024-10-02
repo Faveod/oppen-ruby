@@ -149,7 +149,7 @@ module Oppen
         tokens[right] = token
         size[right] = -1
         scan_stack.push right
-        if config&.eager_print &&
+        if config&.eager_print? &&
            (!scan_stack.empty? && right_total - left_total < print_stack.space)
           check_stack 0
           advance_left tokens[left], size[left]
@@ -221,7 +221,7 @@ module Oppen
       @right = (right + 1) % scan_stack.length
       return if right != left
 
-      raise 'Token queue full' if !config.upsize_stack
+      raise 'Token queue full' if !config.upsize_stack?
 
       @size, = Utils.upsize_circular_array(@size, @left)
       @tokens, @left, @right = Utils.upsize_circular_array(@tokens, @left)
