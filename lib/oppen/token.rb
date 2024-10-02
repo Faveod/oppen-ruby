@@ -20,29 +20,24 @@ module Oppen
 
     # Default token length
     # @return [Integer]
-    def length
-      0
-    end
+    def length = 0
 
     # String Token.
     class String < Token
       # @return [String] String value.
       attr_reader :value
 
-      def initialize(value)
+      def initialize(value, width = value.length)
         @value = value
+        @width = width
         super()
       end
 
       # @return [Integer]
-      def length
-        value.length
-      end
+      def length = @width
 
       # @return [String]
-      def to_s
-        value
-      end
+      def to_s = value
     end
 
     # Break Token.
@@ -54,24 +49,21 @@ module Oppen
       # @return [Integer] Indentation.
       attr_reader :offset
 
-      def initialize(str = ' ', line_continuation: '', offset: 0)
+      def initialize(str = ' ', width = str.length, line_continuation: '', offset: 0)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation
         @offset = offset
         @str = str
+        @width = width
         super()
       end
 
       # @return [Integer]
-      def length
-        str.length
-      end
+      def length = @width
 
       # @return [String]
-      def to_s
-        str
-      end
+      def to_s = str
     end
 
     # Distinguished instance of Break which forces a line break.
@@ -79,9 +71,7 @@ module Oppen
       # Mock string that represents an infinite string to force new line.
       class LineBreakString
         # @return [Integer]
-        def length
-          999_999
-        end
+        def length = 999_999
       end
 
       def initialize(line_continuation: '', offset: 0)
