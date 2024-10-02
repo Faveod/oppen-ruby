@@ -71,7 +71,7 @@ module Oppen
       else
         @top = increment(@top)
         if @top == @bottom
-          raise 'Stack full' if !@config.upsize_stack
+          raise 'Stack full' if !@config.upsize_stack?
 
           @stack, @bottom, @top = Utils.upsize_circular_array(@stack, @bottom)
         end

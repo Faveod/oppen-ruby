@@ -47,6 +47,13 @@ module Oppen
     end
 
     attr_accessor :indent_anchor
+
+    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false, upsize_stack: false)
+      @indent_anchor = indent_anchor
+      @eager_print = eager_print
+      @upsize_stack = upsize_stack
+    end
+
     # Print groups eagerly
     #
     # @example
@@ -76,14 +83,9 @@ module Oppen
     #  # jkl
     #
     # @return [Boolean]
-    attr_accessor :eager_print
-    attr_accessor :upsize_stack
+    def eager_print? = @eager_print
 
-    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false, upsize_stack: false)
-      @indent_anchor = indent_anchor
-      @eager_print = eager_print
-      @upsize_stack = upsize_stack
-    end
+    def upsize_stack? = @upsize_stack
 
     # Default config for Oppen usage
     # @return [Config]
