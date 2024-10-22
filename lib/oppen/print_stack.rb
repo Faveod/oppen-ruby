@@ -71,32 +71,32 @@ module Oppen
     # @note Called Print in the original paper.
     #
     # @param token [Token]
-    # @param token_length [Integer]
+    # @param token_width [Integer]
     #
     # @return [Nil]
-    def print(token, token_length)
+    def print(token, token_width)
       case token
       in Token::Begin
-        handle_begin token, token_length
+        handle_begin token, token_width
       in Token::End
         handle_end
       in Token::Break
-        handle_break token, token_length
+        handle_break token, token_width
       in Token::String
-        handle_string token, token_length
+        handle_string token, token_width
       end
     end
 
     # Handle Begin Token.
     #
     # @param token [Token]
-    # @param token_length [Integer]
+    # @param token_width [Integer]
     #
     # @return [Nil]
     #
     # @see Token::Begin
-    def handle_begin(token, token_length)
-      if token_length > space
+    def handle_begin(token, token_width)
+      if token_width > space
         type =
           if token.break_type == Token::BreakType::CONSISTENT
             Token::BreakType::CONSISTENT
@@ -129,16 +129,16 @@ module Oppen
     # Handle Break Token.
     #
     # @param token [Token]
-    # @param token_length [Integer]
+    # @param token_width [Integer]
     #
     # @return [Nil]
     #
     # @see Token::Break
-    def handle_break(token, token_length)
+    def handle_break(token, token_width)
       block = top
       case block.break_type
       in Token::BreakType::FITS
-        @space -= token.length
+        @space -= token.width
         write token
       in Token::BreakType::CONSISTENT
         @space = block.offset - token.offset
@@ -151,7 +151,7 @@ module Oppen
         write token.line_continuation
         print_new_line indent
       in Token::BreakType::INCONSISTENT
-        if token_length > space
+        if token_width > space
           @space = block.offset - token.offset
           indent =
             if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
@@ -162,7 +162,7 @@ module Oppen
           write token.line_continuation
           print_new_line indent
         else
-          @space -= token.length
+          @space -= token.width
           write token
         end
       end
@@ -171,13 +171,13 @@ module Oppen
     # Handle String Token.
     #
     # @param token [Token]
-    # @param token_length [Integer]
+    # @param token_width [Integer]
     #
     # @return [Nil]
     #
     # @see Token::String
-    def handle_string(token, token_length)
-      @space = [0, space - token_length].max
+    def handle_string(token, token_width)
+      @space = [0, space - token_width].max
       write token
     end
 

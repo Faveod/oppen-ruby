@@ -18,23 +18,22 @@ module Oppen
       CONSISTENT = 2
     end
 
-    # Default token length
+    # Default token width
     # @return [Integer]
-    def length = 0
+    def width = 0
 
     # String Token.
     class String < Token
       # @return [String] String value.
       attr_reader :value
+      # @return [Integer]
+      attr_reader :width
 
       def initialize(value, width: value.length)
         @value = value
         @width = width
         super()
       end
-
-      # @return [Integer]
-      def length = @width
 
       # @return [String]
       def to_s = value
@@ -48,6 +47,8 @@ module Oppen
       attr_reader :offset
       # @return [String] Break strings.
       attr_reader :str
+      # @return [Integer]
+      attr_reader :width
 
       def initialize(str = ' ', width: str.length, line_continuation: '', offset: 0)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
@@ -58,9 +59,6 @@ module Oppen
         @width = width
         super()
       end
-
-      # @return [Integer]
-      def length = @width
 
       # @return [String]
       def to_s = str
