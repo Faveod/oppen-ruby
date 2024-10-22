@@ -175,7 +175,7 @@ module Oppen
       scan_stack.push right
       tokens[right] = token
       size[right] = -right_total
-      @right_total += token.length
+      @right_total += token.width
     end
 
     # Handle String Token.
@@ -185,12 +185,12 @@ module Oppen
     # @see Token::String
     def handle_string(token)
       if scan_stack.empty?
-        print_stack.print token, token.length
+        print_stack.print token, token.width
       else
         advance_right
         tokens[right] = token
-        size[right] = token.length
-        @right_total += token.length
+        size[right] = token.width
+        @right_total += token.width
         check_stream
       end
     end
@@ -233,16 +233,16 @@ module Oppen
     # @note Called AdvanceLeft as well in the original paper.
     #
     # @return [Nil]
-    def advance_left(token, token_length)
-      return if token_length.negative?
+    def advance_left(token, token_width)
+      return if token_width.negative?
 
-      print_stack.print token, token_length
+      print_stack.print token, token_width
 
       case token
       when Token::Break
-        @left_total += token.length
+        @left_total += token.width
       when Token::String
-        @left_total += token_length
+        @left_total += token_width
       end
 
       return if left == right
