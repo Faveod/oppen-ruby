@@ -33,15 +33,15 @@ module Oppen
     # Delimiter between lines in output
     attr_reader :new_line
 
-    # Page margin (Called length in the original paper).
-    attr_reader :margin
+    # Maximum allowed width for printing (Called length in the original paper).
+    attr_reader :width
 
     # Current available space (Called index in the original paper).
     #
     # @return [Integer] Current available space (Called index in the original paper).
     attr_reader :space
 
-    def initialize(margin, new_line, config, space, out)
+    def initialize(width, new_line, config, space, out)
       @buffer = out
       @config = config
       @genspace =
@@ -55,8 +55,8 @@ module Oppen
         end
       @items = []
       @new_line = new_line
-      @margin = margin
-      @space = margin
+      @width = width
+      @space = width
     end
 
     # Returns the output of the print stack
@@ -146,7 +146,7 @@ module Oppen
           if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
             token.offset
           else
-            margin - space
+            width - space
           end
         write token.line_continuation
         print_new_line indent
@@ -157,7 +157,7 @@ module Oppen
             if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
               token.offset
             else
-              margin - space
+              width - space
             end
           write token.line_continuation
           print_new_line indent
@@ -222,8 +222,8 @@ module Oppen
     def print_new_line(amount)
       write new_line
       if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
-        @space = margin - top.offset - amount
-        indent margin - space
+        @space = width - top.offset - amount
+        indent width - space
       else
         indent amount
       end

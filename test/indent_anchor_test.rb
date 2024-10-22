@@ -4,16 +4,16 @@ require 'prettyprint'
 
 require_relative 'lib'
 
-def check_difference_oppen_wadler(margin, expected_oppen, expected_wadler, builder_block)
-  printer = Oppen::Wadler.new(margin:, config: Oppen::Config.oppen)
+def check_difference_oppen_wadler(width, expected_oppen, expected_wadler, builder_block)
+  printer = Oppen::Wadler.new(width:, config: Oppen::Config.oppen)
   builder_block.call(printer)
   _(printer.output).must_equal expected_oppen, 'Oppen failed the test'
 
-  printer = Oppen::Wadler.new(margin:, config: Oppen::Config.wadler)
+  printer = Oppen::Wadler.new(width:, config: Oppen::Config.wadler)
   builder_block.call(printer)
   _(printer.output).must_equal expected_wadler, 'Wadler failed the test'
 
-  printer = PrettyPrint.new(''.dup, margin)
+  printer = PrettyPrint.new(''.dup, width)
   builder_block.call(printer)
   printer.flush
   _(printer.output).must_equal expected_wadler, 'PrettyPrint failed the test'
@@ -386,9 +386,9 @@ describe 'Indent anchor tests' do
       WADLER
     ],
   ].each do |test_title, builder_block, expected_oppen, expected_wadler, values|
-    values.each do |margin|
+    values.each do |width|
       it test_title do
-        check_difference_oppen_wadler margin, expected_oppen, expected_wadler, builder_block
+        check_difference_oppen_wadler width, expected_oppen, expected_wadler, builder_block
       end
     end
   end
@@ -396,12 +396,12 @@ end
 
 describe 'Indent anchor error tests' do
   it 'must raise a LocalJumpError if no block is given to group' do
-    margin = 30
-    printer = PrettyPrint.new ''.dup, margin
+    width = 30
+    printer = PrettyPrint.new ''.dup, width
 
     _ { printer.group(2) }.must_raise LocalJumpError
 
-    printer = Oppen::Wadler.new(margin:)
+    printer = Oppen::Wadler.new(width:)
 
     _ { printer.group(2) }.must_raise LocalJumpError
   end
