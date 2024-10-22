@@ -27,7 +27,7 @@ module Oppen
       # @return [String] String value.
       attr_reader :value
 
-      def initialize(value, width = value.length)
+      def initialize(value, width: value.length)
         @value = value
         @width = width
         super()
@@ -49,7 +49,7 @@ module Oppen
       # @return [String] Break strings.
       attr_reader :str
 
-      def initialize(str = ' ', width = str.length, line_continuation: '', offset: 0)
+      def initialize(str = ' ', width: str.length, line_continuation: '', offset: 0)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation

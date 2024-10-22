@@ -101,19 +101,21 @@ module Oppen
   end
 
   # @param value [String]
+  # @param width [Integer] token width that defaults to value.length
   #
   # @return [Oppen::Token::String] a new String token
-  def self.string(value, width = value.length)
-    Token::String.new(value, width)
+  def self.string(value, width: value.length)
+    Token::String.new(value, width:)
   end
 
   # @param str [String]
   # @param line_continuation [String] If a new line is needed display this string before the new line
   # @param offset [Integer]
+  # @param width [Integer] token width that defaults to str.length
   #
   # @return [Oppen::Token::Break] a new Break token
-  def self.break(str = ' ', width = str.length, line_continuation: '', offset: 0)
-    Token::Break.new(str, width, line_continuation:, offset:)
+  def self.break(str = ' ', line_continuation: '', offset: 0, width: str.length)
+    Token::Break.new(str, width:, line_continuation:, offset:)
   end
 
   # @param line_continuation [String] If a new line is needed display this string before the new line

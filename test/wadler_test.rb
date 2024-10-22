@@ -539,9 +539,15 @@ describe 'Wadler tests' do
     it 'must work with a width smaller than text length' do
       builder_block = proc { |out|
         out.group {
-          out.text('This is a long sentence', 1)
-          out.breakable
-          out.text('This is another long sentence.', 1)
+          if out.is_a? Oppen::Wadler
+            out.text('This is a long sentence', width: 1)
+            out.breakable
+            out.text('This is another long sentence.', width: 1)
+          else
+            out.text('This is a long sentence', 1)
+            out.breakable
+            out.text('This is another long sentence.', 1)
+          end
         }
       }
       expected = 'This is a long sentence This is another long sentence.'
@@ -551,9 +557,15 @@ describe 'Wadler tests' do
     it 'must work with a width bigger than text length' do
       builder_block = proc { |out|
         out.group {
-          out.text('This is a small sentence', 500)
-          out.breakable
-          out.text('This is another small sentence.', 500)
+          if out.is_a? Oppen::Wadler
+            out.text('This is a small sentence', width: 500)
+            out.breakable
+            out.text('This is another small sentence.', width: 500)
+          else
+            out.text('This is a small sentence', 500)
+            out.breakable
+            out.text('This is another small sentence.', 500)
+          end
         }
       }
       expected = <<~LANG.chomp
@@ -567,7 +579,11 @@ describe 'Wadler tests' do
       builder_block = proc { |out|
         out.group {
           out.text('a')
-          out.breakable('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 1)
+          if out.is_a? Oppen::Wadler
+            out.breakable('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', width: 1)
+          else
+            out.breakable('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 1)
+          end
           out.text('b')
         }
       }
@@ -579,7 +595,11 @@ describe 'Wadler tests' do
       builder_block = proc { |out|
         out.group {
           out.text('This is a small sentence')
-          out.breakable('. ', 500)
+          if out.is_a? Oppen::Wadler
+            out.breakable('. ', width: 500)
+          else
+            out.breakable('. ', 500)
+          end
           out.text('This is another small sentence.')
         }
       }
