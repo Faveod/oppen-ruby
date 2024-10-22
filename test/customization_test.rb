@@ -24,7 +24,7 @@ end
 
 describe 'Inconsistent break tests' do
   it 'must work in a group if the line fits' do
-    printer = Oppen::Wadler.new(margin: 100)
+    printer = Oppen::Wadler.new(width: 100)
     printer.group(2) {
       printer.text 'function'
       printer.breakable
@@ -48,7 +48,7 @@ describe 'Inconsistent break tests' do
   end
 
   it 'must work in a group if the line doesn\'t fit' do
-    printer = Oppen::Wadler.new(margin: 45)
+    printer = Oppen::Wadler.new(width: 45)
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -62,7 +62,7 @@ end
 
 describe 'Spaces tests' do
   it 'must work with a string of length 1' do
-    printer = Oppen::Wadler.new(margin: 45, space: '*')
+    printer = Oppen::Wadler.new(width: 45, space: '*')
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -74,7 +74,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a string of length greater than 1' do
-    printer = Oppen::Wadler.new(margin: 45, space: '**')
+    printer = Oppen::Wadler.new(width: 45, space: '**')
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -86,7 +86,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with an UTF-8 string' do
-    printer = Oppen::Wadler.new(margin: 45, space: 'ω')
+    printer = Oppen::Wadler.new(width: 45, space: 'ω')
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -98,7 +98,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a lambda' do
-    printer = Oppen::Wadler.new(margin: 45, space: ->(n) { '*' * n })
+    printer = Oppen::Wadler.new(width: 45, space: ->(n) { '*' * n })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -110,7 +110,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with an UTF-8 string lambda' do
-    printer = Oppen::Wadler.new(margin: 45, space: ->(n) { 'ω' * n })
+    printer = Oppen::Wadler.new(width: 45, space: ->(n) { 'ω' * n })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -122,7 +122,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a lambda different from default' do
-    printer = Oppen::Wadler.new(margin: 45, space: ->(n) { '*' * n * 2 })
+    printer = Oppen::Wadler.new(width: 45, space: ->(n) { '*' * n * 2 })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -134,7 +134,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a proc' do
-    printer = Oppen::Wadler.new(margin: 45, space: proc { |n| '*' * n })
+    printer = Oppen::Wadler.new(width: 45, space: proc { |n| '*' * n })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -146,27 +146,27 @@ describe 'Spaces tests' do
   end
 
   it 'must raise an error for a lambda of arity different than one' do
-    printer = Oppen::Wadler.new(margin: 45, space: ->(n, _o) { '*' * n })
+    printer = Oppen::Wadler.new(width: 45, space: ->(n, _o) { '*' * n })
     _ { printer.output }.must_raise ArgumentError
 
-    printer = Oppen::Wadler.new(margin: 45, space: -> { '*' })
+    printer = Oppen::Wadler.new(width: 45, space: -> { '*' })
     _ { printer.output }.must_raise ArgumentError
 
-    printer = Oppen::Wadler.new(margin: 45, space: ->(*_args) { '*' })
+    printer = Oppen::Wadler.new(width: 45, space: ->(*_args) { '*' })
     _ { printer.output }.must_raise ArgumentError
   end
 end
 
 describe 'Line delimiter tests' do
   it 'must work with an ASCII delimiter' do
-    printer = Oppen::Wadler.new(margin: 45, new_line: '$')
+    printer = Oppen::Wadler.new(width: 45, new_line: '$')
     customization_build_output(printer)
     _(printer.output)
       .must_equal 'function$  test($    int index, char character,$    float precision, double trouble$  )'
   end
 
   it 'must work with an UTF-8 delimiter' do
-    printer = Oppen::Wadler.new(margin: 45, new_line: 'Φ')
+    printer = Oppen::Wadler.new(width: 45, new_line: 'Φ')
     customization_build_output(printer)
     _(printer.output)
       .must_equal 'functionΦ  test(Φ    int index, char character,Φ    float precision, double troubleΦ  )'
@@ -175,7 +175,7 @@ end
 
 describe 'Break delimiter tests' do
   it 'must work with a different delimiter' do
-    printer = Oppen::Wadler.new(margin: 45)
+    printer = Oppen::Wadler.new(width: 45)
     printer.group {
       printer.breakable('')
       printer.text 'Hello'
@@ -186,7 +186,7 @@ describe 'Break delimiter tests' do
   end
 
   it 'must work with an UTF-8 delimiter' do
-    printer = Oppen::Wadler.new(margin: 45)
+    printer = Oppen::Wadler.new(width: 45)
     printer.group {
       printer.breakable('')
       printer.text 'Hello'
@@ -217,7 +217,7 @@ describe 'Nest delimiter tests' do
   end
 
   it 'must work with an open and close object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     nest_delimiter_build_output(printer, '{', '}')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -230,7 +230,7 @@ describe 'Nest delimiter tests' do
   end
 
   it 'must work with no open and close object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     nest_delimiter_build_output(printer, '', '')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -241,7 +241,7 @@ describe 'Nest delimiter tests' do
   end
 
   it 'must work with only an open object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     nest_delimiter_build_output(printer, '{', '')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -253,7 +253,7 @@ describe 'Nest delimiter tests' do
   end
 
   it 'must work with only a close object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     nest_delimiter_build_output(printer, '', '}')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -265,7 +265,7 @@ describe 'Nest delimiter tests' do
   end
 
   it 'must work with an UTF-8 string' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     nest_delimiter_build_output(printer, 'Ϯ', 'Ϯ')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -278,12 +278,12 @@ describe 'Nest delimiter tests' do
   end
 
   it 'must raise an error when open_obj is nil' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     _ { nest_delimiter_build_output(printer, nil, '}') }.must_raise ArgumentError
   end
 
   it 'must raise an error when close_obj is nil' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     _ { nest_delimiter_build_output(printer, '{', nil) }.must_raise ArgumentError
   end
 end
@@ -308,7 +308,7 @@ describe 'Group delimiter tests' do
   end
 
   it 'must work with an open and close object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     group_delimiter_build_output(printer, '{', '}')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -321,7 +321,7 @@ describe 'Group delimiter tests' do
   end
 
   it 'must work with no open and close object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     group_delimiter_build_output(printer, '', '')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -332,7 +332,7 @@ describe 'Group delimiter tests' do
   end
 
   it 'must work with only an open object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     group_delimiter_build_output(printer, '{', '')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -344,7 +344,7 @@ describe 'Group delimiter tests' do
   end
 
   it 'must work with only a close object' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     group_delimiter_build_output(printer, '', '}')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -356,7 +356,7 @@ describe 'Group delimiter tests' do
   end
 
   it 'must work with an UTF-8 string' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     group_delimiter_build_output(printer, 'Ϯ', 'Ϯ')
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -369,12 +369,12 @@ describe 'Group delimiter tests' do
   end
 
   it 'must raise an error when open_obj is nil' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     _ { group_delimiter_build_output(printer, nil, '}') }.must_raise ArgumentError
   end
 
   it 'must raise an error when close_obj is nil' do
-    printer = Oppen::Wadler.new(margin: 5)
+    printer = Oppen::Wadler.new(width: 5)
     _ { group_delimiter_build_output(printer, '{', nil) }.must_raise ArgumentError
   end
 end
@@ -397,7 +397,7 @@ describe 'Line continuation tests' do
     }
   end
   it 'must not display line continuation if line fits' do
-    printer = Oppen::Wadler.new(margin: 20)
+    printer = Oppen::Wadler.new(width: 20)
     line_continuation_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       [1, 2, 3]
@@ -405,7 +405,7 @@ describe 'Line continuation tests' do
   end
 
   it 'must display line continuation if line does not fit (CONSISTENT break)' do
-    printer = Oppen::Wadler.new(margin: 3)
+    printer = Oppen::Wadler.new(width: 3)
     line_continuation_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       [
@@ -417,7 +417,7 @@ describe 'Line continuation tests' do
   end
 
   it 'must display line continuation if line does not fit (INCONSISTENT break)' do
-    printer = Oppen::Wadler.new(margin: 7)
+    printer = Oppen::Wadler.new(width: 7)
     line_continuation_build_output(printer, Oppen::Token::BreakType::INCONSISTENT)
     _(printer.output).must_equal <<~LANG.chomp
       [1, 2,
@@ -427,7 +427,7 @@ describe 'Line continuation tests' do
   end
 
   it 'must work with UTF-8 string' do
-    printer = Oppen::Wadler.new(margin: 3)
+    printer = Oppen::Wadler.new(width: 3)
     line_continuation_build_output(printer, Oppen::Token::BreakType::CONSISTENT, 'Ѿ')
     _(printer.output).must_equal <<~LANG.chomp
       [
@@ -439,7 +439,7 @@ describe 'Line continuation tests' do
   end
 
   it 'must raise an error when line_continuation is nil' do
-    printer = Oppen::Wadler.new(margin: 3)
+    printer = Oppen::Wadler.new(width: 3)
     _ { line_continuation_build_output(printer, Oppen::Token::BreakType::CONSISTENT, nil) }.must_raise ArgumentError
   end
 end

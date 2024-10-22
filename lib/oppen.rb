@@ -18,15 +18,15 @@ module Oppen
   #   to indent.
   #   If it's a callable, it will receive `n` and it needs to return
   #   a string.
-  # @param margin [Integer] maximum line width desired
   # @param new_line [String] the delimiter between lines
   # @param out [Object] should have a write and string method
   # @param tokens [Array[Token]] the list of tokens to be printed
+  # @param width [Integer] maximum line width desired
   #
   # @return [String] output of the pretty printer
   def self.print(config: Config.oppen, space: ' ',
-                 margin: 80, new_line: "\n", out: StringIO.new, tokens: [])
-    printer = Printer.new margin, new_line, config, space, out
+                 new_line: "\n", out: StringIO.new, tokens: [], width: 80)
+    printer = Printer.new width, new_line, config, space, out
     tokens.each do |token|
       printer.print token
     end
@@ -57,7 +57,7 @@ module Oppen
     # Print groups eagerly
     #
     # @example
-    #  out = Oppen::Wadler.new (margin: 13)
+    #  out = Oppen::Wadler.new (width: 13)
     #  out.group {
     #    out.group {
     #      out.text 'abc'

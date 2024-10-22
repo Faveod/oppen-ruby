@@ -4,12 +4,12 @@ require 'prettyprint'
 
 require_relative 'lib'
 
-def check_roundtrip(margin, expected, builder_block)
-  printer = Oppen::Wadler.new(margin:)
+def check_roundtrip(width, expected, builder_block)
+  printer = Oppen::Wadler.new(width:)
   builder_block.call(printer)
   _(printer.output).must_equal expected, 'Oppen failed the test'
 
-  printer = PrettyPrint.new(''.dup, margin)
+  printer = PrettyPrint.new(''.dup, width)
   builder_block.call(printer)
   printer.flush
   _(printer.output).must_equal expected, 'PrettyPrint failed the test'
@@ -74,9 +74,9 @@ describe 'Wadler tests' do
         LANG
       ],
     ].each do |expected, vals|
-      vals.each do |margin|
-        it "must work with line width: #{margin}" do
-          check_roundtrip(margin, expected, builder_block)
+      vals.each do |width|
+        it "must work with line width: #{width}" do
+          check_roundtrip(width, expected, builder_block)
         end
       end
     end
@@ -157,9 +157,9 @@ describe 'Wadler tests' do
         LANG
       ],
     ].each do |expected, vals|
-      vals.each do |margin|
-        it "must work with line width: #{margin}" do
-          check_roundtrip(margin, expected, builder_block)
+      vals.each do |width|
+        it "must work with line width: #{width}" do
+          check_roundtrip(width, expected, builder_block)
         end
       end
     end
@@ -244,9 +244,9 @@ describe 'Wadler tests' do
         LANG
       ],
     ].each do |expected, vals|
-      vals.each do |margin|
-        it "must work with line width: #{margin}" do
-          check_roundtrip(margin, expected, builder_block_altshow)
+      vals.each do |width|
+        it "must work with line width: #{width}" do
+          check_roundtrip(width, expected, builder_block_altshow)
         end
       end
     end
@@ -408,9 +408,9 @@ describe 'Wadler tests' do
         LANG
       ],
     ].each do |expected, vals|
-      vals.each do |margin|
-        it "must work with line width: #{margin}" do
-          check_roundtrip(margin, expected, builder_block)
+      vals.each do |width|
+        it "must work with line width: #{width}" do
+          check_roundtrip(width, expected, builder_block)
         end
       end
     end
@@ -440,9 +440,9 @@ describe 'Wadler tests' do
         LANG
       ],
     ].each do |expected, vals|
-      vals.each do |margin|
-        it "must work with line width: #{margin}" do
-          check_roundtrip(margin, expected, builder_block)
+      vals.each do |width|
+        it "must work with line width: #{width}" do
+          check_roundtrip(width, expected, builder_block)
         end
       end
     end
@@ -450,7 +450,7 @@ describe 'Wadler tests' do
 
   describe 'must not break if stack is full' do
     it 'must work with a big token list' do
-      wadler = Oppen::Wadler.new(margin: 3)
+      wadler = Oppen::Wadler.new(width: 3)
       wadler.group(1) {
         wadler.group(1) {
           wadler.group(1) {

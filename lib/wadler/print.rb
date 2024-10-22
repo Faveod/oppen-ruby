@@ -7,10 +7,10 @@ module Oppen
     attr_reader :config
     attr_reader :current_indent
     attr_reader :space
-    attr_reader :margin
     attr_reader :new_line
     attr_reader :out
     attr_reader :tokens
+    attr_reader :width
 
     # @param config [Oppen::Config]
     # @param space [String, Proc] could be a String or a callable.
@@ -19,15 +19,15 @@ module Oppen
     #   to indent.
     #   If it's a callable, it will receive `n` and it needs to return
     #   a string.
-    # @param margin [Integer]
     # @param new_line [String]
     # @param out [Object] should have a write and string method
+    # @param width [Integer]
     def initialize(config: Config.wadler, space: ' ',
-                   margin: 80, new_line: "\n", out: StringIO.new)
+                   new_line: "\n", out: StringIO.new, width: 80)
       @config = config
       @current_indent = 0
       @space = space
-      @margin = margin
+      @width = width
       @new_line = new_line
       @out = out
       @tokens = []
@@ -38,7 +38,7 @@ module Oppen
       if !tokens.last.is_a? Oppen::Token::EOF
         tokens << Oppen.eof
       end
-      Oppen.print(tokens:, margin:, new_line:, config:, space:, out:)
+      Oppen.print(tokens:, new_line:, config:, space:, out:, width:)
     end
 
     # @param indent [Integer] group indentation

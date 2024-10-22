@@ -51,7 +51,7 @@ module Oppen
 
     # @note Called PrettyPrintInit in the original paper.
     #
-    # @param margin   [Integer] maximum line width desired.
+    # @param width [Integer] maximum line width desired.
     # @param new_line [String]  the delimiter between lines.
     # @param config [Config]
     # @param space [String, Proc] could be a String or a callable.
@@ -61,15 +61,15 @@ module Oppen
     #   If it's a callable, it will receive `n` and it needs to return
     #   a string.
     # @param out [Object] should have a write and string method
-    def initialize(margin, new_line, config = Config.oppen,
+    def initialize(width, new_line, config = Config.oppen,
                    space = ' ', out = StringIO.new)
       # Maximum size if the stacks
-      n = 3 * margin
+      n = 3 * width
 
       @config = config
       @left = 0
       @left_total = 1
-      @print_stack = PrintStack.new margin, new_line, config, space, out
+      @print_stack = PrintStack.new width, new_line, config, space, out
       @right = 0
       @right_total = 1
       @scan_stack = ScanStack.new n, config
