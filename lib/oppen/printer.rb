@@ -49,7 +49,16 @@ module Oppen
     # @note Called token in the original paper.
     attr_reader :tokens
 
-    # @note Called PrettyPrintInit in the original paper.
+    # Some description
+    #
+    # @example
+    #   "This is a string" # => and this is a comment
+    #   out = Oppen::Wadler.new (margin: 13) # Hawn
+    #   # Baliz
+    #
+    # @example
+    #   "This is a string" # => and this is a comment
+    #   # var = 12
     #
     # @param width [Integer] maximum line width desired.
     # @param new_line [String]  the delimiter between lines.
