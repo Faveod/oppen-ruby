@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-require_relative 'utils'
+require_relative 'mixins'
 
 # Oppen.
 module Oppen
   # A fixed-size stack that can be popped from top and bottom.
   class ScanStack
+    extend Mixins
+
     def initialize(size, config)
       @bottom = 0
       @config = config
@@ -73,7 +75,7 @@ module Oppen
         if @top == @bottom
           raise 'Stack full' if !@config.upsize_stack?
 
-          @stack, @bottom, @top = Utils.upsize_circular_array(@stack, @bottom)
+          @stack, @bottom, @top = ScanStack.upsize_circular_array(@stack, @bottom)
         end
       end
       @stack[@top] = value
@@ -111,6 +113,16 @@ module Oppen
         @bottom = increment(@bottom)
       end
       res
+    end
+
+    # Offset the values of the stack.
+    # @param offset [Integer]
+    #
+    # @return [Nil]
+    def update_indexes(offset)
+      @stack = @stack.map { |val|
+        (val + offset) % length if val
+      }
     end
   end
 end
