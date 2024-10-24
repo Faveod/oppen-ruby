@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'oppen/mixins'
 require_relative 'oppen/printer'
 require_relative 'oppen/print_stack'
 require_relative 'oppen/scan_stack'
@@ -9,6 +10,8 @@ require_relative 'wadler/print'
 
 # Oppen.
 module Oppen
+  extend Mixins
+
   # Entry point of the pretty printer.
   #
   # @param config [Config]

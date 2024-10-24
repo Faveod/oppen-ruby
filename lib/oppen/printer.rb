@@ -4,12 +4,14 @@ require 'stringio'
 
 require_relative 'scan_stack'
 require_relative 'print_stack'
-require_relative 'utils'
+require_relative 'mixins'
 
 # Oppen.
 module Oppen
   # Oppen pretty-printer.
   class Printer
+    extend Mixins
+
     attr_reader :config
     # Ring buffer left index.
     #
@@ -234,8 +236,8 @@ module Oppen
       raise 'Token queue full' if !config.upsize_stack?
 
       @scan_stack.update_indexes(-@left)
-      @size, _left, _right = Utils.upsize_circular_array(@size, @left)
-      @tokens, @left, @right = Utils.upsize_circular_array(@tokens, @left)
+      @size, _left, _right = ScanStack.upsize_circular_array(@size, @left)
+      @tokens, @left, @right = ScanStack.upsize_circular_array(@tokens, @left)
     end
 
     # Advances the `left` pointer and lets the print stack
