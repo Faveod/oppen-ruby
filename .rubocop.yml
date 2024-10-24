@@ -3,9 +3,10 @@ AllCops:
   TargetRubyVersion: 3.2
   SuggestExtensions: false
   Exclude:
-    - tmp/**/*
-    - pkg/**/*
     - .vendor/**/*
+    - pkg/**/*
+    - test/stack_overflow_test.rb
+    - tmp/**/*
 
 # This should probably be updated
 Gemspec/RequireMFA:
