@@ -228,6 +228,7 @@ module Oppen
     # @return [Nil]
     def advance_right
       @right = (right + 1) % scan_stack.length
+
       return if right != left
 
       raise 'Token queue full' if !config.upsize_stack?
