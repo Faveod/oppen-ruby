@@ -227,12 +227,13 @@ module Oppen
     #
     # @return [Nil]
     def advance_right
-      @right = (right + 1) % scan_stack.length
+      @right = (right + 1) % @size.length
 
       return if right != left
 
       raise 'Token queue full' if !config.upsize_stack?
 
+      @scan_stack.update_indexes(-@left)
       @size, _left, _right = Utils.upsize_circular_array(@size, @left)
       @tokens, @left, @right = Utils.upsize_circular_array(@tokens, @left)
     end

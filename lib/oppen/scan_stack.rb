@@ -112,5 +112,16 @@ module Oppen
       end
       res
     end
+
+    # Offset the values of the stack.
+    #
+    # @param offset [Integer]
+    #
+    # @return [Array[Integer]]
+    def update_indexes(offset)
+      @stack = @stack.map { |val|
+        (val + offset) % length if val
+      }
+    end
   end
 end
