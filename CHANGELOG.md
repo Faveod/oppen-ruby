@@ -2,6 +2,12 @@
 
 ## [unreleased]
 
+## v0.9.3 (25-10-2024)
+
+- Wadler:
+  - add helper methods.
+  - provide a group to the list of tokens if no group was created.
+
 ## v0.9.2 (25-10-2024)
 
 - Wadler: add converter from pure tokens to Wadler calls
