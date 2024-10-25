@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+- Indent only when amount is positive.
+
 ## v0.9.3 (25-10-2024)
 
 - Wadler:

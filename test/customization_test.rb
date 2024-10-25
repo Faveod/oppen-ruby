@@ -155,6 +155,24 @@ describe 'Spaces tests' do
     printer = Oppen::Wadler.new(width: 45, space: ->(*_args) { '*' })
     _ { printer.output }.must_raise ArgumentError
   end
+
+  # The indentation lambda can yield a fixed size string indepedant of the indentation level.
+  # In these cases, the fixed sized string should not be displayed if the indentation is 0.
+  it 'calls space only when indent is positive' do
+    printer = Oppen::Wadler.new(width: 10, space: ->(_n) { '*******' })
+    printer.group(0) {
+      printer.text 'Hello'
+      printer.break
+      printer.text 'World'
+    }
+    # Bad output:
+    # Hello
+    # *******World
+    _(printer.output).must_equal <<~LANG.chomp
+      Hello
+      World
+    LANG
+  end
 end
 
 describe 'Line delimiter tests' do
