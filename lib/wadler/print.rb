@@ -132,5 +132,72 @@ module Oppen
     def break(line_continuation: '')
       tokens << Oppen.line_break(line_continuation:, offset: current_indent)
     end
+
+    # @!group Helpers
+
+    # Set a base indenetaion level to the printer.
+    #
+    # @param indent [Integer]
+    #
+    # @return [Nil]
+    def base_indent(indent = 0)
+      @current_indent = indent if !indent.nil?
+    end
+
+    # Open a consistent group.
+    #
+    # @param indent [Integer]
+    #
+    # @return [Nil]
+    def group_open(indent: 0)
+      tokens << Oppen.begin_consistent(offset: indent)
+    end
+
+    # Close a group.
+    #
+    # @return [Nil]
+    def group_close(_)
+      tokens << Oppen.end
+    end
+
+    # Open a consistent group with indent.
+    #
+    # @param indent [Integer]
+    #
+    # @return [Nil]
+    def indent_open(indent)
+      @current_indent += indent
+      group_open
+    end
+
+    # Close a group with indent.
+    #
+    # @param indent [Integer]
+    #
+    # @return [Nil]
+    def indent_close(group, indent)
+      @current_indent -= indent
+      group_close(group)
+    end
+
+    # Open a nest by indent.
+    #
+    # @param indent [Integer]
+    #
+    # @return [Nil]
+    def nest_open(indent)
+      @current_indent += indent
+    end
+
+    # Close a nest by indent.
+    #
+    # @param indent [Integer]
+    #
+    # @return [Nil]
+    def nest_close(indent)
+      @current_indent -= indent
+    end
+
+    # @!endgroup
   end
 end
