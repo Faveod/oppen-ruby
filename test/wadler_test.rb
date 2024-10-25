@@ -610,4 +610,38 @@ describe 'Wadler tests' do
       check_roundtrip(100, expected, builder_block)
     end
   end
+
+  describe 'add group if no group was given' do
+    it 'works with only a string' do
+      out = Oppen::Wadler.new
+      out.text 'Hello World'
+      _(out.output).must_equal 'Hello World'
+    end
+
+    it 'works with only a breakable' do
+      out = Oppen::Wadler.new
+      out.breakable ''
+      _(out.output).must_equal ''
+    end
+
+    it 'works with only a nest' do
+      out = Oppen::Wadler.new
+      out.nest(0) { out.text 'Hello World' }
+      _(out.output).must_equal 'Hello World'
+    end
+
+    it 'works with multiple strings and breakables' do
+      out = Oppen::Wadler.new(width: 10)
+      out.text 'Hello World'
+      out.breakable
+      out.text 'How are you doig World'
+      out.breakable
+      out.text 'GoodBye World'
+      _(out.output).must_equal <<~LANG.chomp
+        Hello World
+        How are you doig World
+        GoodBye World
+      LANG
+    end
+  end
 end

@@ -35,6 +35,10 @@ module Oppen
 
     # @return [String]
     def output
+      if !tokens.first.is_a? Token::Begin
+        tokens.unshift Oppen.begin_consistent(offset: 0)
+        tokens << Oppen.end
+      end
       if !tokens.last.is_a? Oppen::Token::EOF
         tokens << Oppen.eof
       end
