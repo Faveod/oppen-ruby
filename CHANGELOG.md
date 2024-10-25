@@ -2,6 +2,11 @@
 
 ## [unreleased]
 
+## v0.9.2 (25-10-2024)
+
+- Wadler: add converter from pure tokens to Wadler calls
+- Fix a stack overflow bug.
+
 ## v0.9.1 (22-10-2024)
 
 - Increased stack capacity
