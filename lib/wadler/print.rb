@@ -146,11 +146,17 @@ module Oppen
 
     # Open a consistent group.
     #
-    # @param indent [Integer]
+    # @param inconsistent [Boolean]
+    # @param indent       [Integer]
     #
     # @return [Nil]
-    def group_open(indent: 0)
-      tokens << Oppen.begin_consistent(offset: indent)
+    def group_open(inconsistent: false, indent: 0)
+      tokens <<
+        if inconsistent
+          Oppen.begin_inconsistent(offset: indent)
+        else
+          Oppen.begin_consistent(offset: indent)
+        end
     end
 
     # Close a group.
