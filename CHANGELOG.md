@@ -2,6 +2,9 @@
 
 ## [unreleased]
 
+- Wadler:
+    - update open_group helper to open inconsistent group.
+
 ## v0.9.4 (25-10-2024)
 
 - Indent only when amount is positive.
