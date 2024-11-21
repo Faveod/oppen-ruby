@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+## v0.9.5 (21-11-2024)
+
 - Wadler:
     - update open_group helper to open inconsistent group.
 
