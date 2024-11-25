@@ -644,4 +644,63 @@ describe 'Wadler tests' do
       LANG
     end
   end
+
+  describe 'handling empty lines' do
+    it 'does not indent by default' do
+      out = Oppen::Wadler.new(width: 10)
+      out.group(2) {
+        out.text 'a'
+        out.break
+        out.break
+        out.text 'b'
+      }
+
+      _(out.output).must_equal <<~LANG.chomp
+        a
+
+          b
+      LANG
+    end
+
+    it 'does not indent if empty first line' do
+      out = Oppen::Wadler.new(width: 10)
+      out.group(8) {
+        out.break
+        out.break
+        out.text 'b'
+      }
+
+      _(out.output).must_equal <<-LANG.chomp
+
+
+        b
+      LANG
+    end
+
+    it 'does not indent if empty last line' do
+      out = Oppen::Wadler.new(width: 10)
+      out.group(2) {
+        out.text 'a'
+        out.break
+        out.break
+      }
+
+      _(out.output).must_equal <<~LANG.chomp
+        a
+
+
+      LANG
+    end
+
+    it 'does not indent if empty first and last line' do
+      out = Oppen::Wadler.new(width: 10)
+      out.group(8) {
+        out.break
+        out.break
+        out.break
+      }
+
+      _(out.output).must_equal "\n\n\n"
+    end
+  end
 end
