@@ -53,6 +53,7 @@ module Oppen
         else
           ->(n) { space * n }
         end
+      @indent = 0
       @items = []
       @new_line = new_line
       @width = width
@@ -177,7 +178,13 @@ module Oppen
     #
     # @see Token::String
     def handle_string(token, token_width)
+      return if token.value.empty?
+
       @space = [0, space - token_width].max
+      if @indent.positive?
+        indent @indent
+        @indent = 0
+      end
       write token
     end
 
@@ -223,9 +230,9 @@ module Oppen
       write new_line
       if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
         @space = width - top.offset - amount
-        indent width - space
+        @indent = width - space
       else
-        indent amount
+        @indent = amount
       end
     end
 

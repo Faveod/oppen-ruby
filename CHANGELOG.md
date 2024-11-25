@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+- Do not add indentation for empty lines.
+
 ## v0.9.5 (21-11-2024)
 
 - Wadler:
