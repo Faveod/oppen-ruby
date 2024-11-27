@@ -39,6 +39,12 @@ module Oppen
       def to_s = value
     end
 
+    # If a [Token::Break] follows [Token::Whitespace], and an actual break
+    # is issued, and `trim_trailing_whitespaces == true`, then all whitespace
+    # text will be omitted from the output.
+    class Whitespace < ::Oppen::Token::String
+    end
+
     # Break Token.
     class Break < Token
       # @return [String] If a new line is needed display this string before the new line

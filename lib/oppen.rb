@@ -51,9 +51,11 @@ module Oppen
 
     attr_accessor :indent_anchor
 
-    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false, upsize_stack: false)
+    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false,
+                   trim_trailing_whitespaces: false, upsize_stack: false)
       @indent_anchor = indent_anchor
       @eager_print = eager_print
+      @trim_trailing_whitespaces = trim_trailing_whitespaces
       @upsize_stack = upsize_stack
     end
 
@@ -88,6 +90,8 @@ module Oppen
     # @return [Boolean]
     def eager_print? = @eager_print
 
+    def trim_trailing_whitespaces? = @trim_trailing_whitespaces
+
     def upsize_stack? = @upsize_stack
 
     # Default config for Oppen usage
@@ -98,8 +102,8 @@ module Oppen
 
     # Default config for Wadler usage
     # @return [Config]
-    def self.wadler(eager_print: true, upsize_stack: true)
-      new(indent_anchor: IndentAnchor::ON_BEGIN, eager_print:, upsize_stack:)
+    def self.wadler(eager_print: true, trim_trailing_whitespaces: true, upsize_stack: true)
+      new(indent_anchor: IndentAnchor::ON_BEGIN, eager_print:, trim_trailing_whitespaces:, upsize_stack:)
     end
   end
 
@@ -109,6 +113,13 @@ module Oppen
   # @return [Oppen::Token::String] a new String token
   def self.string(value, width: value.length)
     Token::String.new(value, width:)
+  end
+
+  # @see Token::Whitespace
+  #
+  # @return [Oppen::Token::Whitespace] a new Whitespace token.
+  def self.whitespace(value, width: value.bytesize)
+    Token::Whitespace.new(value, width:)
   end
 
   # @param str [String]

@@ -10,6 +10,7 @@ module Oppen
     attr_reader :new_line
     attr_reader :out
     attr_reader :tokens
+    attr_reader :whitespace
     attr_reader :width
 
     # @param config [Oppen::Config]
@@ -22,8 +23,11 @@ module Oppen
     # @param new_line [String]
     # @param out [Object] should have a write and string method
     # @param width [Integer]
+    # @param whitespace [String] the whitespace character. Used to trim trailing whitespaces.
+    # @see Token::Whitespace
     def initialize(config: Config.wadler, space: ' ',
-                   new_line: "\n", out: StringIO.new, width: 80)
+                   new_line: "\n", out: StringIO.new,
+                   width: 80, whitespace: ' ')
       @config = config
       @current_indent = 0
       @space = space
@@ -31,6 +35,7 @@ module Oppen
       @new_line = new_line
       @out = out
       @tokens = []
+      @whitespace = whitespace
     end
 
     # @return [String]
@@ -115,7 +120,16 @@ module Oppen
     #
     # @return [Nil]
     def text(value, width: value.length)
-      tokens << Oppen.string(value, width:)
+      if config.trim_trailing_whitespaces? && value.match(/((?:#{Regexp.escape(whitespace)})+)\z/)
+        match = Regexp.last_match(1)
+        matched_length = match.length
+        if value.length != matched_length
+          tokens << Oppen.string(value[0...-matched_length], width: width - matched_length)
+        end
+        tokens << Oppen.whitespace(match)
+      else
+        tokens << Oppen.string(value, width:)
+      end
     end
 
     # @param str [String]
