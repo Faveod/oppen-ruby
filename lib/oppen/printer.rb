@@ -78,6 +78,7 @@ module Oppen
       n = 3 * width
 
       @config = config
+      @last_whitespace_width = 0
       @left = 0
       @left_total = 1
       @print_stack = PrintStack.new width, new_line, config, space, out
@@ -110,7 +111,11 @@ module Oppen
         handle_end token
       in Token::Break
         handle_break token
+      in Token::Whitespace
+        @last_whitespace_width = token.width
+        handle_string token
       in Token::String
+        @last_whitespace_width = 0
         handle_string token
       end
     end
@@ -139,6 +144,9 @@ module Oppen
         @left_total = 1
         @right = 0
         @right_total = 1
+
+        # config.trim_trailing_whitespaces
+        @tokens[-1] = nil
       else
         advance_right
       end
@@ -179,6 +187,11 @@ module Oppen
         @left_total = 1
         @right = 0
         @right_total = 1
+
+        # config.trim_trailing_whitespaces
+        tokens[-1] = nil
+        print_stack.erase @last_whitespace_width
+        @last_whitespace_width = 0
       else
         advance_right
       end
@@ -249,7 +262,21 @@ module Oppen
     def advance_left(token, token_width)
       return if token_width.negative?
 
-      print_stack.print token, token_width
+      trim_on_break =
+        if token.is_a?(Token::Break)
+          # Find the first previous String token.
+          idx = (left - 1) % scan_stack.length
+          while idx != right && tokens[idx] && !tokens[idx].is_a?(Token::String) \
+                && !tokens[idx].is_a?(Token::Break)
+            idx = (idx - 1) % scan_stack.length
+          end
+          if tokens[idx].is_a?(Token::Whitespace)
+            tokens[idx].width
+          end
+        end
+      trim_on_break ||= 0
+
+      print_stack.print(token, token_width, trim_on_break:)
 
       case token
       when Token::Break

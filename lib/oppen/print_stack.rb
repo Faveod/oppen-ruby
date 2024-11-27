@@ -64,6 +64,7 @@ module Oppen
     #
     # @return [String]
     def output
+      buffer.truncate(buffer.pos)
       buffer.string
     end
 
@@ -73,16 +74,17 @@ module Oppen
     #
     # @param token [Token]
     # @param token_width [Integer]
+    # @param trim_on_break [Integer] Number of trailing whitespace characters to trim.
     #
     # @return [Nil]
-    def print(token, token_width)
+    def print(token, token_width, trim_on_break: 0)
       case token
       in Token::Begin
         handle_begin token, token_width
       in Token::End
         handle_end
       in Token::Break
-        handle_break token, token_width
+        handle_break token, token_width, trim_on_break:
       in Token::String
         handle_string token, token_width
       end
@@ -131,11 +133,12 @@ module Oppen
     #
     # @param token [Token]
     # @param token_width [Integer]
+    # @param trim_on_break [Integer] Number of trailing whitespace characters to trim.
     #
     # @return [Nil]
     #
     # @see Token::Break
-    def handle_break(token, token_width)
+    def handle_break(token, token_width, trim_on_break: 0)
       block = top
       case block.break_type
       in Token::BreakType::FITS
@@ -149,6 +152,7 @@ module Oppen
           else
             width - space
           end
+        erase(trim_on_break)
         write token.line_continuation
         print_new_line indent
       in Token::BreakType::INCONSISTENT
@@ -160,6 +164,7 @@ module Oppen
             else
               width - space
             end
+          erase(trim_on_break)
           write token.line_continuation
           print_new_line indent
         else
@@ -243,6 +248,18 @@ module Oppen
     # @return [Nil]
     def write(obj)
       buffer.write(obj.to_s)
+    end
+
+    # Erase the last `count` characters.
+    #
+    # @param count [Integer]
+    #
+    # @return [Nil]
+    def erase(count = 0)
+      raise ArgumentError, "count = #{count} must be non-negative" if count.negative?
+
+      buffer.seek(-count, IO::SEEK_CUR)
+      @space += count
     end
 
     # Add indentation by `amount`.
