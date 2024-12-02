@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+- Add a new configuration flag that allows displaying without trailing whitespace. The whitespace token is also configurable.
+
 ## v0.9.6 (25-11-2024)
 
 - Do not add indentation for empty lines.
