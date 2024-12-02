@@ -118,8 +118,8 @@ module Oppen
   # @see Token::Whitespace
   #
   # @return [Oppen::Token::Whitespace] a new Whitespace token.
-  def self.whitespace(value, width: value.bytesize)
-    Token::Whitespace.new(value, width:)
+  def self.whitespace(value)
+    Token::Whitespace.new(value, width: value.bytesize)
   end
 
   # @param str [String]
