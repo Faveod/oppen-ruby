@@ -38,16 +38,32 @@ module Oppen
       @whitespace = whitespace
     end
 
-    # @return [String]
-    def output
+    # Add missing Begin, End or EOF tokens.
+    # @return [Nil]
+    def add_missing_begin_and_end
       if !tokens.first.is_a? Token::Begin
         tokens.unshift Oppen.begin_consistent(offset: 0)
         tokens << Oppen.end
       end
-      if !tokens.last.is_a? Oppen::Token::EOF
-        tokens << Oppen.eof
-      end
+      tokens << Oppen.eof if !tokens.last.is_a?(Oppen::Token::EOF)
+    end
+
+    # Generate the output string of the built list of tokens
+    # using Oppen's pretty printing algorithm.
+    #
+    # @return [String]
+    def output
+      add_missing_begin_and_end
       Oppen.print(tokens:, new_line:, config:, space:, out:, width:)
+    end
+
+    # Generate the the list of Wadler commands needed to build the built
+    # list of tokens.
+    #
+    # @return [String]
+    def show_print_commands(**)
+      add_missing_begin_and_end
+      Oppen.tokens_to_wadler(tokens, **)
     end
 
     # @param indent [Integer] group indentation
