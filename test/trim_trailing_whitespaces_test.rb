@@ -38,6 +38,25 @@ describe 'Trim trailing whitespaces tests' do
         },
         expected: "\n",
       },
+      {
+        title: "trims `#{whitespace}` alternating with breaks",
+        block: proc { |printer|
+          printer.text(whitespace)
+          printer.break
+          printer.text(whitespace)
+          printer.text(whitespace)
+          printer.break
+          printer.text(whitespace)
+          printer.break
+          printer.break
+          printer.break
+          printer.text(whitespace)
+          printer.text(whitespace)
+          printer.break
+          printer.break
+        },
+        expected: "\n\n\n\n\n\n\n",
+      },
     ].each do |test|
       it test[:title] do
         printer = Oppen::Wadler.new(width: 5, whitespace:)

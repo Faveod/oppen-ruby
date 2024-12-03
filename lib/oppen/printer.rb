@@ -78,7 +78,7 @@ module Oppen
       n = 3 * width
 
       @config = config
-      @last_whitespace_width = 0
+      @last_whitespaces_width = 0
       @left = 0
       @left_total = 1
       @print_stack = PrintStack.new width, new_line, config, space, out
@@ -112,10 +112,10 @@ module Oppen
       in Token::Break
         handle_break token
       in Token::Whitespace
-        @last_whitespace_width = token.width
+        @last_whitespaces_width += token.width
         handle_string token
       in Token::String
-        @last_whitespace_width = 0
+        @last_whitespaces_width = 0
         handle_string token
       end
     end
@@ -190,8 +190,8 @@ module Oppen
 
         # config.trim_trailing_whitespaces
         tokens[-1] = nil
-        print_stack.erase @last_whitespace_width
-        @last_whitespace_width = 0
+        print_stack.erase @last_whitespaces_width
+        @last_whitespaces_width = 0
       else
         advance_right
       end
@@ -215,7 +215,7 @@ module Oppen
         tokens[right] = token
         size[right] = token.width
         @right_total += token.width
-        check_stream
+        check_stream if @last_whitespaces_width.zero?
       end
     end
 
@@ -270,9 +270,14 @@ module Oppen
                 && !tokens[idx].is_a?(Token::Break)
             idx = (idx - 1) % scan_stack.length
           end
-          if tokens[idx].is_a?(Token::Whitespace)
-            tokens[idx].width
+          # Sum the widths of the last whitespace tokens.
+          total = 0
+          while tokens[idx].is_a?(Token::Whitespace)
+            total += tokens[idx].width
+            idx = (idx - 1) % scan_stack.length
           end
+          @last_whitespaces_width = 0
+          total
         end
       trim_on_break ||= 0
 
