@@ -95,6 +95,17 @@ module Oppen
         @break_type = break_type
         super()
       end
+
+      # The break_type name as a String.
+      #
+      # @return [String]
+      def break_type_name
+        case @break_type
+        in BreakType::FITS         then 'Oppen::Token::BreakType::FITS'
+        in BreakType::INCONSISTENT then 'Oppen::Token::BreakType::INCONSISTENT'
+        in BreakType::CONSISTENT   then 'Oppen::Token::BreakType::CONSISTENT'
+        end
+      end
     end
 
     # End Token

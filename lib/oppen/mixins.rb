@@ -21,30 +21,50 @@ module Oppen
     #
     # @param tokens [Array[Token]]
     # @param base_indent [Integer]
+    # @param printer_name [String]
     #
     # @return [String]
-    def tokens_to_wadler(tokens, base_indent = 4)
-      out = StringIO.new
-      write = ->(txt, nb_spaces) {
-        out.write("#{' ' * nb_spaces}#{txt}\n")
-      }
+    def tokens_to_wadler(tokens, base_indent: 0, printer_name: 'out')
       nb_spaces = base_indent
+      out = StringIO.new
+
+      write = ->(txt) {
+        out << (' ' * nb_spaces) << txt << "\n"
+      }
+      display_break_token = ->(token) {
+        if token.offset.positive?
+          write.("#{printer_name}.nest(#{token.offset}, \"\", \"\") {")
+          nb_spaces += 2
+        end
+
+        case token
+        in Token::LineBreak
+          write.("#{printer_name}.break(line_continuation: #{token.line_continuation.inspect})")
+        in Token::Break
+          write.("#{printer_name}.breakable(#{token.str.inspect}, width: #{token.width}, " \
+                 "line_continuation: #{token.line_continuation.inspect})")
+        end
+
+        if token.offset.positive?
+          nb_spaces -= 2
+          write.('}')
+        end
+      }
+
       tokens.each do |token|
         case token
         in Token::String
-          write.call("out.text '#{token}'", nb_spaces)
-        in Token::LineBreak
-          write.call('out.break', nb_spaces)
+          write.("#{printer_name}.text(#{token.value.inspect}, width: #{token.width})")
         in Token::Break
-          write.call('out.breakable', nb_spaces)
+          display_break_token.(token)
         in Token::Begin
-          write.call('out.group {', nb_spaces)
+          write.("#{printer_name}.group(#{token.offset}, \"\", \"\", #{token.break_type_name}) {")
           nb_spaces += 2
         in Token::End
           nb_spaces -= 2
-          write.call('}', nb_spaces)
+          write.('}')
         in Token::EOF
-          write.call('', nb_spaces) # new line
+          write.('') # new line
         end
       end
       out.string
