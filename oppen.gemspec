@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.version       = Oppen::VERSION
   spec.authors       = [
     'Amine Mike El Maalouf <amine.el-maalouf@epita.fr>',
-    'Firas al-Khalil <firasalkhalil@gmail.com>',
+    'Firas al-Khalil <firas.alkhalil@faveod.com>',
   ]
   spec.summary       = 'Pretty-printing library'
   spec.description   = "Implementation of the Oppen's pretty printing algorithm"
