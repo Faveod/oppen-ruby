@@ -89,11 +89,9 @@ module Oppen
     # @param indent [Integer] nest indentation
     # @param open_obj [String] nest opening delimiter
     # @param close_obj [String] nest closing delimiter
-    # @param break_type [Oppen::Token::BreakType] nest breaking type
     #
     # @return [Nil]
-    def nest(indent, open_obj = '', close_obj = '',
-             break_type = Oppen::Token::BreakType::CONSISTENT)
+    def nest(indent, open_obj = '', close_obj = '')
       raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
         if open_obj.nil? || close_obj.nil?
 
