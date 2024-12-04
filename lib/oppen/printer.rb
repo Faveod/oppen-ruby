@@ -265,16 +265,16 @@ module Oppen
       trim_on_break =
         if token.is_a?(Token::Break)
           # Find the first previous String token.
-          idx = (left - 1) % scan_stack.length
+          idx = (left - 1) % tokens.length
           while idx != right && tokens[idx] && !tokens[idx].is_a?(Token::String) \
                 && !tokens[idx].is_a?(Token::Break)
-            idx = (idx - 1) % scan_stack.length
+            idx = (idx - 1) % tokens.length
           end
           # Sum the widths of the last whitespace tokens.
           total = 0
           while tokens[idx].is_a?(Token::Whitespace)
             total += tokens[idx].width
-            idx = (idx - 1) % scan_stack.length
+            idx = (idx - 1) % tokens.length
           end
           @last_whitespaces_width = 0
           total
@@ -292,7 +292,7 @@ module Oppen
 
       return if left == right
 
-      @left = (left + 1) % scan_stack.length
+      @left = (left + 1) % tokens.length
       advance_left tokens[left], size[left]
     end
 

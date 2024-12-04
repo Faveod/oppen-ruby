@@ -533,6 +533,18 @@ describe 'Wadler tests' do
          16
       LANG
     end
+
+    it 'must work with a big token list that doesn\'t overflow the scan stack' do
+      wadler = Oppen::Wadler.new(width: 2)
+      wadler.group {
+        wadler.group {
+          wadler.group {
+            wadler.text 'a'
+          }
+        }
+      }
+      _(wadler.output).must_equal 'a'
+    end
   end
 
   describe 'must work with width different from length' do
