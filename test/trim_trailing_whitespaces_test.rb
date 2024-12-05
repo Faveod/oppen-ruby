@@ -60,7 +60,7 @@ describe 'Trim trailing whitespaces tests' do
     ].each do |test|
       it test[:title] do
         printer = Oppen::Wadler.new(width: 5, whitespace:)
-        test[:block].call printer
+        test[:block].(printer)
         _(printer.output).must_equal test[:expected]
       end
     end
@@ -192,11 +192,11 @@ describe 'Trim trailing whitespaces tests' do
     ].each do |test|
       it test[:title] do
         printer = Oppen::Wadler.new(width: 5, whitespace:)
-        test[:block].call printer
+        test[:block].(printer)
         _(printer.output).must_equal test[:expected]
 
         printer_no_trailing = Oppen::Wadler.new(width: 5, whitespace:)
-        test[:block].call printer_no_trailing, false
+        test[:block].(printer_no_trailing, false)
         _(printer_no_trailing.output).must_equal test[:expected]
       end
     end

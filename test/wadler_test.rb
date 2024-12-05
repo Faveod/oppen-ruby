@@ -6,11 +6,11 @@ require_relative 'lib'
 
 def check_roundtrip(width, expected, builder_block)
   printer = Oppen::Wadler.new(width:)
-  builder_block.call(printer)
+  builder_block.(printer)
   _(printer.output).must_equal expected, 'Oppen failed the test'
 
   printer = PrettyPrint.new(''.dup, width)
-  builder_block.call(printer)
+  builder_block.(printer)
   printer.flush
   _(printer.output).must_equal expected, 'PrettyPrint failed the test'
 end

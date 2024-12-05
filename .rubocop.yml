@@ -76,6 +76,9 @@ Style/IfUnlessModifier:
 Style/Lambda:
   EnforcedStyle: literal
 
+Style/LambdaCall:
+  EnforcedStyle: braces
+
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
 
