@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+## v0.9.7 (05-12-2024)
+
 - Add a new configuration flag that allows displaying without trailing whitespace. The whitespace token is also configurable.
 - Add `show_print_commands` method that converts a list of tokens into its wadler printing commands.
 
