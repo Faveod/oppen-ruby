@@ -6,15 +6,15 @@ require_relative 'lib'
 
 def check_difference_oppen_wadler(width, expected_oppen, expected_wadler, builder_block)
   printer = Oppen::Wadler.new(width:, config: Oppen::Config.oppen)
-  builder_block.call(printer)
+  builder_block.(printer)
   _(printer.output).must_equal expected_oppen, 'Oppen failed the test'
 
   printer = Oppen::Wadler.new(width:, config: Oppen::Config.wadler)
-  builder_block.call(printer)
+  builder_block.(printer)
   _(printer.output).must_equal expected_wadler, 'Wadler failed the test'
 
   printer = PrettyPrint.new(''.dup, width)
-  builder_block.call(printer)
+  builder_block.(printer)
   printer.flush
   _(printer.output).must_equal expected_wadler, 'PrettyPrint failed the test'
 end

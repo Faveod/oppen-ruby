@@ -272,7 +272,7 @@ module Oppen
     def indent(amount)
       raise ArgumentError 'Indenting using negative amount' if amount.negative?
 
-      write genspace.call(amount) if amount.positive?
+      write genspace.(amount) if amount.positive?
     end
   end
 end
