@@ -6,9 +6,19 @@ module Oppen
   class Token
     # BreakType.
     #
-    # FITS => No break is needed (the block fits on the line).
-    # INCONSISTENT => New line will be forced only if necessary.
-    # CONSISTENT => Each subblock of the block will be placed on a new line.
+    # <pre>
+    # FITS =>         No new line is needed (the block fits on the line).
+    #                 The Break tokens will only output their `str` field.
+    #
+    # INCONSISTENT => The presence of a new line inside the group will not propagate
+    #                 to the other Break tokens in the group letting them decide
+    #                 if they need to act as a new line or not.
+    #
+    # CONSISTENT =>   The presence of a new line inside the group will propagate
+    #                 to the other Break tokens in the group
+    #                 causing them all to act as a new line.
+    #
+    # </pre>
     module BreakType
       # @return [Integer]
       FITS = 0
