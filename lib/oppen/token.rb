@@ -5,15 +5,53 @@ module Oppen
   # Token.
   class Token
     # BreakType.
+    # @example inconsistent
+    #   out = Oppen::Wadler.new
+    #   out.group(0, '', '', Oppen::Token::BreakType::INCONSISTENT) {
+    #     out.text 'a'
+    #     out.break
+    #     out.text 'b'
+    #     out.breakable
+    #     out.text 'c'
+    #   }
+    #   out.output
     #
-    # FITS => No break is needed (the block fits on the line).
-    # INCONSISTENT => New line will be forced only if necessary.
-    # CONSISTENT => Each subblock of the block will be placed on a new line.
+    #   # =>
+    #   # a
+    #   # b c
+    #
+    # @example consistent
+    #   out = Oppen::Wadler.new
+    #   out.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+    #     out.text 'a'
+    #     out.break
+    #     out.text 'b'
+    #     out.breakable
+    #     out.text 'c'
+    #   }
+    #   out.output
+    #
+    #   # =>
+    #   # a
+    #   # b
+    #   # c
     module BreakType
+      # No new line is needed (the block fits on the line).
+      # The Break tokens will only output their `str` field.
+      # Not for public use.
+      #
       # @return [Integer]
       FITS = 0
+      # The presence of a new line inside the group will not propagate
+      # to the other Break tokens in the group letting them decide
+      # if they need to act as a new line or not.
+      #
       # @return [Integer]
       INCONSISTENT = 1
+      # The presence of a new line inside the group will propagate
+      # to the other Break tokens in the group
+      # causing them all to act as a new line.
+      #
       # @return [Integer]
       CONSISTENT = 2
     end
