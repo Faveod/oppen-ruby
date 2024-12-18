@@ -9,23 +9,31 @@ module Oppen
     extend Mixins
 
     def initialize(size, config)
-      @bottom = 0
-      @config = config
-      @empty = true
-      @stack = Array.new(size)
-      @top = 0
+      @bottom = 0             # Points to the bottom of the stack.
+      @config = config        # Printing config.
+      @empty = true           # Emptiness flag.
+      @stack = Array.new size # The fixed sized stack.
+      @top = 0                # Points to the top of the stack.
     end
 
+    # Whether the stack is empty.
+    #
     # @return [Boolean]
     def empty?
       @empty
     end
 
+    # The current length of the stack.
+    #
     # @return [Integer]
     def length
       @stack.length
     end
 
+    # The top element of the stack.
+    #
+    # @raise [RuntimeError] When accessing empty stack.
+    #
     # @return [Object]
     def top
       if empty?
@@ -35,6 +43,10 @@ module Oppen
       @stack[@top]
     end
 
+    # The bottom element of the stack.
+    #
+    # @raise [RuntimeError] When accessing empty stack.
+    #
     # @return [Object]
     def bottom
       if empty?
@@ -66,22 +78,27 @@ module Oppen
     #
     # @param value [Object]
     #
+    # @raise [RuntimeError] When the stack is full and the `upsize_stack` flag is
+    #                       not activated in `config`.
+    #
     # @return [Nil]
     def push(value)
       if empty?
         @empty = false
       else
-        @top = increment(@top)
+        @top = increment @top
         if @top == @bottom
           raise 'Stack full' if !@config.upsize_stack?
 
-          @stack, @bottom, @top = ScanStack.upsize_circular_array(@stack, @bottom)
+          @stack, @bottom, @top = ScanStack.upsize_circular_array @stack, @bottom
         end
       end
       @stack[@top] = value
     end
 
     # Pop a value from the top.
+    #
+    # @raise [RuntimeError] When accessing empty stack.
     #
     # @return [Nil]
     def pop
@@ -93,12 +110,14 @@ module Oppen
       if @top == @bottom
         @empty = true
       else
-        @top = decrement(@top)
+        @top = decrement @top
       end
       res
     end
 
     # Pop a value from the bottom.
+    #
+    # @raise [RuntimeError] When accessing empty stack.
     #
     # @return [Nil]
     def pop_bottom
@@ -110,7 +129,7 @@ module Oppen
       if @top == @bottom
         @empty = true
       else
-        @bottom = increment(@bottom)
+        @bottom = increment @bottom
       end
       res
     end
@@ -119,7 +138,7 @@ module Oppen
     #
     # @param offset [Integer]
     #
-    # @return [Array[Integer]]
+    # @return [Array<Integer>]
     def update_indexes(offset)
       @stack = @stack.map { |val|
         (val + offset) % length if val

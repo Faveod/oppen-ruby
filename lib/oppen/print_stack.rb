@@ -7,10 +7,10 @@ module Oppen
   class PrintStack
     # Class that represents an item in the print stack.
     class PrintStackEntry
+      # @return [Token::BreakType] Called `break` in the original paper.
+      attr_reader :break_type
       # @return [Integer] Indentation level.
       attr_reader :offset
-      # @return [Token::BreakType] (Called break in the original paper).
-      attr_reader :break_type
 
       def initialize(offset, break_type)
         @offset = offset
@@ -20,32 +20,24 @@ module Oppen
 
     # IO element that builds the output.
     attr_reader :buffer
-
-    # Config containing customization flags
+    # To customize the printer's behavior.
     attr_reader :config
-
-    # Callable that generate spaces
+    # Callable that generates spaces.
     attr_reader :genspace
-
     # Array representing the stack of PrintStackEntries.
     attr_reader :items
-
-    # Delimiter between lines in output
+    # Delimiter between lines in output.
     attr_reader :new_line
-
-    # Maximum allowed width for printing (Called length in the original paper).
-    attr_reader :width
-
-    # Current available space (Called index in the original paper).
-    #
-    # @return [Integer] Current available space (Called index in the original paper).
+    # Current available space (`index` in the original paper).
     attr_reader :space
+    # Maximum allowed width for printing (`length` in the original paper).
+    attr_reader :width
 
     def initialize(width, new_line, config, space, out)
       @buffer = out
       @config = config
       @genspace =
-        if space.respond_to?(:call)
+        if space.respond_to? :call
           raise ArgumentError, 'space argument must be a Proc of arity 1' \
             if space.to_proc.arity != 1
 
@@ -53,28 +45,29 @@ module Oppen
         else
           ->(n) { space * n }
         end
-      @indent = 0
+      @indent = 0 # the amount of indentation to display on the next non empty new line.
       @items = []
       @new_line = new_line
       @width = width
       @space = width
     end
 
-    # Returns the output of the print stack
+    # The final pretty-printed output.
     #
-    # @return [String]
+    # @return [String] The output of the print stack.
     def output
-      buffer.truncate(buffer.pos)
+      buffer.truncate buffer.pos
       buffer.string
     end
 
     # Core method responsible for building the print stack and the output string.
     #
-    # @note Called Print in the original paper.
+    # @note Called `Print` in the original paper.
     #
-    # @param token [Token]
-    # @param token_width [Integer]
-    # @param trim_on_break [Integer] Number of trailing whitespace characters to trim.
+    # @param token         [Token]
+    # @param token_width   [Integer]
+    # @param trim_on_break [Integer] number of trailing whitespace characters to trim.
+    #                                If zero, no character will be trimmed.
     #
     # @return [Nil]
     def print(token, token_width, trim_on_break: 0)
@@ -92,7 +85,7 @@ module Oppen
 
     # Handle Begin Token.
     #
-    # @param token [Token]
+    # @param token       [Token]
     # @param token_width [Integer]
     #
     # @return [Nil]
@@ -131,9 +124,10 @@ module Oppen
 
     # Handle Break Token.
     #
-    # @param token [Token]
-    # @param token_width [Integer]
-    # @param trim_on_break [Integer] Number of trailing whitespace characters to trim.
+    # @param token         [Token]
+    # @param token_width   [Integer]
+    # @param trim_on_break [Integer] number of trailing whitespace characters to trim.
+    #                                If zero, no character will be trimmed.
     #
     # @return [Nil]
     #
@@ -152,7 +146,7 @@ module Oppen
           else
             width - space
           end
-        erase(trim_on_break)
+        erase trim_on_break
         write token.line_continuation
         print_new_line indent
       in Token::BreakType::INCONSISTENT
@@ -164,7 +158,7 @@ module Oppen
             else
               width - space
             end
-          erase(trim_on_break)
+          erase trim_on_break
           write token.line_continuation
           print_new_line indent
         else
@@ -176,7 +170,7 @@ module Oppen
 
     # Handle String Token.
     #
-    # @param token [Token]
+    # @param token       [Token]
     # @param token_width [Integer]
     #
     # @return [Nil]
@@ -199,7 +193,7 @@ module Oppen
     #
     # @return [Nil]
     def push(print_stack_entry)
-      items.append(print_stack_entry)
+      items.append print_stack_entry
     end
 
     # Pop a PrintStackEntry from the stack.
@@ -226,7 +220,7 @@ module Oppen
 
     # Add a new line to the output.
     #
-    # @note Called PrintNewLine as well in the original paper.
+    # @note Called `PrintNewLine` as well in the original paper.
     #
     # @param amount [Integer] indentation amount.
     #
@@ -247,7 +241,7 @@ module Oppen
     #
     # @return [Nil]
     def write(obj)
-      buffer.write(obj.to_s)
+      buffer.write obj.to_s
     end
 
     # Erase the last `count` characters.
@@ -264,7 +258,7 @@ module Oppen
 
     # Add indentation by `amount`.
     #
-    # @note Called Indent as well in the original paper.
+    # @note Called `Indent` as well in the original paper.
     #
     # @param amount [Integer]
     #

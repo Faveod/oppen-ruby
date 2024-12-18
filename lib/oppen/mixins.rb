@@ -6,22 +6,38 @@ module Oppen
     # Rotates circular array and triples its size.
     # This method is not for public use.
     #
-    # @param arr [Array]
-    # @param offset [Integer] Rotation amount
+    # @param arr    [Array]   the circular array.
+    # @param offset [Integer] rotation amount.
     #
-    # @return [Array<Array, Integer, Integer>] upsized array, lhs, rhs
+    # @return [Array<Array, Integer, Integer>] upsized array, lhs, rhs.
     def upsize_circular_array(arr, offset)
       size = arr.size
-      arr = arr.rotate(offset)
-      arr.fill(nil, size, 2 * size)
+      arr = arr.rotate offset
+      arr.fill nil, size, 2 * size
       [arr, 0, size]
     end
 
     # Convert a list of tokens to its wadler representation.
     #
-    # @param tokens [Array[Token]]
-    # @param base_indent [Integer]
-    # @param printer_name [String]
+    # This method reverse engineers a tokens list to transform it into
+    # Wadler printing commands.
+    # It can be particularly useful when debugging a black box program.
+    #
+    # @param tokens       [Array<Token>] the list of tokens.
+    # @param base_indent  [Integer]      the base indentation amount of the output.
+    # @param printer_name [String]       the name of the Wadler instance in the output.
+    #
+    # @example
+    #   out = Oppen::Wadler.new
+    #   out.group {
+    #     out.text('Hello World!')
+    #   }
+    #   out.show_print_commands(out_name: 'out')
+    #
+    #   # =>
+    #   # out.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+    #   #   out.text("Hello World!", width: 12)
+    #   # }
     #
     # @return [String]
     def tokens_to_wadler(tokens, base_indent: 0, printer_name: 'out')
@@ -64,7 +80,7 @@ module Oppen
           nb_spaces -= 2
           write.('}')
         in Token::EOF
-          write.('') # new line
+          write.('') # new line.
         end
       end
       out.string
