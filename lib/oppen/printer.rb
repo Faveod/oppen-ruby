@@ -2,9 +2,9 @@
 
 require 'stringio'
 
-require_relative 'scan_stack'
-require_relative 'print_stack'
 require_relative 'mixins'
+require_relative 'print_stack'
+require_relative 'scan_stack'
 
 # Oppen.
 module Oppen
@@ -12,73 +12,79 @@ module Oppen
   class Printer
     extend Mixins
 
+    # To customize the printer's behavior.
+    #
+    # @return [Config]
     attr_reader :config
     # Ring buffer left index.
     #
-    # @note Called left as well in the original paper.
-    attr_reader :left
-
-    # Total number of spaces needed to print from start of buffer to the left.
+    # @note Called `left` as well in the original paper.
     #
-    # @note Called leftTotal as well in the original paper.
+    # @return [Integer]
+    attr_reader :left
+    # Total number of spaces needed to print from start of buffer to left.
+    #
+    # @note Called `leftTotal` as well in the original paper.
+    #
+    # @return [Integer]
     attr_reader :left_total
-
-    # @note Called printStack as well in the original paper.
+    # Stack responsible of building the output.
+    #
+    # @note Called `printStack` as well in the original paper.
+    #
+    # @return [PrintStack]
     attr_reader :print_stack
-
     # Ring buffer right index.
     #
-    # @note Called right as well in the original paper.
-    attr_reader :right
-
-    # Total number of spaces needed to print from start of buffer to the right.
+    # @note Called `right` as well in the original paper.
     #
-    # @note Called leftTotal as well in the original paper.
+    # @return [Integer]
+    attr_reader :right
+    # Total number of spaces needed to print from start of buffer to right.
+    #
+    # @note Called `leftTotal` as well in the original paper.
+    #
+    # @return [Integer]
     attr_reader :right_total
-
     # Potential breaking positions.
     #
-    # @note Called scanStack as well in the original paper.
+    # @note Called `scanStack` as well in the original paper.
+    #
+    # @return [ScanStack]
     attr_reader :scan_stack
-
     # Size buffer, initially filled with nil.
     #
-    # @note Called size as well in the original paper.
+    # @note Called `size` as well in the original paper.
+    #
+    # @return [Integer]
     attr_reader :size
-
     # Token buffer, initially filled with nil.
     #
-    # @note Called token in the original paper.
+    # @note Called `token` in the original paper.
+    #
+    # @return [Array<Tokens>]
     attr_reader :tokens
 
-    # Some description
+    # @note Called `PrettyPrintInit` in the original paper.
     #
-    # @example
-    #   "This is a string" # => and this is a comment
-    #   out = Oppen::Wadler.new (margin: 13) # Hawn
-    #   # Baliz
-    #
-    # @example
-    #   "This is a string" # => and this is a comment
-    #   # var = 12
-    #
-    # @param width [Integer] maximum line width desired.
-    # @param new_line [String]  the delimiter between lines.
-    # @param config [Config]
-    # @param space [String, Proc] could be a String or a callable.
+    # @param width    [Integer]      maximum line width desired.
+    # @param new_line [String]       the delimiter between lines.
+    # @param config   [Config]       to customize the printer's behavior.
+    # @param space    [String, Proc] indentation string or a code that generates the indentation string.
     #   If it's a string, spaces will be generated with the the
-    #   lambda `->(n){ n * space }`, where `n` is the number of columns
+    #   lambda `->(n){ space * n }`, where `n` is the number of columns
     #   to indent.
     #   If it's a callable, it will receive `n` and it needs to return
     #   a string.
-    # @param out [Object] should have a write and string method
+    # @param out      [Object]       the output string buffer.
+    #                                It should have a `write` and `string` methods.
     def initialize(width, new_line, config = Config.oppen,
                    space = ' ', out = StringIO.new)
       # Maximum size if the stacks
       n = 3 * width
 
       @config = config
-      @last_whitespaces_width = 0
+      @last_whitespaces_width = 0 # Accumulates the width of the last Whitespace tokens encountered.
       @left = 0
       @left_total = 1
       @print_stack = PrintStack.new width, new_line, config, space, out
@@ -89,14 +95,16 @@ module Oppen
       @tokens = Array.new n
     end
 
-    # @return [String]
+    # The final pretty-printed output.
+    #
+    # @return [String] the output of the print stack.
     def output
       print_stack.output
     end
 
     # Core function of the algorithm responsible for populating the scan and print stack.
     #
-    # @note Called PrettyPrint as well in the original paper.
+    # @note Called `PrettyPrint` as well in the original paper.
     #
     # @param token [Token]
     #
@@ -135,6 +143,8 @@ module Oppen
 
     # Handle Begin Token.
     #
+    # @param token [Token]
+    #
     # @return [Nil]
     #
     # @see Token::Begin
@@ -145,7 +155,7 @@ module Oppen
         @right = 0
         @right_total = 1
 
-        # config.trim_trailing_whitespaces
+        # config.trim_trailing_whitespaces.
         @tokens[-1] = nil
       else
         advance_right
@@ -156,6 +166,8 @@ module Oppen
     end
 
     # Handle End Token.
+    #
+    # @param token [Token]
     #
     # @return [Nil]
     #
@@ -178,6 +190,8 @@ module Oppen
 
     # Handle Break Token.
     #
+    # @param token [Token]
+    #
     # @return [Nil]
     #
     # @see Token::Break
@@ -188,7 +202,7 @@ module Oppen
         @right = 0
         @right_total = 1
 
-        # config.trim_trailing_whitespaces
+        # config.trim_trailing_whitespaces.
         tokens[-1] = nil
         print_stack.erase @last_whitespaces_width
         @last_whitespaces_width = 0
@@ -203,6 +217,8 @@ module Oppen
     end
 
     # Handle String Token.
+    #
+    # @param token [Token]
     #
     # @return [Nil]
     #
@@ -221,7 +237,7 @@ module Oppen
 
     # Flushes the input if possible.
     #
-    # @note Called CheckStream as well in the original paper.
+    # @note Called `CheckStream` as well in the original paper.
     #
     # @return [Nil]
     def check_stream
@@ -238,7 +254,7 @@ module Oppen
 
     # Advances the `right` pointer.
     #
-    # @note Called AdvanceRight as well in the original paper.
+    # @note Called `AdvanceRight` as well in the original paper.
     #
     # @return [Nil]
     def advance_right
@@ -256,7 +272,10 @@ module Oppen
     # Advances the `left` pointer and lets the print stack
     # print some of the tokens it contains.
     #
-    # @note Called AdvanceLeft as well in the original paper.
+    # @note Called `AdvanceLeft` as well in the original paper.
+    #
+    # @param token       [Token]
+    # @param token_width [Integer]
     #
     # @return [Nil]
     def advance_left(token, token_width)
@@ -299,9 +318,9 @@ module Oppen
     # Updates the size buffer taking into
     # account the length of the current group.
     #
-    # @note Called CheckStack as well in the original paper.
+    # @note Called `CheckStack` as well in the original paper.
     #
-    # @param depth [Integer] depth of the group
+    # @param depth [Integer] depth of the group.
     #
     # @return [Nil]
     def check_stack(depth)

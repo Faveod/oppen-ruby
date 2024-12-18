@@ -18,7 +18,8 @@ module Oppen
       CONSISTENT = 2
     end
 
-    # Default token width
+    # Default token width.
+    #
     # @return [Integer]
     def width = 0
 
@@ -35,19 +36,25 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = value
     end
 
-    # If a [Token::Break] follows [Token::Whitespace], and an actual break
-    # is issued, and `trim_trailing_whitespaces == true`, then all whitespace
-    # text will be omitted from the output.
+    # This token is not a part of Oppen's original paper and algorithm,
+    # it was created in order to handle trailing whitespaces at the end of lines.
+    # When the config flag `trim_trailing_whitespaces == true`, and a new line is needed,
+    # all the Whitespace tokens present after the last String token of the line
+    # will not be added to the final output.
     class Whitespace < ::Oppen::Token::String
     end
 
     # Break Token.
     class Break < Token
-      # @return [String] If a new line is needed display this string before the new line
+      # @return [String] If a new line is needed, display this string before the new line.
+      #
+      # @see Wadler#break for an example on `line_continuation`.
       attr_reader :line_continuation
       # @return [Integer] Indentation.
       attr_reader :offset
@@ -56,7 +63,7 @@ module Oppen
       # @return [Integer]
       attr_reader :width
 
-      def initialize(str = ' ', width: str.length, line_continuation: '', offset: 0)
+      def initialize(str = ' ', line_continuation: '', offset: 0, width: str.length)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation
@@ -66,6 +73,8 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = str
     end
@@ -108,12 +117,42 @@ module Oppen
       end
     end
 
-    # End Token
+    # End Token.
     class End < Token
       nil
     end
 
-    # EOF Token
+    # The EOF token is a token present in Oppen's original paper and algorithm.
+    # It can be interpreted as a flush of the output.
+    # Multiple EOF tokens can be present in the same list of tokens.
+    # @example
+    #   tokens = [
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('XXXXXXXXXX'),
+    #     Oppen::Token::End.new,
+    #     Oppen::Token::EOF.new,
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('YYYYYYYYYY'),
+    #     Oppen::Token::End.new,
+    #   ]
+    #   Oppen.print tokens:
+    #
+    #   # =>
+    #   # XXXXXXXXXX
+    #
+    #   tokens = [
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('XXXXXXXXXX'),
+    #     Oppen::Token::End.new,
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('YYYYYYYYYY'),
+    #     Oppen::Token::End.new,
+    #     Oppen::Token::EOF.new,
+    #   ]
+    #   Oppen.print tokens:
+    #
+    #   # =>
+    #   # XXXXXXXXXXYYYYYYYYYY
     class EOF < Token
       nil
     end
