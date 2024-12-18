@@ -14,21 +14,22 @@ module Oppen
 
   # Entry point of the pretty printer.
   #
-  # @param config [Config]
-  # @param space [String, Proc] could be a String or a callable.
+  # @param config   [Config]       to customize the printer's behavior.
+  # @param new_line [String]       the delimiter between lines.
+  # @param out      [Object]       the output string buffer.
+  #                                It should have a `write` and `string` methods.
+  # @param space    [String, Proc] indentation string or a code that generates the indentation string.
   #   If it's a string, spaces will be generated with the the
-  #   lambda `->(n){ n * space }`, where `n` is the number of columns
+  #   lambda `->(n){ space * n }`, where `n` is the number of columns
   #   to indent.
   #   If it's a callable, it will receive `n` and it needs to return
   #   a string.
-  # @param new_line [String] the delimiter between lines
-  # @param out [Object] should have a write and string method
-  # @param tokens [Array[Token]] the list of tokens to be printed
-  # @param width [Integer] maximum line width desired
+  # @param tokens   [Array<Token>] the list of tokens to be printed.
+  # @param width    [Integer]      maximum line width desired.
   #
-  # @return [String] output of the pretty printer
-  def self.print(config: Config.oppen, space: ' ',
-                 new_line: "\n", out: StringIO.new, tokens: [], width: 80)
+  # @return [String] output of the pretty printer.
+  def self.print(config: Config.oppen, new_line: "\n",
+                 out: StringIO.new, space: ' ', tokens: [], width: 80)
     printer = Printer.new width, new_line, config, space, out
     tokens.each do |token|
       printer.print token
@@ -40,8 +41,8 @@ module Oppen
   class Config
     # IndentAnchor.
     #
-    # ON_BREAK => anchor on break position (as in Oppen's original paper)
-    # ON_BEGIN => anchor on begin block position
+    # ON_BREAK => Anchor on break position (cf. Oppen's original paper).
+    # ON_BEGIN => Anchor on begin block position.
     module IndentAnchor
       # @return [Integer]
       ON_BREAK = 0
@@ -51,15 +52,15 @@ module Oppen
 
     attr_accessor :indent_anchor
 
-    def initialize(indent_anchor: IndentAnchor::ON_BREAK, eager_print: false,
+    def initialize(eager_print: false, indent_anchor: IndentAnchor::ON_BREAK,
                    trim_trailing_whitespaces: false, upsize_stack: false)
-      @indent_anchor = indent_anchor
       @eager_print = eager_print
+      @indent_anchor = indent_anchor
       @trim_trailing_whitespaces = trim_trailing_whitespaces
       @upsize_stack = upsize_stack
     end
 
-    # Print groups eagerly
+    # Print groups eagerly.
     #
     # @example
     #  out = Oppen::Wadler.new (width: 13)
@@ -94,72 +95,85 @@ module Oppen
 
     def upsize_stack? = @upsize_stack
 
-    # Default config for Oppen usage
+    # Default configuration that provides printing behaviour
+    # identical to what's been described by Oppen
+    #
     # @return [Config]
     def self.oppen
       new
     end
 
-    # Default config for Wadler usage
+    # Configuration that provides printing behavior that deviates from Oppen's original algorithm:
+    # 1. groups are printed eagerly (we try to flush on a group's close).
+    # 2. The indentation is anchored on the left margin.
+    # 3. Trailing whitespaces are removed.
+    #
+    # … which makes it closer to [`ruby/prettyprint`](https://github.com/ruby/prettyprint)).
+    #
+    # The name was amusingly chosen in reference to Wadler's work on
+    # pretty printing.
+    #
     # @return [Config]
     def self.wadler(eager_print: true, trim_trailing_whitespaces: true, upsize_stack: true)
-      new(indent_anchor: IndentAnchor::ON_BEGIN, eager_print:, trim_trailing_whitespaces:, upsize_stack:)
+      new(eager_print:, indent_anchor: IndentAnchor::ON_BEGIN, trim_trailing_whitespaces:, upsize_stack:)
     end
   end
 
-  # @param value [String]
-  # @param width [Integer] token width that defaults to value.length
+  # @param value [String]  the string to print.
+  # @param width [Integer] token width.
   #
-  # @return [Oppen::Token::String] a new String token
+  # @return [Token::String] a new String token.
   def self.string(value, width: value.length)
     Token::String.new(value, width:)
   end
 
-  # @see Token::Whitespace
+  # @return [Token::Whitespace] a new Whitespace token.
   #
-  # @return [Oppen::Token::Whitespace] a new Whitespace token.
+  # @see Token::Whitespace
   def self.whitespace(value)
     Token::Whitespace.new(value, width: value.bytesize)
   end
 
-  # @param str [String]
-  # @param line_continuation [String] If a new line is needed display this string before the new line
-  # @param offset [Integer]
-  # @param width [Integer] token width that defaults to str.length
+  # @param str               [String]  value shown if no new line is needed.
+  # @param line_continuation [String]  if a new line is issued, this string will show just before
+  #                                    the new line.
+  # @param offset            [Integer] the additional indentation of the break.
+  # @param width             [Integer] token width.
   #
-  # @return [Oppen::Token::Break] a new Break token
+  # @return [Token::Break] a new Break token.
   def self.break(str = ' ', line_continuation: '', offset: 0, width: str.length)
     Token::Break.new(str, width:, line_continuation:, offset:)
   end
 
-  # @param line_continuation [String] If a new line is needed display this string before the new line
-  # @param offset [Integer]
+  # @param line_continuation [String]  if a new line is needed display this string at the beginning of
+  #                                    the new line, at the specified anchor position.
+  # @param offset            [Integer] the additional indentation of the break.
   #
-  # @return [Oppen::Token::LineBreak] a new LineBreak token
+  # @return [Token::LineBreak] a new LineBreak token.
   def self.line_break(line_continuation: '', offset: 0)
     Token::LineBreak.new(line_continuation:, offset:)
   end
 
-  # @param offset [Integer]
+  # @param offset [Integer] the additional indentation of the group.
   #
-  # @return [Oppen::Token::Begin] a new consistent Begin token
+  # @return [Token::Begin] a new consistent Begin token.
   def self.begin_consistent(offset: 2)
     Token::Begin.new(break_type: Token::BreakType::CONSISTENT, offset:)
   end
 
-  # @param offset [Integer]
+  # @param offset [Integer] the additional indentation of the group.
   #
-  # @return [Oppen::Token::Begin] a new inconsistent Begin token
+  # @return [Token::Begin] a new inconsistent Begin token.
   def self.begin_inconsistent(offset: 2)
     Token::Begin.new(break_type: Token::BreakType::INCONSISTENT, offset:)
   end
 
-  # @return [Oppen::Token::End] a new End token
+  # @return [Token::End] a new End token.
   def self.end
     Token::End.new
   end
 
-  # @return [Oppen::Token::EOF] a new EOF token
+  # @return [Token::EOF] a new EOF token.
   def self.eof
     Token::EOF.new
   end

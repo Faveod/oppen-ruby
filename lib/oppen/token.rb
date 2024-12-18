@@ -18,7 +18,8 @@ module Oppen
       CONSISTENT = 2
     end
 
-    # Default token width
+    # Default token width.
+    #
     # @return [Integer]
     def width = 0
 
@@ -35,6 +36,8 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = value
     end
@@ -47,7 +50,7 @@ module Oppen
 
     # Break Token.
     class Break < Token
-      # @return [String] If a new line is needed display this string before the new line
+      # @return [String] If a new line is needed display this string before the new line.
       attr_reader :line_continuation
       # @return [Integer] Indentation.
       attr_reader :offset
@@ -56,7 +59,7 @@ module Oppen
       # @return [Integer]
       attr_reader :width
 
-      def initialize(str = ' ', width: str.length, line_continuation: '', offset: 0)
+      def initialize(str = ' ', line_continuation: '', offset: 0, width: str.length)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation
@@ -66,6 +69,8 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = str
     end
@@ -108,12 +113,12 @@ module Oppen
       end
     end
 
-    # End Token
+    # End Token.
     class End < Token
       nil
     end
 
-    # EOF Token
+    # EOF Token.
     class EOF < Token
       nil
     end
