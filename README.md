@@ -31,8 +31,7 @@ monkeypatching.
 
 ## Usage
 
-> [!WARNING]
-> Lands when the APIs are stable.
+A few examples of the API usage can be found in [examples/](examples/README.md).
 
 ## Oppen vs Wadler
 
