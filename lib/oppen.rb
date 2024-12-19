@@ -39,20 +39,33 @@ module Oppen
 
   # Config.
   class Config
-    # IndentAnchor.
+    # The different ways of handling the indentation of nested groups.
+    # (cf. test/indent_anchor_test.rb).
     #
-    # ON_BREAK => Anchor on break position (cf. Oppen's original paper).
-    # ON_BEGIN => Anchor on begin block position.
+    # <pre>
+    # END_OF_PREVIOUS_LINE =>
+    #   Anchor on break position (cf. Oppen's original paper).
+    #   In the case of a new line in a nested group,
+    #   the next string token will be displayed with
+    #   indentation = previous line width + last group indentation.
+    #
+    # CURRENT_OFFSET =>
+    #   Anchor on begin block position.
+    #   In the case of a new line in a nested group,
+    #   the next string token will be displayed with
+    #   indentation = the sum of the indentations of all its parent groups.
+    #
+    # </pre>
     module IndentAnchor
       # @return [Integer]
-      ON_BREAK = 0
+      END_OF_PREVIOUS_LINE = 0
       # @return [Integer]
-      ON_BEGIN = 1
+      CURRENT_OFFSET = 1
     end
 
     attr_accessor :indent_anchor
 
-    def initialize(eager_print: false, indent_anchor: IndentAnchor::ON_BREAK,
+    def initialize(eager_print: false, indent_anchor: IndentAnchor::END_OF_PREVIOUS_LINE,
                    trim_trailing_whitespaces: false, upsize_stack: false)
       @eager_print = eager_print
       @indent_anchor = indent_anchor
@@ -115,7 +128,7 @@ module Oppen
     #
     # @return [Config]
     def self.wadler(eager_print: true, trim_trailing_whitespaces: true, upsize_stack: true)
-      new(eager_print:, indent_anchor: IndentAnchor::ON_BEGIN, trim_trailing_whitespaces:, upsize_stack:)
+      new(eager_print:, indent_anchor: IndentAnchor::CURRENT_OFFSET, trim_trailing_whitespaces:, upsize_stack:)
     end
   end
 
