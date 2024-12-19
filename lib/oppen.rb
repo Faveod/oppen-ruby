@@ -39,10 +39,18 @@ module Oppen
 
   # Config.
   class Config
-    # IndentAnchor.
+    # IndentAnchor (cf. test/indent_anchor_test.rb).
+    # The different ways of handling the indentation of nested groups.
     #
     # ON_BREAK => Anchor on break position (cf. Oppen's original paper).
+    #             In the case of a new line in a nested group,
+    #             the next string token will be displayed with
+    #             indentation = previous line width + last group indentation.
+    #
     # ON_BEGIN => Anchor on begin block position.
+    #             In the case of a new line in a nested group,
+    #             the next string token will be displayed with
+    #             indentation = the sum of the indentations of all its parent groups.
     module IndentAnchor
       # @return [Integer]
       ON_BREAK = 0
