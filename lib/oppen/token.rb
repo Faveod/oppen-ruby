@@ -163,6 +163,7 @@ module Oppen
     # The EOF token is a token present in Oppen's original paper and algorithm.
     # It can be interpreted as a flush of the output.
     # Multiple EOF tokens can be present in the same list of tokens.
+    #
     # @example
     #   tokens = [
     #     Oppen::Token::Begin.new,

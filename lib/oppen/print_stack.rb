@@ -99,7 +99,7 @@ module Oppen
           else
             Token::BreakType::INCONSISTENT
           end
-        if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+        if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
           indent = token.offset
           if !items.empty?
             indent += top.offset
@@ -141,7 +141,7 @@ module Oppen
       in Token::BreakType::CONSISTENT
         @space = block.offset - token.offset
         indent =
-          if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+          if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
             token.offset
           else
             width - space
@@ -153,7 +153,7 @@ module Oppen
         if token_width > space
           @space = block.offset - token.offset
           indent =
-            if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+            if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
               token.offset
             else
               width - space
@@ -227,7 +227,7 @@ module Oppen
     # @return [Nil]
     def print_new_line(amount)
       write new_line
-      if config&.indent_anchor == Config::IndentAnchor::ON_BEGIN
+      if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
         @space = width - top.offset - amount
         @indent = width - space
       else
