@@ -6,9 +6,19 @@ module Oppen
   class Token
     # BreakType.
     #
-    # FITS => No break is needed (the block fits on the line).
-    # INCONSISTENT => New line will be forced only if necessary.
-    # CONSISTENT => Each subblock of the block will be placed on a new line.
+    # <pre>
+    # FITS =>         No new line is needed (the block fits on the line).
+    #                 The Break tokens will only output their `str` field.
+    #
+    # INCONSISTENT => The presence of a new line inside the group will not propagate
+    #                 to the other Break tokens in the group letting them decide
+    #                 if they need to act as a new line or not.
+    #
+    # CONSISTENT =>   The presence of a new line inside the group will propagate
+    #                 to the other Break tokens in the group
+    #                 causing them all to act as a new line.
+    #
+    # </pre>
     module BreakType
       # @return [Integer]
       FITS = 0
@@ -18,7 +28,8 @@ module Oppen
       CONSISTENT = 2
     end
 
-    # Default token width
+    # Default token width.
+    #
     # @return [Integer]
     def width = 0
 
@@ -35,6 +46,8 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = value
     end
@@ -47,7 +60,7 @@ module Oppen
 
     # Break Token.
     class Break < Token
-      # @return [String] If a new line is needed display this string before the new line
+      # @return [String] If a new line is needed display this string before the new line.
       attr_reader :line_continuation
       # @return [Integer] Indentation.
       attr_reader :offset
@@ -56,7 +69,7 @@ module Oppen
       # @return [Integer]
       attr_reader :width
 
-      def initialize(str = ' ', width: str.length, line_continuation: '', offset: 0)
+      def initialize(str = ' ', line_continuation: '', offset: 0, width: str.length)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation
@@ -66,6 +79,8 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = str
     end
@@ -108,12 +123,12 @@ module Oppen
       end
     end
 
-    # End Token
+    # End Token.
     class End < Token
       nil
     end
 
-    # EOF Token
+    # EOF Token.
     class EOF < Token
       nil
     end

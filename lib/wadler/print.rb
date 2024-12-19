@@ -4,30 +4,38 @@
 module Oppen
   # Wadler.
   class Wadler
+    # To customize the printer's behavior.
     attr_reader :config
+    # The current indentation amount.
     attr_reader :current_indent
-    attr_reader :space
+    # The new line String.
     attr_reader :new_line
+    # The output string buffer. It should have a `write` and `string` methods.
     attr_reader :out
+    # The indentator.
+    attr_reader :space
+    # The tokens list that is being built.
     attr_reader :tokens
+    # The whitespace character. Used to trim trailing whitespaces.
     attr_reader :whitespace
+    # Maximum line width desired.
     attr_reader :width
 
-    # @param config [Oppen::Config]
-    # @param space [String, Proc] could be a String or a callable.
+    # @param config     [Config]       to customize the printer's behavior.
+    # @param new_line   [String]       the new line String.
+    # @param out        [Object]       the output string buffer. It should have a `write` and `string` methods.
+    # @param space      [String, Proc] indentation string or a code that generates the indentation string.
     #   If it's a string, spaces will be generated with the the
-    #   lambda `->(n){ n * space }`, where `n` is the number of columns
+    #   lambda `->(n){ space * n }`, where `n` is the number of columns
     #   to indent.
     #   If it's a callable, it will receive `n` and it needs to return
     #   a string.
-    # @param new_line [String]
-    # @param out [Object] should have a write and string method
-    # @param width [Integer]
-    # @param whitespace [String] the whitespace character. Used to trim trailing whitespaces.
+    # @param whitespace [String]       the whitespace character. Used to trim trailing whitespaces.
+    # @param width      [Integer]      maximum line width desired.
     # @see Token::Whitespace
-    def initialize(config: Config.wadler, space: ' ',
-                   new_line: "\n", out: StringIO.new,
-                   width: 80, whitespace: ' ')
+    def initialize(config: Config.wadler, new_line: "\n",
+                   out: StringIO.new, space: ' ',
+                   whitespace: ' ', width: 80)
       @config = config
       @current_indent = 0
       @space = space
@@ -39,6 +47,7 @@ module Oppen
     end
 
     # Add missing Begin, End or EOF tokens.
+    #
     # @return [Nil]
     def add_missing_begin_and_end
       if !tokens.first.is_a? Token::Begin
@@ -66,12 +75,14 @@ module Oppen
       Oppen.tokens_to_wadler(tokens, **)
     end
 
-    # @param indent [Integer] group indentation
-    # @param open_obj [String] group opening delimiter
-    # @param close_obj [String] group closing delimiter
-    # @param break_type [Oppen::Token::BreakType] group breaking type
+    # Create a new group.
     #
-    # @yield the block of text in a group
+    # @param indent     [Integer]          group indentation.
+    # @param open_obj   [String]           group opening delimiter.
+    # @param close_obj  [String]           group closing delimiter.
+    # @param break_type [Token::BreakType] group breaking type.
+    #
+    # @yield the block of text in a group.
     #
     # @return [Nil]
     def group(indent = 0, open_obj = '', close_obj = '',
@@ -102,9 +113,13 @@ module Oppen
       tokens << Oppen.end
     end
 
-    # @param indent [Integer] nest indentation
-    # @param open_obj [String] nest opening delimiter
-    # @param close_obj [String] nest closing delimiter
+    # Create a new nest.
+    #
+    # @param indent    [Integer] nest indentation.
+    # @param open_obj  [String]  nest opening delimiter.
+    # @param close_obj [String]  nest closing delimiter.
+    #
+    # @yield the block of text in a nest.
     #
     # @return [Nil]
     def nest(indent, open_obj = '', close_obj = '')
@@ -130,6 +145,8 @@ module Oppen
       text(close_obj)
     end
 
+    # Create a new text element.
+    #
     # @param value [String]
     #
     # @return [Nil]
@@ -146,15 +163,20 @@ module Oppen
       end
     end
 
-    # @param str [String]
-    # @param line_continuation [String] If a new line is needed display this string before the new line
+    # Create a new breakable element.
+    #
+    # @param str               [String]
+    # @param line_continuation [String]  if a new line is needed display this string before the new line
+    # @param width             [Integer]
     #
     # @return [Nil]
-    def breakable(str = ' ', width: str.length, line_continuation: '')
+    def breakable(str = ' ', line_continuation: '', width: str.length)
       tokens << Oppen.break(str, width:, line_continuation:, offset: current_indent)
     end
 
-    # @param line_continuation [String] If a new line is needed display this string before the new line
+    # Create a new break element.
+    #
+    # @param line_continuation [String] if a new line is needed display this string before the new line
     #
     # @return [Nil]
     def break(line_continuation: '')
@@ -163,7 +185,7 @@ module Oppen
 
     # @!group Helpers
 
-    # Set a base indenetaion level to the printer.
+    # Set a base indenetaion level for the printer.
     #
     # @param indent [Integer]
     #
