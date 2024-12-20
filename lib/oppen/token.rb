@@ -5,20 +5,52 @@ module Oppen
   # Token.
   class Token
     # BreakType.
+    # @example inconsistent
+    #   out = Oppen::Wadler.new
+    #   out.group(0, '', '', Oppen::Token::BreakType::INCONSISTENT) {
+    #     out.text 'a'
+    #     out.break
+    #     out.text 'b'
+    #     out.breakable
+    #     out.text 'c'
+    #   }
+    #   out.output
+    #   => a
+    #      b c
     #
-    # FITS => No break is needed (the block fits on the line).
-    # INCONSISTENT => New line will be forced only if necessary.
-    # CONSISTENT => Each subblock of the block will be placed on a new line.
+    # @example consistent
+    #   out = Oppen::Wadler.new
+    #   out.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+    #     out.text 'a'
+    #     out.break
+    #     out.text 'b'
+    #     out.breakable
+    #     out.text 'c'
+    #   }
+    #   out.output
+    #   => a
+    #      b
+    #      c
     module BreakType
+      # No new line is needed (the block fits on the line).
+      # The Break tokens will only output their `str` field.
+      # Not for public use.
       # @return [Integer]
       FITS = 0
+      # The presence of a new line inside the group will not propagate
+      # to the other Break tokens in the group letting them decide
+      # if they need to act as a new line or not.
       # @return [Integer]
       INCONSISTENT = 1
+      # The presence of a new line inside the group will propagate
+      # to the other Break tokens in the group
+      # causing them all to act as a new line.
       # @return [Integer]
       CONSISTENT = 2
     end
 
-    # Default token width
+    # Default token width.
+    #
     # @return [Integer]
     def width = 0
 
@@ -35,19 +67,25 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = value
     end
 
-    # If a [Token::Break] follows [Token::Whitespace], and an actual break
-    # is issued, and `trim_trailing_whitespaces == true`, then all whitespace
-    # text will be omitted from the output.
+    # This token is not a part of Oppen's original paper and algorithm,
+    # it was created in order to handle trailing whitespaces at the end of lines.
+    # When the config flag `trim_trailing_whitespaces == true`, and a new line is needed,
+    # all the Whitespace tokens present after the last String token of the line
+    # will not be added to the final output.
     class Whitespace < ::Oppen::Token::String
     end
 
     # Break Token.
     class Break < Token
-      # @return [String] If a new line is needed display this string before the new line
+      # @return [String] If a new line is needed, display this string before the new line.
+      #
+      # @see Wadler#break an example of usage of line_continuation.
       attr_reader :line_continuation
       # @return [Integer] Indentation.
       attr_reader :offset
@@ -56,7 +94,7 @@ module Oppen
       # @return [Integer]
       attr_reader :width
 
-      def initialize(str = ' ', width: str.length, line_continuation: '', offset: 0)
+      def initialize(str = ' ', line_continuation: '', offset: 0, width: str.length)
         raise ArgumentError, 'line_continuation cannot be nil' if line_continuation.nil?
 
         @line_continuation = line_continuation
@@ -66,6 +104,8 @@ module Oppen
         super()
       end
 
+      # Convert token to String.
+      #
       # @return [String]
       def to_s = str
     end
@@ -108,12 +148,41 @@ module Oppen
       end
     end
 
-    # End Token
+    # End Token.
     class End < Token
       nil
     end
 
-    # EOF Token
+    # The EOF token is a token present in Oppen's original paper and algorithm.
+    # It can be interpreted as a flush of the output.
+    # Multiple EOF tokens can be present in the same list of tokens.
+    #
+    # @example
+    #   tokens = [
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('XXXXXXXXXX'),
+    #     Oppen::Token::End.new,
+    #     Oppen::Token::EOF.new,
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('YYYYYYYYYY'),
+    #     Oppen::Token::End.new,
+    #   ]
+    #   Oppen.print tokens:
+    #
+    #   => XXXXXXXXXX
+    #
+    #   tokens = [
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('XXXXXXXXXX'),
+    #     Oppen::Token::End.new,
+    #     Oppen::Token::Begin.new,
+    #     Oppen::Token::String.new('YYYYYYYYYY'),
+    #     Oppen::Token::End.new,
+    #     Oppen::Token::EOF.new,
+    #   ]
+    #   Oppen.print tokens:
+    #
+    #   => XXXXXXXXXXYYYYYYYYYY
     class EOF < Token
       nil
     end
