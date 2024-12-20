@@ -19,16 +19,12 @@ module Oppen
     # Whether the stack is empty.
     #
     # @return [Boolean]
-    def empty?
-      @empty
-    end
+    def empty? = @empty
 
     # The current length of the stack.
     #
     # @return [Integer]
-    def length
-      @stack.length
-    end
+    def length = @stack.length
 
     # The top element of the stack.
     #
