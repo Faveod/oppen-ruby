@@ -98,9 +98,7 @@ module Oppen
     # The final pretty-printed output.
     #
     # @return [String] the output of the print stack.
-    def output
-      print_stack.output
-    end
+    def output = print_stack.output
 
     # Core function of the algorithm responsible for populating the scan and print stack.
     #
