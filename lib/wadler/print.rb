@@ -99,19 +99,51 @@ module Oppen
     #   #   b
     #   #   }
     #
+    # @example consistent
+    #   out = Oppen::Wadler.new
+    #   out.group(0, '', '', :consistent) {
+    #     out.text 'a'
+    #     out.break
+    #     out.text 'b'
+    #     out.breakable
+    #     out.text 'c'
+    #   }
+    #   out.output
+    #
+    #   # =>
+    #   # a
+    #   # b
+    #   # c
+    #
+    # @example inconsistent
+    #   out = Oppen::Wadler.new
+    #   out.group(0, '', '', :inconsistent) {
+    #     out.text 'a'
+    #     out.break
+    #     out.text 'b'
+    #     out.breakable
+    #     out.text 'c'
+    #   }
+    #   out.output
+    #
+    #   # =>
+    #   # a
+    #   # b c
+    #
     # @return [Nil]
     #
-    # @see Token::BreakType
+    # @see Oppen.begin_consistent
+    # @see Oppen.begin_inconsistent
     def group(indent = 0, open_obj = '', close_obj = '',
-              break_type = Oppen::Token::BreakType::CONSISTENT)
+              break_type = :consistent)
       raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
         if open_obj.nil? || close_obj.nil?
 
       tokens <<
         case break_type
-        in Oppen::Token::BreakType::CONSISTENT
+        in :consistent
           Oppen.begin_consistent(offset: indent)
-        in Oppen::Token::BreakType::INCONSISTENT
+        in :inconsistent
           Oppen.begin_inconsistent(offset: indent)
         end
 
@@ -249,7 +281,8 @@ module Oppen
     #
     # @return [Nil]
     #
-    # @see Token::BreakType
+    # @see Oppen.begin_consistent
+    # @see Oppen.begin_inconsistent
     def group_open(inconsistent: false, indent: 0)
       tokens <<
         if inconsistent

@@ -131,7 +131,7 @@ describe 'Printer tests' do
           end;
       LANG
 
-    list[0] = Oppen::Token::Begin.new break_type: Oppen::Token::BreakType::CONSISTENT
+    list[0] = Oppen::Token::Begin.new break_type: :consistent
 
     _(Oppen.print(tokens: list))
       .must_equal <<~LANG.chomp
@@ -146,7 +146,7 @@ describe 'Printer tests' do
 
   it 'must work with nested blocks' do
     list = [
-      Oppen::Token::Begin.new(break_type: Oppen::Token::BreakType::CONSISTENT),
+      Oppen::Token::Begin.new(break_type: :consistent),
 
       Oppen::Token::String.new('procedure test(x, y: Integer);'), Oppen::Token::LineBreak.new,
       Oppen::Token::String.new('begin'),
@@ -154,7 +154,7 @@ describe 'Printer tests' do
       Oppen::Token::LineBreak.new(offset: 2), Oppen::Token::String.new('x:=1;'),
       Oppen::Token::LineBreak.new(offset: 2), Oppen::Token::String.new('y:=200;'),
 
-      Oppen::Token::LineBreak.new(offset: 2), Oppen::Token::Begin.new(break_type: Oppen::Token::BreakType::CONSISTENT),
+      Oppen::Token::LineBreak.new(offset: 2), Oppen::Token::Begin.new(break_type: :consistent),
       Oppen::Token::String.new('for z:= 1 to 100 do'), Oppen::Token::LineBreak.new,
       Oppen::Token::String.new('begin'),
       Oppen::Token::LineBreak.new(offset: 2), Oppen::Token::String.new('x := x + z;'), Oppen::Token::LineBreak.new,
@@ -202,7 +202,7 @@ describe 'Printer tests' do
           .baz.42()
       LANG
 
-    list[0] = Oppen::Token::Begin.new(break_type: Oppen::Token::BreakType::CONSISTENT)
+    list[0] = Oppen::Token::Begin.new(break_type: :consistent)
 
     _(Oppen.print(tokens: list, width: 20))
       .must_equal <<~LANG.chomp

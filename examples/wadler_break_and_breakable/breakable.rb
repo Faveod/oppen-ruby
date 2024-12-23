@@ -7,8 +7,8 @@ require_relative '../helper'
 
 printer = Oppen::Wadler.new(width: 40)
 
-# See `examples/wadler_group/inconsistent.rb` for more infos about `Oppen::Token::BreakType::INCONSISTENT`
-printer.group(0, '', '', Oppen::Token::BreakType::INCONSISTENT) {
+# See `examples/wadler_group/inconsistent.rb` for more infos about `:inconsistent`
+printer.group(0, '', '', :inconsistent) {
   printer.text 'Hello, World!'
   printer.breakable
   printer.text '(still fits on the line)'

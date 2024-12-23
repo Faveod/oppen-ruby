@@ -7,7 +7,7 @@ def customization_build_output(printer)
     printer.text 'function'
     printer.breakable
     printer.text 'test('
-    printer.group(2, '', '', Oppen::Token::BreakType::INCONSISTENT) {
+    printer.group(2, '', '', :inconsistent) {
       printer.break
       printer.text 'int index,'
       printer.breakable
@@ -29,7 +29,7 @@ describe 'Inconsistent break tests' do
       printer.text 'function'
       printer.breakable
       printer.text 'test('
-      printer.group(2, '', '', Oppen::Token::BreakType::INCONSISTENT) {
+      printer.group(2, '', '', :inconsistent) {
         printer.breakable
         printer.text 'int index,'
         printer.breakable
@@ -398,7 +398,7 @@ describe 'Group delimiter tests' do
 end
 
 describe 'Line continuation tests' do
-  def line_continuation_build_output(printer, break_type = Oppen::Token::BreakType::CONSISTENT,
+  def line_continuation_build_output(printer, break_type = :consistent,
                                      line_continuation = ',')
     printer.group(0) {
       printer.text('[')
@@ -436,7 +436,7 @@ describe 'Line continuation tests' do
 
   it 'must display line continuation if line does not fit (INCONSISTENT break)' do
     printer = Oppen::Wadler.new(width: 7)
-    line_continuation_build_output(printer, Oppen::Token::BreakType::INCONSISTENT)
+    line_continuation_build_output(printer, :inconsistent)
     _(printer.output).must_equal <<~LANG.chomp
       [1, 2,
         3,
@@ -446,7 +446,7 @@ describe 'Line continuation tests' do
 
   it 'must work with UTF-8 string' do
     printer = Oppen::Wadler.new(width: 3)
-    line_continuation_build_output(printer, Oppen::Token::BreakType::CONSISTENT, 'Ѿ')
+    line_continuation_build_output(printer, :consistent, 'Ѿ')
     _(printer.output).must_equal <<~LANG.chomp
       [
         1Ѿ
@@ -458,6 +458,6 @@ describe 'Line continuation tests' do
 
   it 'must raise an error when line_continuation is nil' do
     printer = Oppen::Wadler.new(width: 3)
-    _ { line_continuation_build_output(printer, Oppen::Token::BreakType::CONSISTENT, nil) }.must_raise ArgumentError
+    _ { line_continuation_build_output(printer, :consistent, nil) }.must_raise ArgumentError
   end
 end
