@@ -40,50 +40,54 @@ module Oppen
     #   # }
     #
     # @return [String]
-    def tokens_to_wadler(tokens, base_indent: 0, printer_name: 'out')
-      nb_spaces = base_indent
-      out = StringIO.new
+    def tokens_to_wadler(tokens, base_indent: 0, printer_name: 'out', width: tokens.length * 3)
+      printer = Oppen::Wadler.new(width:)
+      printer.base_indent(base_indent)
+      indent = 2
 
-      write = ->(txt) {
-        out << (' ' * nb_spaces) << txt << "\n"
-      }
-      display_break_token = ->(token) {
+      handle_break_token = ->(token) {
         if token.offset.positive?
-          write.("#{printer_name}.nest(#{token.offset}, \"\", \"\") {")
-          nb_spaces += 2
+          printer.text "#{printer_name}.nest(#{token.offset}, '', '') {"
+          printer.nest_open indent
+          printer.break
         end
 
-        case token
-        in Token::LineBreak
-          write.("#{printer_name}.break(line_continuation: #{token.line_continuation.inspect})")
-        in Token::Break
-          write.("#{printer_name}.breakable(#{token.str.inspect}, width: #{token.width}, " \
-                 "line_continuation: #{token.line_continuation.inspect})")
-        end
+        printer.text(
+          case token
+          in Token::LineBreak
+            "#{printer_name}.break(line_continuation: #{token.line_continuation.inspect})"
+          in Token::Break
+            "#{printer_name}.breakable(#{token.str.inspect}, width: #{token.width}, " \
+            "line_continuation: #{token.line_continuation.inspect})"
+          end,
+        )
 
         if token.offset.positive?
-          nb_spaces -= 2
-          write.('}')
+          printer.nest_close indent
+          printer.break
+          printer.text '}'
         end
       }
 
-      tokens.each do |token|
+      tokens.each_with_index do |token, idx|
         case token
         in Token::String
-          write.("#{printer_name}.text(#{token.value.inspect}, width: #{token.width})")
+          printer.text "#{printer_name}.text(#{token.value.inspect}, width: #{token.width})"
         in Token::Break
-          display_break_token.(token)
+          handle_break_token.(token)
         in Token::Begin
-          write.("#{printer_name}.group(#{token.offset}, \"\", \"\", #{token.break_type_name}) {")
-          nb_spaces += 2
+          printer.text "#{printer_name}.group(#{token.offset}, '', '', #{token.break_type_name}) {"
+          printer.nest_open indent
         in Token::End
-          nb_spaces -= 2
-          write.('}')
+          printer.nest_close indent
+          printer.break
+          printer.text '}'
         in Token::EOF
-          write.('') # new line.
+          nil
         end
+        printer.break if !tokens[idx + 1].is_a?(Token::End)
       end
-      out.string
+      printer.output
     end
   end
 end

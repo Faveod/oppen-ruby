@@ -10,7 +10,7 @@ describe 'Token to wadler tests' do
         printer
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
         }
 
       LANG
@@ -21,7 +21,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("Hello World!", width: 12)
         }
 
@@ -33,7 +33,7 @@ describe 'Token to wadler tests' do
         printer.text('"\'Hello World!\'"')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("\\"'Hello World!'\\"", width: 16)
         }
 
@@ -45,7 +45,7 @@ describe 'Token to wadler tests' do
         printer.text('Ḽơᶉëᶆ ȋṕšᶙṁ ḍỡḽǭᵳ')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("Ḽơᶉëᶆ ȋṕšᶙṁ ḍỡḽǭᵳ", width: 17)
         }
 
@@ -57,7 +57,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!', width: 42)
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("Hello World!", width: 42)
         }
 
@@ -69,7 +69,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!  ')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("Hello World!", width: 12)
           printer.text("  ", width: 2)
         }
@@ -80,7 +80,7 @@ describe 'Token to wadler tests' do
       title: 'displays a simple break token',
       block: proc(&:break),
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.break(line_continuation: "")
         }
 
@@ -92,7 +92,7 @@ describe 'Token to wadler tests' do
         printer.break(line_continuation: '##')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.break(line_continuation: "##")
         }
 
@@ -102,7 +102,7 @@ describe 'Token to wadler tests' do
       title: 'displays a simple breakable token',
       block: proc(&:breakable),
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.breakable(" ", width: 1, line_continuation: "")
         }
 
@@ -114,7 +114,7 @@ describe 'Token to wadler tests' do
         printer.breakable('**', width: 42, line_continuation: '##')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.breakable("**", width: 42, line_continuation: "##")
         }
 
@@ -128,7 +128,7 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("Hello World!", width: 12)
         }
 
@@ -142,7 +142,7 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(2, "", "", Oppen::Token::BreakType::INCONSISTENT) {
+        printer.group(2, '', '', Oppen::Token::BreakType::INCONSISTENT) {
           printer.break(line_continuation: "")
           printer.text("{", width: 1)
           printer.text("Hello World!", width: 12)
@@ -166,7 +166,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!')
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("Hello World!", width: 12)
           printer.break(line_continuation: "")
           printer.breakable(" ", width: 1, line_continuation: "")
@@ -196,11 +196,11 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
-          printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
-            printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
-              printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
-                printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+          printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+            printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+              printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+                printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
                   printer.text("Hello World!", width: 12)
                 }
               }
@@ -220,12 +220,12 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
-          printer.nest(2, "", "") {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+          printer.nest(2, '', '') {
             printer.breakable(" ", width: 1, line_continuation: "")
           }
           printer.text("Hello World!", width: 12)
-          printer.nest(2, "", "") {
+          printer.nest(2, '', '') {
             printer.break(line_continuation: "")
           }
         }
@@ -242,16 +242,16 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
           printer.text("{", width: 1)
-          printer.nest(2, "", "") {
+          printer.nest(2, '', '') {
             printer.break(line_continuation: "")
           }
-          printer.nest(2, "", "") {
+          printer.nest(2, '', '') {
             printer.breakable(" ", width: 1, line_continuation: "")
           }
           printer.text("Hello World!", width: 12)
-          printer.nest(2, "", "") {
+          printer.nest(2, '', '') {
             printer.break(line_continuation: "")
           }
           printer.break(line_continuation: "")
@@ -274,12 +274,12 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
-          printer.nest(6, "", "") {
+        printer.group(0, '', '', Oppen::Token::BreakType::CONSISTENT) {
+          printer.nest(6, '', '') {
             printer.breakable(" ", width: 1, line_continuation: "")
           }
           printer.text("Hello World!", width: 12)
-          printer.nest(6, "", "") {
+          printer.nest(6, '', '') {
             printer.break(line_continuation: "")
           }
         }
@@ -302,13 +302,13 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(2, "", "", Oppen::Token::BreakType::CONSISTENT) {
-          printer.group(2, "", "", Oppen::Token::BreakType::CONSISTENT) {
-            printer.nest(4, "", "") {
+        printer.group(2, '', '', Oppen::Token::BreakType::CONSISTENT) {
+          printer.group(2, '', '', Oppen::Token::BreakType::CONSISTENT) {
+            printer.nest(4, '', '') {
               printer.breakable(" ", width: 1, line_continuation: "")
             }
             printer.text("Hello World!", width: 12)
-            printer.nest(4, "", "") {
+            printer.nest(4, '', '') {
               printer.break(line_continuation: "")
             }
           }
