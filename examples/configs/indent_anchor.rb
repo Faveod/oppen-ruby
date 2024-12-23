@@ -4,12 +4,12 @@ require_relative '../helper'
 
 printer_with_config =
   Oppen::Wadler.new(
-    config: Oppen::Config.new(indent_anchor: Oppen::Config::IndentAnchor::CURRENT_OFFSET),
+    config: Oppen::Config.new(indent_anchor: :current_offset),
     width: 13,
   )
 printer_no_config =
   Oppen::Wadler.new(
-    config: Oppen::Config.new(indent_anchor: Oppen::Config::IndentAnchor::END_OF_PREVIOUS_LINE),
+    config: Oppen::Config.new(indent_anchor: :end_of_previous_line),
     width: 13,
   )
 test_block = ->(printer) {
@@ -24,14 +24,14 @@ test_block = ->(printer) {
 test_block.(printer_with_config)
 test_block.(printer_no_config)
 
-title 'CURRENT_OFFSET:'
+title ':current_offset:'
 puts printer_with_config.output
 # And she said:
 #         Hello, World!
 
 puts ''
 
-title 'END_OF_PREVIOUS_LINE:'
+title ':end_of_previous_line:'
 puts printer_no_config.output
 # And she said:
 #                  Hello, World!

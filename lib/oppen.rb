@@ -39,11 +39,27 @@ module Oppen
 
   # Config.
   class Config
-    # The different ways of handling the indentation of nested groups.
-    # (cf. test/indent_anchor_test.rb).
+    attr_accessor :indent_anchor
+
+    # @param eager_print               [Boolean] whether to eagerly print.
+    # @param indent_anchor             [Symbol]  the different ways of handling the indentation of nested groups.
+    # :end_of_previous_line =>
+    # In the case of a new line in a nested group,
+    # the next string token will be displayed with
+    # indentation = previous line width + last group indentation.
+    # Defined in Oppen's paper.
     #
-    # @example
-    #   config = Oppen::Config.new(indent_anchor: END_OF_PREVIOUS_LINE)
+    # :current_offset =>
+    # When printing a new line in a nested group,
+    # the next string token will be displayed with an
+    # indentation equal to the sum of the indentations of all
+    # its parent groups.
+    # This is an extension to Oppen's work.
+    # @param trim_trailing_whitespaces [Boolean] whether to trim trailing whitespaces.
+    # @param upsize_stack              [Boolean] whether to upsize stack when needed.
+    #
+    # @example :end_of_previous_line anchor
+    #   config = Oppen::Config.new(indent_anchor: :end_of_previous_line)
     #   out = Oppen::Wadler.new config:, width: 13
     #   out.text 'And she said:'
     #   out.group(4) {
@@ -58,8 +74,8 @@ module Oppen
     #   # And she said:
     #   #                  Hello, World!
     #
-    # @example
-    #   config = Oppen::Config.new(indent_anchor: CURRENT_OFFSET)
+    # @example :current_offset anchor
+    #   config = Oppen::Config.new(indent_anchor: :current_offset)
     #   out = Oppen::Wadler.new config:, width: 13
     #   out.text 'And she said:'
     #   out.group(4) {
@@ -73,33 +89,7 @@ module Oppen
     #   # =>
     #   # And she said:
     #   #         Hello, World!
-    module IndentAnchor
-      # Anchor on break position.
-      #
-      # In the case of a new line in a nested group,
-      # the next string token will be displayed with
-      # indentation = previous line width + last group indentation.
-      #
-      # @note Defined in Oppen's paper.
-      #
-      # @return [Integer]
-      END_OF_PREVIOUS_LINE = 0
-      # Anchor on begin block position.
-      #
-      # When printing a new line in a nested group,
-      # the next string token will be displayed with an
-      # indentation equal to the sum of the indentations of all
-      # its parent groups.
-      #
-      # @note This is an extension to Oppen's work.
-      #
-      # @return [Integer]
-      CURRENT_OFFSET = 1
-    end
-
-    attr_accessor :indent_anchor
-
-    def initialize(eager_print: false, indent_anchor: IndentAnchor::END_OF_PREVIOUS_LINE,
+    def initialize(eager_print: false, indent_anchor: :end_of_previous_line,
                    trim_trailing_whitespaces: false, upsize_stack: false)
       @eager_print = eager_print
       @indent_anchor = indent_anchor
@@ -159,7 +149,7 @@ module Oppen
     #
     # @return [Config]
     def self.wadler(eager_print: true, trim_trailing_whitespaces: true, upsize_stack: true)
-      new(eager_print:, indent_anchor: IndentAnchor::CURRENT_OFFSET, trim_trailing_whitespaces:, upsize_stack:)
+      new(eager_print:, indent_anchor: :current_offset, trim_trailing_whitespaces:, upsize_stack:)
     end
   end
 
@@ -200,22 +190,46 @@ module Oppen
     Token::LineBreak.new(line_continuation:, offset:)
   end
 
+  # In a consistent group,
+  # The presence of a new line inside the group will propagate
+  # to the other Break tokens in the group
+  # causing them all to act as a new line.
+  #
   # @param offset [Integer] the additional indentation of the group.
   #
   # @return [Token::Begin] a new consistent Begin token.
   #
-  # @see Token::BreakType
+  # @example when used for the display of a function's arguments.
+  #   fun(
+  #       arg1,
+  #       arg2,
+  #       arg3,
+  #       arg4,
+  #      )
+  #
+  # @see Wadler#group
   def self.begin_consistent(offset: 2)
-    Token::Begin.new(break_type: Token::BreakType::CONSISTENT, offset:)
+    Token::Begin.new(break_type: :consistent, offset:)
   end
 
+  # In an inconsistent group,
+  # the presence of a new line inside the group will not propagate
+  # to the other Break tokens in the group letting them decide
+  # if they need to act as a new line or not.
+  #
   # @param offset [Integer] the additional indentation of the group.
   #
   # @return [Token::Begin] a new inconsistent Begin token.
   #
-  # @see Token::BreakType
+  # @example when used for the display of a function's arguments.
+  #   fun(
+  #       arg1, arg2,
+  #       arg3, arg4,
+  #      )
+  #
+  # @see Wadler#group
   def self.begin_inconsistent(offset: 2)
-    Token::Begin.new(break_type: Token::BreakType::INCONSISTENT, offset:)
+    Token::Begin.new(break_type: :inconsistent, offset:)
   end
 
   # @return [Token::End] a new End token.

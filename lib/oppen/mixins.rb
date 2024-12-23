@@ -35,7 +35,7 @@ module Oppen
     #   out.show_print_commands(out_name: 'out')
     #
     #   # =>
-    #   # out.group(0, "", "", Oppen::Token::BreakType::CONSISTENT) {
+    #   # out.group(0, "", "", :consistent) {
     #   #   out.text("Hello World!", width: 12)
     #   # }
     #
@@ -76,7 +76,7 @@ module Oppen
         in Token::Break
           handle_break_token.(token)
         in Token::Begin
-          printer.text "#{printer_name}.group(#{token.offset}, '', '', #{token.break_type_name}) {"
+          printer.text "#{printer_name}.group(#{token.offset}, '', '', #{token.break_type.inspect}) {"
           printer.nest_open indent
         in Token::End
           printer.nest_close indent

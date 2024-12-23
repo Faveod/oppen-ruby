@@ -13,7 +13,7 @@ printer.group(2) {
 }
 
 puts printer.show_print_commands
-# out.group(2, "", "", Oppen::Token::BreakType::CONSISTENT) {
+# out.group(2, "", "", :consistent) {
 #   out.text("Hello, World!", width: 13)
 #   out.nest(4, "", "") {
 #     out.break(line_continuation: "")

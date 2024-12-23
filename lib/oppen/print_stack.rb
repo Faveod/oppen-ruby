@@ -94,12 +94,12 @@ module Oppen
     def handle_begin(token, token_width)
       if token_width > space
         type =
-          if token.break_type == Token::BreakType::CONSISTENT
-            Token::BreakType::CONSISTENT
+          if token.break_type == :consistent
+            :consistent
           else
-            Token::BreakType::INCONSISTENT
+            :inconsistent
           end
-        if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
+        if config&.indent_anchor == :current_offset
           indent = token.offset
           if !items.empty?
             indent += top.offset
@@ -109,7 +109,7 @@ module Oppen
         end
         push PrintStackEntry.new indent, type
       else
-        push PrintStackEntry.new 0, Token::BreakType::FITS
+        push PrintStackEntry.new 0, :fits
       end
     end
 
@@ -135,13 +135,14 @@ module Oppen
     def handle_break(token, token_width, trim_on_break: 0)
       block = top
       case block.break_type
-      in Token::BreakType::FITS
+      in :fits
+        # No new line is needed (the block fits on the line).
         @space -= token.width
         write token
-      in Token::BreakType::CONSISTENT
+      in :consistent
         @space = block.offset - token.offset
         indent =
-          if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
+          if config&.indent_anchor == :current_offset
             token.offset
           else
             width - space
@@ -149,11 +150,11 @@ module Oppen
         erase trim_on_break
         write token.line_continuation
         print_new_line indent
-      in Token::BreakType::INCONSISTENT
+      in :inconsistent
         if token_width > space
           @space = block.offset - token.offset
           indent =
-            if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
+            if config&.indent_anchor == :current_offset
               token.offset
             else
               width - space
@@ -227,7 +228,7 @@ module Oppen
     # @return [Nil]
     def print_new_line(amount)
       write new_line
-      if config&.indent_anchor == Config::IndentAnchor::CURRENT_OFFSET
+      if config&.indent_anchor == :current_offset
         @space = width - top.offset - amount
         @indent = width - space
       else
