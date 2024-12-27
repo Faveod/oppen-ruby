@@ -26,6 +26,7 @@ module Oppen
     # @param tokens       [Array<Token>] the list of tokens.
     # @param base_indent  [Integer]      the base indentation amount of the output.
     # @param printer_name [String]       the name of the Wadler instance in the output.
+    # @param width        [Integer]      the maximum width of the display.
     #
     # @example
     #   out = Oppen::Wadler.new
