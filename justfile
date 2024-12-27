@@ -15,7 +15,7 @@ alias t := test
 default: test
 
 [group('lint')]
-check: doc-stats lint
+check: doc-stats lint test
 
 [group('develop')]
 debug *args:
