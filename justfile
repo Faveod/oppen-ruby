@@ -7,6 +7,11 @@ VERSION := shell("ruby -r ./" + VERSION_FILE  + " -e 'puts Oppen::VERSION'")
 GEM_FILE := GEM_NAME + '-' + VERSION + '.gem'
 PKG_OUT := 'pkg'
 
+alias c := check
+alias d := doc
+alias l := lint
+alias t := test
+
 default: test
 
 [group('lint')]
@@ -63,4 +68,3 @@ typos:
 [group('lint')]
 typos-fix:
   typos --write-changes
-
