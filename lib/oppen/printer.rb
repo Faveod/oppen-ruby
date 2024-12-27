@@ -322,12 +322,12 @@ module Oppen
 
       x = scan_stack.top
       case tokens[x]
-      when Token::Begin
+      in Token::Begin
         if depth.positive?
           size[scan_stack.pop] = size[x] + right_total
           check_stack depth - 1
         end
-      when Token::End
+      in Token::End
         size[scan_stack.pop] = 1
         check_stack depth + 1
       else
