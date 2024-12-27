@@ -15,6 +15,6 @@ tokens = [
   Oppen.eof,
 ]
 
-puts Oppen.print(tokens:)
+puts Oppen.print(tokens: tokens)
 # Hello, World!
 #   How are you doing?

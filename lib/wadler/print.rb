@@ -4,32 +4,45 @@
 module Oppen
   # Wadler.
   class Wadler
-    # To customize the printer's behavior.
+    # @return [Config]
+    #   The printer's configuration, altering its behavior.
     attr_reader :config
-    # The current indentation amount.
+    # @return [Integer]
+    #   the current indentation amount.
     attr_reader :current_indent
-    # The new line String.
+    # @return [String]
+    #   the new line string, e.g. `\n`.
     attr_reader :new_line
-    # The output string buffer. It should have a `write` and `string` methods.
+    # @return [Object]
+    #   the output string buffer. It should have a `write` and `string` methods.
     attr_reader :out
-    # The indentator.
+    # @return [Proc]
+    #   space generator, a callable.
     attr_reader :space
-    # The tokens list that is being built.
+    # @return [Array<Token>]
+    #   the tokens list that is being built.
     attr_reader :tokens
-    # The whitespace character. Used to trim trailing whitespaces.
+    # @return [String]
+    #   the whitespace character. Used to trim trailing whitespaces.
     attr_reader :whitespace
-    # Maximum line width desired.
+    # @return [Integer]
+    #   maximum line width.
     attr_reader :width
 
-    # @param config     [Config]       to customize the printer's behavior.
-    # @param new_line   [String]       the new line String.
-    # @param out        [Object]       the output string buffer. It should have a `write` and `string` methods.
-    # @param space      [String, Proc] indentation string or a code that generates the indentation string.
-    #   If it's a string, spaces will be generated with lambda `->(n){ space * n }`,
-    #   where `n` is the number of columns to indent. If it's a callable, it
-    #   will receive `n` and it needs to return a string.
+    # @param config     [Config]
+    #   to customize the printer's behavior.
+    # @param new_line   [String]
+    #   the new line String.
+    # @param out        [Object]
+    #   the output string buffer. It should have a `write` and `string` methods.
+    # @param space      [String, Proc]
+    #   indentation string or a string generator.
+    #   - If a `String`, spaces will be generated with the the lambda
+    #     `->(n){ space * n }`, where `n` is the number of columns to indent.
+    #   - If a `Proc`, it will receive `n` and it needs to return a `String`.
     # @param whitespace [String]       the whitespace character. Used to trim trailing whitespaces.
     # @param width      [Integer]      maximum line width desired.
+    #
     # @see Token::Whitespace
     def initialize(config: Config.wadler, new_line: "\n",
                    out: StringIO.new, space: ' ',
@@ -44,7 +57,7 @@ module Oppen
       @whitespace = whitespace
     end
 
-    # Add missing Begin, End or EOF tokens.
+    # Add missing {Token::Begin}, {Token::End} or {Token::EOF}.
     #
     # @return [Nil]
     def add_missing_begin_and_end
@@ -55,32 +68,63 @@ module Oppen
       tokens << Oppen.eof if !tokens.last.is_a?(Oppen::Token::EOF)
     end
 
-    # Generate the output string of the built list of tokens using Oppen's
-    # pretty printing algorithm.
+    # Call this to extract the final pretty-printed output.
     #
     # @return [String]
     def output
       add_missing_begin_and_end
-      Oppen.print(tokens:, new_line:, config:, space:, out:, width:)
+      Oppen.print(
+        tokens: tokens,
+        new_line: new_line,
+        config: config,
+        space: space,
+        out: out,
+        width: width,
+      )
     end
 
-    # Generate the the list of Wadler commands needed to build the built list of
-    # tokens.
+    # Convert a list of tokens to its wadler representation.
+    #
+    # This method reverse engineers a tokens list to transform it into Wadler
+    # printing commands. It can be particularly useful when debugging a black
+    # box program.
+    #
+    # @option kwargs [Integer] :base_indent
+    #   the base indentation amount of the output.
+    # @option kwargs [String]  :printer_name
+    #   the name of the Wadler instance in the output.
+    #
+    # @example
+    #   out = Oppen::Wadler.new
+    #   out.group {
+    #     out.text('Hello World!')
+    #   }
+    #   out.show_print_commands(out_name: 'out')
+    #
+    #   # =>
+    #   # out.group(0, "", "", :consistent) {
+    #   #   out.text("Hello World!", width: 12)
+    #   # }
     #
     # @return [String]
-    def show_print_commands(**)
+    def show_print_commands(**kwargs)
       add_missing_begin_and_end
-      Oppen.tokens_to_wadler(tokens, **)
+      Oppen.tokens_to_wadler(tokens, **kwargs)
     end
 
     # Create a new group.
     #
-    # @param indent     [Integer]          group indentation.
-    # @param open_obj   [String]           group opening delimiter.
-    # @param close_obj  [String]           group closing delimiter.
-    # @param break_type [Token::BreakType] group breaking type.
+    # @param indent     [Integer]
+    #   indentation.
+    # @param open_obj   [String]
+    #   opening delimiter.
+    # @param close_obj  [String]
+    #   closing delimiter.
+    # @param break_type [Token::BreakType]
+    #   break type.
     #
-    # @yield the block of text in a group.
+    # @yield
+    #   the block of text in a group.
     #
     # @example
     #   out = Oppen::Wadler.new
@@ -97,7 +141,7 @@ module Oppen
     #   #   b
     #   #   }
     #
-    # @example consistent
+    # @example Consistent Breaking
     #   out = Oppen::Wadler.new
     #   out.group(0, '', '', :consistent) {
     #     out.text 'a'
@@ -113,7 +157,7 @@ module Oppen
     #   # b
     #   # c
     #
-    # @example inconsistent
+    # @example Inconsistent Breaking
     #   out = Oppen::Wadler.new
     #   out.group(0, '', '', :inconsistent) {
     #     out.text 'a'
@@ -160,13 +204,29 @@ module Oppen
       tokens << Oppen.end
     end
 
-    # Create a new nest.
+    # Create a new non-strict {group}.
     #
-    # @param indent    [Integer] nest indentation.
-    # @param open_obj  [String]  nest opening delimiter.
-    # @param close_obj [String]  nest closing delimiter.
+    # {group}s isolate breaking decisions, and in that sense they're considered
+    # strict; e.g. when a breakable is transformed into an actual break, its
+    # parent {group} might not get broken if the result could fit on the line.
     #
-    # @yield the block of text in a nest.
+    # This is not the case with {nest}: if the same breakable was in a {nest}, the
+    # {group} containing the {nest} will also be broken.
+    #
+    # @note indentation cannot happen if there are no breaks in the {nest}.
+    #
+    # @note a {nest} will not forcibly indent its content if the break type of
+    # the enclosing {group} is `:inconsistent`.
+    #
+    # @param indent    [Integer]
+    #   indentation.
+    # @param open_obj  [String]
+    #   opening delimiter. A {break} is implicitly slipped after it if it's not empty.
+    # @param close_obj [String]
+    #   closing delimiter. A {break} is implicitly slipped before it if it's not empty.
+    #
+    # @yield
+    #   the block of text in a nest.
     #
     # @example
     #   out = Oppen::Wadler.new
@@ -209,7 +269,8 @@ module Oppen
 
     # Create a new text element.
     #
-    # @param value [String] the value of the token.
+    # @param value [String]
+    #   the value of the token.
     #
     # @return [Nil]
     def text(value, width: value.length)
@@ -221,26 +282,30 @@ module Oppen
         end
         tokens << Oppen.whitespace(match)
       else
-        tokens << Oppen.string(value, width:)
+        tokens << Oppen.string(value, width: width)
       end
     end
 
     # Create a new breakable element.
     #
-    # @param str               [String]  the value of the token that will be displayed if no new line is needed.
-    # @param line_continuation [String]  printed before the line break.
-    # @param width             [Integer] the width of the token.
+    # @param str               [String]
+    #   the value of the token that will be displayed if no new line is needed.
+    # @param line_continuation [String]
+    #   printed before the line break.
+    # @param width             [Integer]
+    #   the width of the token.
     #
     # @return [Nil]
     #
-    # @see Wadler#break for an example on `line_continuation`.
+    # @see Wadler#break example on `line_continuation`.
     def breakable(str = ' ', line_continuation: '', width: str.length)
-      tokens << Oppen.break(str, width:, line_continuation:, offset: current_indent)
+      tokens << Oppen.break(str, width: width, line_continuation: line_continuation, offset: current_indent)
     end
 
     # Create a new break element.
     #
-    # @param line_continuation [String] printed before the line break.
+    # @param line_continuation [String]
+    #   printed before the line break.
     #
     # @example
     #   out = Oppen::Wadler.new
@@ -258,14 +323,15 @@ module Oppen
     #
     # @return [Nil]
     def break(line_continuation: '')
-      tokens << Oppen.line_break(line_continuation:, offset: current_indent)
+      tokens << Oppen.line_break(line_continuation: line_continuation, offset: current_indent)
     end
 
     # @!group Helpers
 
     # Set a base indenetaion level for the printer.
     #
-    # @param indent [Integer] the amount of indentation.
+    # @param indent [Integer]
+    #   the amount of indentation.
     #
     # @return [Nil]
     def base_indent(indent = 0)
@@ -274,8 +340,10 @@ module Oppen
 
     # Open a consistent group.
     #
-    # @param inconsistent [Boolean] whether the break type of the group should be inconsistent.
-    # @param indent       [Integer] the amount of indentation of the group.
+    # @param inconsistent [Boolean]
+    #   whether the break type of the group should be inconsistent.
+    # @param indent       [Integer]
+    #   the amount of indentation of the group.
     #
     # @return [Nil]
     #
@@ -299,7 +367,8 @@ module Oppen
 
     # Open a consistent group and add indent amount.
     #
-    # @param indent [Integer] the amount of indentation of the group.
+    # @param indent [Integer]
+    #   the amount of indentation of the group.
     #
     # @return [Nil]
     def indent_open(indent)
@@ -309,7 +378,8 @@ module Oppen
 
     # Close a group and subtract indent.
     #
-    # @param indent [Integer] the amount of indentation of the group.
+    # @param indent [Integer]
+    #   the amount of indentation of the group.
     #
     # @return [Nil]
     def indent_close(group, indent)
@@ -319,7 +389,8 @@ module Oppen
 
     # Open a nest by adding indent.
     #
-    # @param indent [Integer] the amount of indentation of the nest.
+    # @param indent [Integer]
+    #   the amount of indentation of the nest.
     #
     # @return [Nil]
     def nest_open(indent)
@@ -328,7 +399,8 @@ module Oppen
 
     # Close a nest by subtracting indent.
     #
-    # @param indent [Integer] the amount of indentation of the nest.
+    # @param indent [Integer]
+    #   the amount of indentation of the nest.
     #
     # @return [Nil]
     def nest_close(indent)

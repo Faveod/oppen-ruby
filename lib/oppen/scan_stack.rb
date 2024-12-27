@@ -28,7 +28,8 @@ module Oppen
 
     # The top element of the stack.
     #
-    # @raise [RuntimeError] When accessing empty stack.
+    # @raise [RuntimeError]
+    #   when accessing empty stack.
     #
     # @return [Object]
     def top
@@ -41,7 +42,8 @@ module Oppen
 
     # The bottom element of the stack.
     #
-    # @raise [RuntimeError] When accessing empty stack.
+    # @raise [RuntimeError]
+    #   when accessing empty stack.
     #
     # @return [Object]
     def bottom
@@ -74,8 +76,9 @@ module Oppen
     #
     # @param value [Object]
     #
-    # @raise [RuntimeError] When the stack is full and the `upsize_stack` flag is
-    #                       not activated in `config`.
+    # @raise [RuntimeError]
+    #   when the stack is full and the `upsize_stack` flag is not activated in
+    #   {Config}.
     #
     # @return [Nil]
     def push(value)
@@ -94,7 +97,8 @@ module Oppen
 
     # Pop a value from the top.
     #
-    # @raise [RuntimeError] When accessing empty stack.
+    # @raise [RuntimeError]
+    #   when accessing empty stack.
     #
     # @return [Nil]
     def pop
@@ -113,7 +117,8 @@ module Oppen
 
     # Pop a value from the bottom.
     #
-    # @raise [RuntimeError] When accessing empty stack.
+    # @raise [RuntimeError]
+    #   when accessing empty stack.
     #
     # @return [Nil]
     def pop_bottom

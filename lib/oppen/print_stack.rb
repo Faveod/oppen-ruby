@@ -2,14 +2,15 @@
 
 # Oppen.
 module Oppen
-  # Class that represents a stack that builds an output string using the values
-  # of the tokens that were pushed into it.
+  # A stack of {Token}s.
   class PrintStack
-    # Class that represents an item in the print stack.
+    # An item in the print stack.
     class PrintStackEntry
-      # @return [Token::BreakType] Called `break` in the original paper.
+      # @return [Token::BreakType]
+      #   Called `break` in the original paper.
       attr_reader :break_type
-      # @return [Integer] Indentation level.
+      # @return [Integer]
+      #   Indentation level.
       attr_reader :offset
 
       def initialize(offset, break_type)
@@ -18,15 +19,15 @@ module Oppen
       end
     end
 
-    # IO element that builds the output.
+    # IO sink for the output.
     attr_reader :buffer
-    # To customize the printer's behavior.
+    # The printer's configuration, altering its behavior.
     attr_reader :config
-    # Callable that generates spaces.
+    # Space generator, a callable.
     attr_reader :genspace
-    # Array representing the stack of PrintStackEntries.
+    # The stack of PrintStackEntries.
     attr_reader :items
-    # Delimiter between lines in output.
+    # Delimiter between lines.
     attr_reader :new_line
     # Current available space (`index` in the original paper).
     attr_reader :space
@@ -54,20 +55,23 @@ module Oppen
 
     # The final pretty-printed output.
     #
-    # @return [String] The output of the print stack.
+    # @return [String]
+    #   The output of the print stack.
     def output
       buffer.truncate buffer.pos
       buffer.string
     end
 
-    # Core method responsible for building the print stack and the output string.
+    # Core method responsible for building the print stack and the output
+    # string.
     #
     # @note Called `Print` in the original paper.
     #
     # @param token         [Token]
     # @param token_width   [Integer]
-    # @param trim_on_break [Integer] number of trailing whitespace characters to trim.
-    #                                If zero, no character will be trimmed.
+    # @param trim_on_break [Integer]
+    #   number of trailing whitespace characters to trim. If zero, no
+    #   character will be trimmed.
     #
     # @return [Nil]
     def print(token, token_width, trim_on_break: 0)
@@ -77,20 +81,18 @@ module Oppen
       in Token::End
         handle_end
       in Token::Break
-        handle_break token, token_width, trim_on_break:
+        handle_break token, token_width, trim_on_break: trim_on_break
       in Token::String
         handle_string token, token_width
       end
     end
 
-    # Handle Begin Token.
+    # Handle {Token::Begin}.
     #
     # @param token       [Token]
     # @param token_width [Integer]
     #
     # @return [Nil]
-    #
-    # @see Token::Begin
     def handle_begin(token, token_width)
       if token_width > space
         type =
@@ -113,25 +115,22 @@ module Oppen
       end
     end
 
-    # Handle End Token.
+    # Handle {Token::End}.
     #
     # @return [Nil]
-    #
-    # @see Token::End
     def handle_end
       pop
     end
 
-    # Handle Break Token.
+    # Handle {Token::Break}.
     #
-    # @param token         [Token]
+    # @param token         [Token::Break]
     # @param token_width   [Integer]
-    # @param trim_on_break [Integer] number of trailing whitespace characters to trim.
-    #                                If zero, no character will be trimmed.
+    # @param trim_on_break [Integer]
+    #   number of trailing whitespace characters to trim.
+    #   0 = none.
     #
     # @return [Nil]
-    #
-    # @see Token::Break
     def handle_break(token, token_width, trim_on_break: 0)
       block = top
       case block.break_type
@@ -169,14 +168,12 @@ module Oppen
       end
     end
 
-    # Handle String Token.
+    # Handle {Token::String}.
     #
-    # @param token       [Token]
+    # @param token       [Token::String]
     # @param token_width [Integer]
     #
     # @return [Nil]
-    #
-    # @see Token::String
     def handle_string(token, token_width)
       return if token.value.empty?
 
@@ -188,7 +185,7 @@ module Oppen
       write token
     end
 
-    # Push a PrintStackEntry into the stack.
+    # Push a {PrintStackEntry} into the stack.
     #
     # @param print_stack_entry [PrintStackEntry]
     #
@@ -197,7 +194,7 @@ module Oppen
       items.append print_stack_entry
     end
 
-    # Pop a PrintStackEntry from the stack.
+    # Pop a {PrintStackEntry} from the stack.
     #
     # @return [PrintStackEntry]
     def pop
@@ -223,7 +220,8 @@ module Oppen
     #
     # @note Called `PrintNewLine` as well in the original paper.
     #
-    # @param amount [Integer] indentation amount.
+    # @param amount [Integer]
+    #   indentation amount.
     #
     # @return [Nil]
     def print_new_line(amount)

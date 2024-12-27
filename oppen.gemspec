@@ -16,7 +16,8 @@ Gem::Specification.new do |spec|
   spec.description   = "Implementation of the Oppen's pretty printing algorithm"
   spec.homepage      = 'http://github.com/Faveod/oppen-ruby'
   spec.license       = 'MIT'
-  spec.files         = Dir['lib/**/*', 'LICENSE', 'README.md']
-  spec.require_paths = ['lib']
-  spec.required_ruby_version = '~>3.2'
+
+  spec.files                 = Dir['lib/**/*', 'LICENSE', 'README.md']
+  spec.require_paths         = ['lib']
+  spec.required_ruby_version = Gem::Requirement.new('>= 3.0')
 end

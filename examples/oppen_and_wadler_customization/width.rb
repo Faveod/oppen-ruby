@@ -6,7 +6,7 @@ require_relative '../helper'
 width = 5
 
 printer_width_default = Oppen::Wadler.new
-printer_width_narrow = Oppen::Wadler.new(width:)
+printer_width_narrow = Oppen::Wadler.new(width: width)
 test_block = ->(printer) {
   printer.group(2) {
     printer.text 'Hello, World!'
