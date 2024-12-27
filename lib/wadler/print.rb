@@ -25,11 +25,9 @@ module Oppen
     # @param new_line   [String]       the new line String.
     # @param out        [Object]       the output string buffer. It should have a `write` and `string` methods.
     # @param space      [String, Proc] indentation string or a code that generates the indentation string.
-    #   If it's a string, spaces will be generated with the the
-    #   lambda `->(n){ space * n }`, where `n` is the number of columns
-    #   to indent.
-    #   If it's a callable, it will receive `n` and it needs to return
-    #   a string.
+    #   If it's a string, spaces will be generated with lambda `->(n){ space * n }`,
+    #   where `n` is the number of columns to indent. If it's a callable, it
+    #   will receive `n` and it needs to return a string.
     # @param whitespace [String]       the whitespace character. Used to trim trailing whitespaces.
     # @param width      [Integer]      maximum line width desired.
     # @see Token::Whitespace
@@ -57,8 +55,8 @@ module Oppen
       tokens << Oppen.eof if !tokens.last.is_a?(Oppen::Token::EOF)
     end
 
-    # Generate the output string of the built list of tokens
-    # using Oppen's pretty printing algorithm.
+    # Generate the output string of the built list of tokens using Oppen's
+    # pretty printing algorithm.
     #
     # @return [String]
     def output
@@ -66,8 +64,8 @@ module Oppen
       Oppen.print(tokens:, new_line:, config:, space:, out:, width:)
     end
 
-    # Generate the the list of Wadler commands needed to build the built
-    # list of tokens.
+    # Generate the the list of Wadler commands needed to build the built list of
+    # tokens.
     #
     # @return [String]
     def show_print_commands(**)

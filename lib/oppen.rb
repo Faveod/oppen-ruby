@@ -19,11 +19,9 @@ module Oppen
   # @param out      [Object]       the output string buffer.
   #                                It should have a `write` and `string` methods.
   # @param space    [String, Proc] indentation string or a code that generates the indentation string.
-  #   If it's a string, spaces will be generated with the the
-  #   lambda `->(n){ space * n }`, where `n` is the number of columns
-  #   to indent.
-  #   If it's a callable, it will receive `n` and it needs to return
-  #   a string.
+  #   If it's a string, spaces will be generated with the the lambda `->(n){ space * n }`,
+  #   where `n` is the number of columns to indent. If it's a callable, it will
+  #   receive `n` and it needs to return a string.
   # @param tokens   [Array<Token>] the list of tokens to be printed.
   # @param width    [Integer]      maximum line width desired.
   #
@@ -44,15 +42,13 @@ module Oppen
     # @param eager_print               [Boolean] whether to eagerly print.
     # @param indent_anchor             [Symbol]  the different ways of handling the indentation of nested groups.
     # :end_of_previous_line =>
-    # In the case of a new line in a nested group,
-    # the next string token will be displayed with
-    # indentation = previous line width + last group indentation.
+    # In the case of a new line in a nested group, the next string token will be
+    # displayed with indentation = previous line width + last group indentation.
     # Defined in Oppen's paper.
     #
     # :current_offset =>
-    # When printing a new line in a nested group,
-    # the next string token will be displayed with an
-    # indentation equal to the sum of the indentations of all
+    # When printing a new line in a nested group, the next string token will be
+    # displayed with an indentation equal to the sum of the indentations of all
     # its parent groups.
     # This is an extension to Oppen's work.
     # @param trim_trailing_whitespaces [Boolean] whether to trim trailing whitespaces.
@@ -130,8 +126,8 @@ module Oppen
 
     def upsize_stack? = @upsize_stack
 
-    # Default configuration that provides printing behaviour
-    # identical to what's been described by Oppen.
+    # Default configuration that provides printing behaviour identical to what's
+    # been described by Oppen.
     #
     # @return [Config]
     def self.oppen
@@ -190,10 +186,9 @@ module Oppen
     Token::LineBreak.new(line_continuation:, offset:)
   end
 
-  # In a consistent group,
-  # The presence of a new line inside the group will propagate
-  # to the other Break tokens in the group
-  # causing them all to act as a new line.
+  # In a consistent group, the presence of a new line inside the group will
+  # propagate to the other Break tokens in the group causing them all to act as
+  # a new line.
   #
   # @param offset [Integer] the additional indentation of the group.
   #
@@ -212,10 +207,9 @@ module Oppen
     Token::Begin.new(break_type: :consistent, offset:)
   end
 
-  # In an inconsistent group,
-  # the presence of a new line inside the group will not propagate
-  # to the other Break tokens in the group letting them decide
-  # if they need to act as a new line or not.
+  # In an inconsistent group, the presence of a new line inside the group will
+  # not propagate to the other Break tokens in the group letting them decide if
+  # they need to act as a new line or not.
   #
   # @param offset [Integer] the additional indentation of the group.
   #

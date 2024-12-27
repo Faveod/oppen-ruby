@@ -3,8 +3,8 @@
 module Oppen
   # Mixins.
   module Mixins
-    # Rotates circular array and triples its size.
-    # This method is not for public use.
+    # Rotates circular array and triples its size. This method is not for
+    # public use.
     #
     # @param arr    [Array]   the circular array.
     # @param offset [Integer] rotation amount.
@@ -19,9 +19,9 @@ module Oppen
 
     # Convert a list of tokens to its wadler representation.
     #
-    # This method reverse engineers a tokens list to transform it into
-    # Wadler printing commands.
-    # It can be particularly useful when debugging a black box program.
+    # This method reverse engineers a tokens list to transform it into Wadler
+    # printing commands. It can be particularly useful when debugging a black
+    # box program.
     #
     # @param tokens       [Array<Token>] the list of tokens.
     # @param base_indent  [Integer]      the base indentation amount of the output.

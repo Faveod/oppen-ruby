@@ -2,8 +2,8 @@
 
 # Oppen.
 module Oppen
-  # Class that represents a stack that builds an output string
-  # using the values of the tokens that were pushed into it.
+  # Class that represents a stack that builds an output string using the values
+  # of the tokens that were pushed into it.
   class PrintStack
     # Class that represents an item in the print stack.
     class PrintStackEntry
