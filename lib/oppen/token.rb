@@ -11,7 +11,7 @@ module Oppen
 
     # String Token.
     class String < Token
-      # @return [String] String value.
+      # @return [String]
       attr_reader :value
       # @return [Integer]
       attr_reader :width
@@ -22,25 +22,25 @@ module Oppen
         super()
       end
 
-      # Convert token to String.
-      #
       # @return [String]
       def to_s = value
     end
 
-    # This token is not a part of Oppen's original paper and algorithm, it was
-    # created in order to handle trailing whitespaces at the end of lines. When
-    # the config flag `trim_trailing_whitespaces == true`, and a new line is
-    # needed, all the Whitespace tokens present after the last String token of
-    # the line will not be added to the final output.
+    # This token is not part of Oppen's original work. We introduced it to
+    # handle trailing whitespaces.
+    #
+    # When the config flag `trim_trailing_whitespaces == true`, and a new line
+    # is needed, all the {Token::Whitespace} figuring after the last {Token::String}
+    # will be be skipped.
     class Whitespace < ::Oppen::Token::String
     end
 
     # Break Token.
     class Break < Token
-      # @return [String] If a new line is needed, display this string before the new line.
+      # @return [String]
+      #   If a new line is needed, display this string before the new line.
       #
-      # @see Wadler#break for an example on `line_continuation`.
+      # @see Wadler#break example on `line_continuation`.
       attr_reader :line_continuation
       # @return [Integer] Indentation.
       attr_reader :offset
@@ -74,7 +74,7 @@ module Oppen
       end
 
       def initialize(line_continuation: '', offset: 0)
-        super(LineBreakString.new, line_continuation:, offset:)
+        super(LineBreakString.new, line_continuation: line_continuation, offset: offset)
       end
     end
 
@@ -82,7 +82,7 @@ module Oppen
     class Begin < Token
       # @return [BreakType]
       attr_reader :break_type
-      # @return [Integer] Indentation.
+      # @return [Integer]
       attr_reader :offset
 
       def initialize(break_type: :inconsistent, offset: 2)
@@ -97,9 +97,9 @@ module Oppen
       nil
     end
 
-    # The EOF token is a token present in Oppen's original paper and algorithm.
-    # It can be interpreted as a flush of the output. Multiple EOF tokens can
-    # be present in the same list of tokens.
+    # The EOF token can be interpreted as an output flush operation.
+    #
+    # @note Multiple {Token::EOF} tokens can be present in the same list of tokens.
     #
     # @example
     #   tokens = [

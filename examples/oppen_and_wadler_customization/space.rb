@@ -9,7 +9,7 @@ _space = '#'
 # By using a callable:
 space = ->(n) { '---' * n }
 
-printer = Oppen::Wadler.new(space:)
+printer = Oppen::Wadler.new(space: space)
 
 printer.group(2) {
   printer.text 'Hello, World!'

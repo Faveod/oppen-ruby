@@ -405,12 +405,12 @@ describe 'Line continuation tests' do
       printer.group(2, '', '', break_type) {
         printer.breakable('')
         printer.text('1')
-        printer.breakable(', ', line_continuation:)
+        printer.breakable(', ', line_continuation: line_continuation)
         printer.text('2')
-        printer.breakable(', ', line_continuation:)
+        printer.breakable(', ', line_continuation: line_continuation)
         printer.text('3')
       }
-      printer.breakable('', line_continuation:)
+      printer.breakable('', line_continuation: line_continuation)
       printer.text(']')
     }
   end

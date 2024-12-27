@@ -8,4 +8,4 @@ require 'colored'
 require_relative '../lib/oppen'
 
 # Display helpers.
-def title(str) = puts str.green
+def title(str) = puts(str.green)

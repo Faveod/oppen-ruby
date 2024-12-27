@@ -12,35 +12,35 @@ module Oppen
   class Printer
     extend Mixins
 
-    # To customize the printer's behavior.
+    # The printer's configuration, altering its behavior.
     #
     # @return [Config]
     attr_reader :config
-    # Ring buffer left index.
+    # Ring buffer's left index.
     #
     # @note Called `left` as well in the original paper.
     #
     # @return [Integer]
     attr_reader :left
-    # Total number of spaces needed to print from start of buffer to left.
+    # Number of spaces needed to print from start of buffer to left.
     #
     # @note Called `leftTotal` as well in the original paper.
     #
     # @return [Integer]
     attr_reader :left_total
-    # Stack responsible of building the output.
+    # A stack of {Token}s; builds the the final output.
     #
     # @note Called `printStack` as well in the original paper.
     #
     # @return [PrintStack]
     attr_reader :print_stack
-    # Ring buffer right index.
+    # Ring buffer's right index.
     #
     # @note Called `right` as well in the original paper.
     #
     # @return [Integer]
     attr_reader :right
-    # Total number of spaces needed to print from start of buffer to right.
+    # Number of spaces needed to print from start of buffer to right.
     #
     # @note Called `leftTotal` as well in the original paper.
     #
@@ -67,15 +67,20 @@ module Oppen
 
     # @note Called `PrettyPrintInit` in the original paper.
     #
-    # @param width    [Integer]      maximum line width desired.
-    # @param new_line [String]       the delimiter between lines.
-    # @param config   [Config]       to customize the printer's behavior.
-    # @param space    [String, Proc] indentation string or a code that generates the indentation string.
-    #   If it's a string, spaces will be generated with the lambda `->(n){ space * n }`,
-    #   where `n` is the number of columns to indent. If it's a callable, it
-    #   will receive `n` and it needs to return a string.
-    # @param out      [Object]       the output string buffer.
-    #                                It should have a `write` and `string` methods.
+    # @param config   [Config]
+    #   to customize the printer's behavior.
+    # @param new_line [String]
+    #   the delimiter between lines.
+    # @param space    [String, Proc]
+    #   indentation string or a string generator.
+    #   - If a `String`, spaces will be generated with the the lambda
+    #     `->(n){ space * n }`, where `n` is the number of columns to indent.
+    #   - If a `Proc`, it will receive `n` and it needs to return a `String`.
+    # @param width    [Integer]
+    #   maximum line width desired.
+    # @param out      [Object]
+    #   the output string buffer. It should have both `write` and `string`
+    #   methods.
     def initialize(width, new_line, config = Config.oppen,
                    space = ' ', out = StringIO.new)
       # Maximum size if the stacks
@@ -95,10 +100,12 @@ module Oppen
 
     # The final pretty-printed output.
     #
-    # @return [String] the output of the print stack.
+    # @return [String]
+    #   the output of the print stack.
     def output = print_stack.output
 
-    # Core function of the algorithm responsible for populating the scan and print stack.
+    # Core function of the algorithm responsible for populating the {ScanStack}
+    # and {PrintStack}.
     #
     # @note Called `PrettyPrint` as well in the original paper.
     #
@@ -124,11 +131,9 @@ module Oppen
       end
     end
 
-    # Handle EOF Token.
+    # Handle {Token::EOF}.
     #
     # @return [Nil]
-    #
-    # @see Token::EOF
     def handle_eof
       if !scan_stack.empty?
         check_stack 0
@@ -137,13 +142,11 @@ module Oppen
       print_stack.indent 0
     end
 
-    # Handle Begin Token.
+    # Handle {Token::Begin}.
     #
-    # @param token [Token]
+    # @param token [Token::Begin]
     #
     # @return [Nil]
-    #
-    # @see Token::Begin
     def handle_begin(token)
       if scan_stack.empty?
         @left = 0
@@ -161,13 +164,11 @@ module Oppen
       scan_stack.push right
     end
 
-    # Handle End Token.
+    # Handle {Token::End}.
     #
-    # @param token [Token]
+    # @param token [Token::End]
     #
     # @return [Nil]
-    #
-    # @see Token::End
     def handle_end(token)
       if scan_stack.empty?
         print_stack.print token, 0
@@ -184,13 +185,11 @@ module Oppen
       end
     end
 
-    # Handle Break Token.
+    # Handle {Token::Break}.
     #
-    # @param token [Token]
+    # @param token [Token::Break]
     #
     # @return [Nil]
-    #
-    # @see Token::Break
     def handle_break(token)
       if scan_stack.empty?
         @left = 0
@@ -212,13 +211,11 @@ module Oppen
       @right_total += token.width
     end
 
-    # Handle String Token.
+    # Handle {Token::String}.
     #
-    # @param token [Token]
+    # @param token [Token::String]
     #
     # @return [Nil]
-    #
-    # @see Token::String
     def handle_string(token)
       if scan_stack.empty?
         print_stack.print token, token.width
@@ -248,7 +245,7 @@ module Oppen
       check_stream
     end
 
-    # Advances the `right` pointer.
+    # Advances the {#right} pointer.
     #
     # @note Called `AdvanceRight` as well in the original paper.
     #
@@ -265,7 +262,7 @@ module Oppen
       @tokens, @left, @right = ScanStack.upsize_circular_array(@tokens, @left)
     end
 
-    # Advances the `left` pointer and lets the print stack print some of the
+    # Advances the {#left} pointer and lets the print stack print some of the
     # tokens it contains.
     #
     # @note Called `AdvanceLeft` as well in the original paper.
@@ -296,7 +293,7 @@ module Oppen
         end
       trim_on_break ||= 0
 
-      print_stack.print(token, token_width, trim_on_break:)
+      print_stack.print(token, token_width, trim_on_break: trim_on_break)
 
       case token
       when Token::Break
@@ -311,12 +308,13 @@ module Oppen
       advance_left tokens[left], size[left]
     end
 
-    # Updates the size buffer taking into account the length of the current
+    # Updates the {#size} buffer taking into account the length of the current
     # group.
     #
     # @note Called `CheckStack` as well in the original paper.
     #
-    # @param depth [Integer] depth of the group.
+    # @param depth [Integer]
+    #   depth of the group.
     #
     # @return [Nil]
     def check_stack(depth)
