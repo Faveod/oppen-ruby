@@ -71,11 +71,9 @@ module Oppen
     # @param new_line [String]       the delimiter between lines.
     # @param config   [Config]       to customize the printer's behavior.
     # @param space    [String, Proc] indentation string or a code that generates the indentation string.
-    #   If it's a string, spaces will be generated with the the
-    #   lambda `->(n){ space * n }`, where `n` is the number of columns
-    #   to indent.
-    #   If it's a callable, it will receive `n` and it needs to return
-    #   a string.
+    #   If it's a string, spaces will be generated with the lambda `->(n){ space * n }`,
+    #   where `n` is the number of columns to indent. If it's a callable, it
+    #   will receive `n` and it needs to return a string.
     # @param out      [Object]       the output string buffer.
     #                                It should have a `write` and `string` methods.
     def initialize(width, new_line, config = Config.oppen,
@@ -267,8 +265,8 @@ module Oppen
       @tokens, @left, @right = ScanStack.upsize_circular_array(@tokens, @left)
     end
 
-    # Advances the `left` pointer and lets the print stack
-    # print some of the tokens it contains.
+    # Advances the `left` pointer and lets the print stack print some of the
+    # tokens it contains.
     #
     # @note Called `AdvanceLeft` as well in the original paper.
     #
@@ -313,8 +311,8 @@ module Oppen
       advance_left tokens[left], size[left]
     end
 
-    # Updates the size buffer taking into
-    # account the length of the current group.
+    # Updates the size buffer taking into account the length of the current
+    # group.
     #
     # @note Called `CheckStack` as well in the original paper.
     #

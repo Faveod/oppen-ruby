@@ -28,11 +28,11 @@ module Oppen
       def to_s = value
     end
 
-    # This token is not a part of Oppen's original paper and algorithm,
-    # it was created in order to handle trailing whitespaces at the end of lines.
-    # When the config flag `trim_trailing_whitespaces == true`, and a new line is needed,
-    # all the Whitespace tokens present after the last String token of the line
-    # will not be added to the final output.
+    # This token is not a part of Oppen's original paper and algorithm, it was
+    # created in order to handle trailing whitespaces at the end of lines. When
+    # the config flag `trim_trailing_whitespaces == true`, and a new line is
+    # needed, all the Whitespace tokens present after the last String token of
+    # the line will not be added to the final output.
     class Whitespace < ::Oppen::Token::String
     end
 
@@ -98,8 +98,8 @@ module Oppen
     end
 
     # The EOF token is a token present in Oppen's original paper and algorithm.
-    # It can be interpreted as a flush of the output.
-    # Multiple EOF tokens can be present in the same list of tokens.
+    # It can be interpreted as a flush of the output. Multiple EOF tokens can
+    # be present in the same list of tokens.
     #
     # @example
     #   tokens = [
