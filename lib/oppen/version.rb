@@ -6,5 +6,5 @@ module Oppen
   #
   # @return [String]
   #   current version
-  VERSION = '0.9.7' # managed by release.sh
+  VERSION = '0.9.8' # managed by release.sh
 end

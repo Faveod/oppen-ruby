@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+## v0.9.8 (30-12-2024)
+
 - Oppen now supports Ruby 3.0+. It used to be restricted to Ruby 3.2+.
 
 ## v0.9.7 (05-12-2024)
