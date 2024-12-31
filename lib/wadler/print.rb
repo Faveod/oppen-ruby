@@ -400,22 +400,21 @@ module Oppen
 
     # Open a consistent group.
     #
-    # @param inconsistent [Boolean]
-    #   whether the break type of the group should be inconsistent.
-    # @param indent       [Integer]
+    # @param break_type [Symbol]
+    #   `:consistent` or `:inconsistent`
+    # @param indent     [Integer]
     #   the amount of indentation of the group.
     #
     # @return [self]
     #
     # @see Oppen.begin_consistent
     # @see Oppen.begin_inconsistent
-    def group_open(inconsistent: false, indent: 0)
-      tokens <<
-        if inconsistent
-          Oppen.begin_inconsistent(offset: indent)
-        else
-          Oppen.begin_consistent(offset: indent)
-        end
+    def group_open(break_type: :consistent, indent: 0)
+      if %i[consistent inconsistent].none?(break_type)
+        raise ArgumentError, '%s is not a valid type. Choose one: :consistent or :inconsistent'
+      end
+
+      tokens << Oppen.send(:"begin_#{break_type}", offset: indent)
       self
     end
 
@@ -444,7 +443,7 @@ module Oppen
     #   the amount of indentation of the group.
     #
     # @return [self]
-    def indent_close(group, indent: @indent)
+    def indent_close(indent: @indent)
       @current_indent -= indent
       group_close
     end
