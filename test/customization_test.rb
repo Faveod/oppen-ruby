@@ -62,7 +62,7 @@ end
 
 describe 'Spaces tests' do
   it 'must work with a string of length 1' do
-    printer = Oppen::Wadler.new(width: 45, space: '*')
+    printer = Oppen::Wadler.new(width: 45, space_gen: '*')
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -74,7 +74,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a string of length greater than 1' do
-    printer = Oppen::Wadler.new(width: 45, space: '**')
+    printer = Oppen::Wadler.new(width: 45, space_gen: '**')
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -86,7 +86,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with an UTF-8 string' do
-    printer = Oppen::Wadler.new(width: 45, space: 'ω')
+    printer = Oppen::Wadler.new(width: 45, space_gen: 'ω')
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -98,7 +98,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a lambda' do
-    printer = Oppen::Wadler.new(width: 45, space: ->(n) { '*' * n })
+    printer = Oppen::Wadler.new(width: 45, space_gen: ->(n) { '*' * n })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -110,7 +110,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with an UTF-8 string lambda' do
-    printer = Oppen::Wadler.new(width: 45, space: ->(n) { 'ω' * n })
+    printer = Oppen::Wadler.new(width: 45, space_gen: ->(n) { 'ω' * n })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -122,7 +122,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a lambda different from default' do
-    printer = Oppen::Wadler.new(width: 45, space: ->(n) { '*' * n * 2 })
+    printer = Oppen::Wadler.new(width: 45, space_gen: ->(n) { '*' * n * 2 })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -134,7 +134,7 @@ describe 'Spaces tests' do
   end
 
   it 'must work with a proc' do
-    printer = Oppen::Wadler.new(width: 45, space: proc { |n| '*' * n })
+    printer = Oppen::Wadler.new(width: 45, space_gen: proc { |n| '*' * n })
     customization_build_output(printer)
     _(printer.output).must_equal <<~LANG.chomp
       function
@@ -146,20 +146,20 @@ describe 'Spaces tests' do
   end
 
   it 'must raise an error for a lambda of arity different than one' do
-    printer = Oppen::Wadler.new(width: 45, space: ->(n, _o) { '*' * n })
+    printer = Oppen::Wadler.new(width: 45, space_gen: ->(n, _o) { '*' * n })
     _ { printer.output }.must_raise ArgumentError
 
-    printer = Oppen::Wadler.new(width: 45, space: -> { '*' })
+    printer = Oppen::Wadler.new(width: 45, space_gen: -> { '*' })
     _ { printer.output }.must_raise ArgumentError
 
-    printer = Oppen::Wadler.new(width: 45, space: ->(*_args) { '*' })
+    printer = Oppen::Wadler.new(width: 45, space_gen: ->(*_args) { '*' })
     _ { printer.output }.must_raise ArgumentError
   end
 
   # The indentation lambda can yield a fixed size string indepedant of the indentation level.
   # In these cases, the fixed sized string should not be displayed if the indentation is 0.
-  it 'calls space only when indent is positive' do
-    printer = Oppen::Wadler.new(width: 10, space: ->(_n) { '*******' })
+  it 'calls space_gen only when indent is positive' do
+    printer = Oppen::Wadler.new(width: 10, space_gen: ->(_n) { '*******' })
     printer.group {
       printer.text 'Hello'
       printer.break

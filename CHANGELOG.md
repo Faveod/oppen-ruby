@@ -9,6 +9,7 @@
     the whole printer.
   - all printing methods return `self` for call chaining.
 - Wadler:
+    - rename ctor param `space` to `space_gen`.
     - add `consistent` and `inconsistent` as shorthands to
     `group(:consistent)` and `group(:inconsistent)`, respectively.
     - remove args of `group_close`.
