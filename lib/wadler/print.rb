@@ -18,7 +18,7 @@ module Oppen
     attr_reader :out
     # @return [Proc]
     #   space generator, a callable.
-    attr_reader :space
+    attr_reader :space_gen
     # @return [Array<Token>]
     #   the tokens list that is being built.
     attr_reader :tokens
@@ -39,7 +39,7 @@ module Oppen
     #   the new line String.
     # @param out        [Object]
     #   the output string buffer. It should have a `write` and `string` methods.
-    # @param space      [String, Proc]
+    # @param space_gen  [String, Proc]
     #   indentation string or a string generator.
     #   - If a `String`, spaces will be generated with the the lambda
     #     `->(n){ space * n }`, where `n` is the number of columns to indent.
@@ -49,14 +49,14 @@ module Oppen
     #
     # @see Token::Whitespace
     def initialize(base_indent: 0, config: Config.wadler, indent: 0, new_line: "\n",
-                   out: StringIO.new, space: ' ',
+                   out: StringIO.new, space_gen: ' ',
                    whitespace: ' ', width: 80)
       @config = config
       @current_indent = base_indent
       @indent = indent
       @new_line = new_line
       @out = out
-      @space = space
+      @space_gen = space_gen
       @tokens = []
       @whitespace = whitespace
       @width = width
@@ -82,7 +82,7 @@ module Oppen
         tokens: tokens,
         new_line: new_line,
         config: config,
-        space: space,
+        space: space_gen,
         out: out,
         width: width,
       )
