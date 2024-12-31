@@ -406,7 +406,7 @@ module Oppen
     # Close a group.
     #
     # @return [Nil]
-    def group_close(_)
+    def group_close
       tokens << Oppen.end
     end
 
@@ -429,7 +429,7 @@ module Oppen
     # @return [Nil]
     def indent_close(group, indent: @indent)
       @current_indent -= indent
-      group_close(group)
+      group_close
     end
 
     # Open a nest by adding indent.
