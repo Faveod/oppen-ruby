@@ -243,6 +243,16 @@ module Oppen
       tokens << Oppen.end
     end
 
+    # An alias for `group(:consistent, ...)`
+    def consistent(**kwargs)
+      group(:consistent, **kwargs)
+    end
+
+    # An alias for `group(:inconsistent, ...)`
+    def inconsistent(**kwargs)
+      group(:inconsistent, **kwargs)
+    end
+
     # Create a new non-strict {group}.
     #
     # {group}s isolate breaking decisions, and in that sense they're considered
