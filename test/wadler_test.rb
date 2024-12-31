@@ -1,18 +1,11 @@
 # frozen_string_literal: true
 
-require 'prettyprint'
-
 require_relative 'lib'
 
-def check_roundtrip(width, expected, builder_block)
+def assert_wadler(width, expected, builder_block)
   printer = Oppen::Wadler.new(width: width)
   builder_block.(printer)
   _(printer.output).must_equal expected, 'Oppen failed the test'
-
-  printer = PrettyPrint.new(''.dup, width)
-  builder_block.(printer)
-  printer.flush
-  _(printer.output).must_equal expected, 'PrettyPrint failed the test'
 end
 
 describe 'Wadler tests' do
@@ -76,7 +69,7 @@ describe 'Wadler tests' do
     ].each do |expected, vals|
       vals.each do |width|
         it "must work with line width: #{width}" do
-          check_roundtrip(width, expected, builder_block)
+          assert_wadler(width, expected, builder_block)
         end
       end
     end
@@ -95,10 +88,10 @@ describe 'Wadler tests' do
       def show(out)
         out.group {
           out.text string
-          out.nest(string.length) {
+          out.nest(indent: string.length) {
             unless children.empty?
               out.text '['
-              out.nest(1) {
+              out.nest(indent: 1) {
                 first = true
                 children.each { |t|
                   if first
@@ -159,7 +152,7 @@ describe 'Wadler tests' do
     ].each do |expected, vals|
       vals.each do |width|
         it "must work with line width: #{width}" do
-          check_roundtrip(width, expected, builder_block)
+          assert_wadler(width, expected, builder_block)
         end
       end
     end
@@ -172,7 +165,7 @@ describe 'Wadler tests' do
           out.text @string
           unless @children.empty?
             out.text '['
-            out.nest(2) {
+            out.nest(indent: 2) {
               out.breakable
               first = true
               @children.each { |t|
@@ -246,7 +239,7 @@ describe 'Wadler tests' do
     ].each do |expected, vals|
       vals.each do |width|
         it "must work with line width: #{width}" do
-          check_roundtrip(width, expected, builder_block_altshow)
+          assert_wadler(width, expected, builder_block_altshow)
         end
       end
     end
@@ -256,11 +249,11 @@ describe 'Wadler tests' do
     builder_block = proc { |out|
       out.group {
         out.group {
-          out.nest(2) {
+          out.nest(indent: 2) {
             out.text 'if'
             out.breakable
             out.group {
-              out.nest(2) {
+              out.nest(indent: 2) {
                 out.group {
                   out.text 'a'
                   out.breakable
@@ -274,11 +267,11 @@ describe 'Wadler tests' do
         }
         out.breakable
         out.group {
-          out.nest(2) {
+          out.nest(indent: 2) {
             out.text 'then'
             out.breakable
             out.group {
-              out.nest(2) {
+              out.nest(indent: 2) {
                 out.group {
                   out.text 'a'
                   out.breakable
@@ -292,11 +285,11 @@ describe 'Wadler tests' do
         }
         out.breakable
         out.group {
-          out.nest(2) {
+          out.nest(indent: 2) {
             out.text 'else'
             out.breakable
             out.group {
-              out.nest(2) {
+              out.nest(indent: 2) {
                 out.group {
                   out.text 'a'
                   out.breakable
@@ -410,7 +403,7 @@ describe 'Wadler tests' do
     ].each do |expected, vals|
       vals.each do |width|
         it "must work with line width: #{width}" do
-          check_roundtrip(width, expected, builder_block)
+          assert_wadler(width, expected, builder_block)
         end
       end
     end
@@ -442,7 +435,7 @@ describe 'Wadler tests' do
     ].each do |expected, vals|
       vals.each do |width|
         it "must work with line width: #{width}" do
-          check_roundtrip(width, expected, builder_block)
+          assert_wadler(width, expected, builder_block)
         end
       end
     end
@@ -451,22 +444,22 @@ describe 'Wadler tests' do
   describe 'must not break if stack is full' do
     it 'must work with a big token list' do
       wadler = Oppen::Wadler.new(width: 3)
-      wadler.group(1) {
-        wadler.group(1) {
-          wadler.group(1) {
-            wadler.group(1) {
-              wadler.group(1) {
-                wadler.group(1) {
-                  wadler.group(1) {
-                    wadler.group(1) {
-                      wadler.group(1) {
-                        wadler.group(1) {
-                          wadler.group(1) {
-                            wadler.group(1) {
-                              wadler.group(1) {
-                                wadler.group(1) {
-                                  wadler.group(1) {
-                                    wadler.group(1) {
+      wadler.group(indent: 1) {
+        wadler.group(indent: 1) {
+          wadler.group(indent: 1) {
+            wadler.group(indent: 1) {
+              wadler.group(indent: 1) {
+                wadler.group(indent: 1) {
+                  wadler.group(indent: 1) {
+                    wadler.group(indent: 1) {
+                      wadler.group(indent: 1) {
+                        wadler.group(indent: 1) {
+                          wadler.group(indent: 1) {
+                            wadler.group(indent: 1) {
+                              wadler.group(indent: 1) {
+                                wadler.group(indent: 1) {
+                                  wadler.group(indent: 1) {
+                                    wadler.group(indent: 1) {
                                       wadler.text '1 +'
                                     }
                                     wadler.breakable
@@ -563,7 +556,7 @@ describe 'Wadler tests' do
         }
       }
       expected = 'This is a long sentence This is another long sentence.'
-      check_roundtrip(10, expected, builder_block)
+      assert_wadler(10, expected, builder_block)
     end
 
     it 'must work with a width bigger than text length' do
@@ -584,7 +577,7 @@ describe 'Wadler tests' do
         This is a small sentence
         This is another small sentence.
       LANG
-      check_roundtrip(100, expected, builder_block)
+      assert_wadler(100, expected, builder_block)
     end
 
     it 'must work with a width smaller than break length' do
@@ -600,7 +593,7 @@ describe 'Wadler tests' do
         }
       }
       expected = 'axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxb'
-      check_roundtrip(5, expected, builder_block)
+      assert_wadler(5, expected, builder_block)
     end
 
     it 'must work with a width bigger than break length' do
@@ -619,7 +612,7 @@ describe 'Wadler tests' do
         This is a small sentence
         This is another small sentence.
       LANG
-      check_roundtrip(100, expected, builder_block)
+      assert_wadler(100, expected, builder_block)
     end
   end
 
@@ -638,7 +631,7 @@ describe 'Wadler tests' do
 
     it 'works with only a nest' do
       out = Oppen::Wadler.new
-      out.nest(0) { out.text 'Hello World' }
+      out.nest { out.text 'Hello World' }
       _(out.output).must_equal 'Hello World'
     end
 
@@ -660,7 +653,7 @@ describe 'Wadler tests' do
   describe 'handling empty lines' do
     it 'does not indent by default' do
       out = Oppen::Wadler.new(width: 10)
-      out.group(2) {
+      out.group(indent: 2) {
         out.text 'a'
         out.break
         out.break
@@ -676,7 +669,7 @@ describe 'Wadler tests' do
 
     it 'does not indent if empty first line' do
       out = Oppen::Wadler.new(width: 10)
-      out.group(8) {
+      out.group(indent: 8) {
         out.break
         out.break
         out.text 'b'
@@ -691,7 +684,7 @@ describe 'Wadler tests' do
 
     it 'does not indent if empty last line' do
       out = Oppen::Wadler.new(width: 10)
-      out.group(2) {
+      out.group(indent: 2) {
         out.text 'a'
         out.break
         out.break
@@ -706,7 +699,7 @@ describe 'Wadler tests' do
 
     it 'does not indent if empty first and last line' do
       out = Oppen::Wadler.new(width: 10)
-      out.group(8) {
+      out.group(indent: 8) {
         out.break
         out.break
         out.break

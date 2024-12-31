@@ -5,9 +5,9 @@ require_relative '../helper'
 # The new line String can be specified using the `new_line` parameter.
 new_line = '<br>'
 
-printer = Oppen::Wadler.new(new_line: new_line)
+printer = Oppen::Wadler.new(indent: 2, new_line: new_line)
 
-printer.group(2) {
+printer.group {
   printer.text 'Hello, World!'
   printer.break
   printer.text 'How are you doing?'

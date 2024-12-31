@@ -5,10 +5,10 @@ require_relative '../helper'
 # The maximum width can be specified using the `width` parameter.
 width = 5
 
-printer_width_default = Oppen::Wadler.new
-printer_width_narrow = Oppen::Wadler.new(width: width)
+printer_width_default = Oppen::Wadler.new(indent: 2)
+printer_width_narrow = Oppen::Wadler.new(indent: 2, width: width)
 test_block = ->(printer) {
-  printer.group(2) {
+  printer.group {
     printer.text 'Hello, World!'
     printer.breakable
     printer.text 'How are you doing?'

@@ -2,6 +2,10 @@
 
 ## [unreleased]
 
+- Deprarture from the `ruby/pretty_print` API:
+  - Wadler: accept base `indent` which will apply to `nest` and `group`
+    implicitly if no `indent:` kwarg is passed.
+
 ## v0.9.8 (30-12-2024)
 
 - Oppen now supports Ruby 3.0+. It used to be restricted to Ruby 3.2+.

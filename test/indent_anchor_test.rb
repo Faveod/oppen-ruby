@@ -12,11 +12,6 @@ def check_difference_oppen_wadler(width, expected_oppen, expected_wadler, builde
   printer = Oppen::Wadler.new(width: width, config: Oppen::Config.wadler)
   builder_block.(printer)
   _(printer.output).must_equal expected_wadler, 'Wadler failed the test'
-
-  printer = PrettyPrint.new(''.dup, width)
-  builder_block.(printer)
-  printer.flush
-  _(printer.output).must_equal expected_wadler, 'PrettyPrint failed the test'
 end
 
 describe 'Indent anchor tests' do
@@ -24,7 +19,7 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple group of indentation 0',
       proc { |out|
-        out.group(0) {
+        out.group {
           out.text 'Hello, World!'
           out.break
           out.text 'How are you?'
@@ -44,7 +39,7 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple group of indentation 1',
       proc { |out|
-        out.group(1) {
+        out.group(indent: 1) {
           out.text 'Hello, World!'
           out.break
           out.text 'How are you?'
@@ -64,7 +59,7 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple group of indentation 2',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
           out.break
           out.text 'How are you?'
@@ -84,9 +79,9 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case of indentation 2-0',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(0) {
+          out.group {
             out.break
             out.text 'How are you?'
             out.break
@@ -106,9 +101,9 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case of indentation 2-1',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'How are you?'
             out.break
@@ -128,9 +123,9 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case of indentation 2-2',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(2) {
+          out.group(indent: 2) {
             out.break
             out.text 'How are you?'
             out.break
@@ -150,9 +145,9 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case of indentation 0-0',
       proc { |out|
-        out.group(0) {
+        out.group {
           out.text 'Hello, World!'
-          out.group(0) {
+          out.group {
             out.break
             out.text 'How are you?'
             out.break
@@ -172,9 +167,9 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case of indentation 0-1',
       proc { |out|
-        out.group(0) {
+        out.group {
           out.text 'Hello, World!'
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'How are you?'
             out.break
@@ -194,13 +189,13 @@ describe 'Indent anchor tests' do
     [
       'must work with a multiple groups of same indentation nested in a group',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'How are you?'
           }
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'I am fine and you?'
           }
@@ -218,13 +213,13 @@ describe 'Indent anchor tests' do
     [
       'must work with a multiple groups of different increasing indentation nested in a group',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'How are you?'
           }
-          out.group(2) {
+          out.group(indent: 2) {
             out.break
             out.text 'I am fine and you?'
           }
@@ -242,13 +237,13 @@ describe 'Indent anchor tests' do
     [
       'must work with a multiple groups of different decreasing indentation nested in a group',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(2) {
+          out.group(indent: 2) {
             out.break
             out.text 'How are you?'
           }
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'I am fine and you?'
           }
@@ -266,12 +261,12 @@ describe 'Indent anchor tests' do
     [
       'must work with 3 nested blocks of same indentation',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(2) {
+          out.group(indent: 2) {
             out.break
             out.text 'How'
-            out.group(2) {
+            out.group(indent: 2) {
               out.break
               out.text 'are'
               out.break
@@ -294,12 +289,12 @@ describe 'Indent anchor tests' do
     [
       'must work with 3 nested blocks of different indentation',
       proc { |out|
-        out.group(2) {
+        out.group(indent: 2) {
           out.text 'Hello, World!'
-          out.group(3) {
+          out.group(indent: 3) {
             out.break
             out.text 'How'
-            out.group(4) {
+            out.group(indent: 4) {
               out.break
               out.text 'are'
               out.break
@@ -322,10 +317,10 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case break outside nested',
       proc { |out|
-        out.group(0) {
+        out.group {
           out.text 'Hello, World!'
           out.break
-          out.group(1) {
+          out.group(indent: 1) {
             out.text 'How are you?'
             out.break
             out.text 'I am fine and you?'
@@ -344,9 +339,9 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case text outside nested',
       proc { |out|
-        out.group(0) {
+        out.group {
           out.text 'Hello, World!'
-          out.group(1) {
+          out.group(indent: 1) {
             out.break
             out.text 'How are you?'
             out.break
@@ -366,10 +361,10 @@ describe 'Indent anchor tests' do
     [
       'must work with a simple nested case text and break outside nested',
       proc { |out|
-        out.group(0) {
+        out.group {
           out.text 'Hello, World!'
           out.break
-          out.group(1) {
+          out.group(indent: 1) {
             out.text 'How are you?'
             out.break
           }
@@ -396,13 +391,7 @@ end
 
 describe 'Indent anchor error tests' do
   it 'must raise a LocalJumpError if no block is given to group' do
-    width = 30
-    printer = PrettyPrint.new ''.dup, width
-
-    _ { printer.group(2) }.must_raise LocalJumpError
-
-    printer = Oppen::Wadler.new(width: width)
-
-    _ { printer.group(2) }.must_raise LocalJumpError
+    printer = Oppen::Wadler.new(width: 20)
+    _ { printer.group(indent: 2) }.must_raise LocalJumpError
   end
 end
