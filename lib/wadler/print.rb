@@ -135,11 +135,11 @@ module Oppen
     #
     # @example 1 String Delimiter
     #   out = Oppen::Wadler.new
-    #   out.text 'a'
-    #   out.group(indent: 2, delim: '|') {
-    #     out.break
-    #     out.text 'b'
-    #   }
+    #   out
+    #     .text('a')
+    #     .group(indent: 2, delim: '|') {
+    #       out.break.text 'b'
+    #     }
     #   puts out.output
     #
     #   # =>
@@ -150,11 +150,11 @@ module Oppen
     #
     # @example 1 Delimiter in Array
     #   out = Oppen::Wadler.new
-    #   out.text 'a'
-    #   out.group(indent: 2, delim: ['|']) {
-    #     out.break
-    #     out.text 'b'
-    #   }
+    #   out
+    #     .text('a')
+    #     .group(indent: 2, delim: ['|']) {
+    #       out.break.text 'b'
+    #     }
     #   puts out.output
     #
     #   # =>
@@ -164,12 +164,12 @@ module Oppen
     #
     # @example 2 Delimiters
     #   out = Oppen::Wadler.new
-    #   out.text 'a'
-    #   out.group(indent: 2, delim: %i[{ }]) {
-    #     out.break
-    #     out.text 'b'
-    #   }
-    #   out.output
+    #   out
+    #     .text('a')
+    #     .group(indent: 2, delim: %i[{ }]) {
+    #       out.break.text 'b'
+    #     }
+    #   puts out.output
     #
     #   # =>
     #   # a
@@ -180,11 +180,7 @@ module Oppen
     # @example Consistent Breaking
     #   out = Oppen::Wadler.new
     #   out.group(:consistent) {
-    #     out.text 'a'
-    #     out.break
-    #     out.text 'b'
-    #     out.breakable
-    #     out.text 'c'
+    #     out.text('a').break.text('b').breakable.text('c')
     #   }
     #   puts out.output
     #
@@ -196,11 +192,7 @@ module Oppen
     # @example Inconsistent Breaking
     #   out = Oppen::Wadler.new
     #   out.group(:inconsistent) {
-    #     out.text 'a'
-    #     out.break
-    #     out.text 'b'
-    #     out.breakable
-    #     out.text 'c'
+    #     out.text('a').break.text('b').breakable.text('c')
     #   }
     #   puts out.output
     #
@@ -208,7 +200,7 @@ module Oppen
     #   # a
     #   # b c
     #
-    # @return [Nil]
+    # @return [self]
     #
     # @see Oppen.begin_consistent
     # @see Oppen.begin_inconsistent
@@ -241,6 +233,8 @@ module Oppen
       end
 
       tokens << Oppen.end
+
+      self
     end
 
     # An alias for `group(:consistent, ...)`
@@ -282,11 +276,9 @@ module Oppen
     # @example
     #   out = Oppen::Wadler.new
     #   out.nest(delim: %i[{ }], indent: 2) {
-    #     out.text 'a'
-    #     out.break
-    #     out.text 'b'
+    #     out.text('a').break.text('b')
     #   }
-    #   out.output
+    #   puts out.output
     #
     #   # =>
     #   # {
@@ -294,7 +286,7 @@ module Oppen
     #   #   b
     #   # }
     #
-    # @return [Nil]
+    # @return [self]
     def nest(delim: nil, indent: @indent)
       lft, rgt =
         case delim
@@ -316,10 +308,12 @@ module Oppen
         @current_indent -= indent
       end
 
-      return if rgt.empty?
+      if !rgt.empty?
+        self.break
+        text rgt
+      end
 
-      self.break
-      text rgt
+      self
     end
 
     # Create a new text element.
@@ -327,7 +321,7 @@ module Oppen
     # @param value [String]
     #   the value of the token.
     #
-    # @return [Nil]
+    # @return [self]
     def text(value, width: value.length)
       if config.trim_trailing_whitespaces? && value.match(/((?:#{Regexp.escape(whitespace)})+)\z/)
         match = Regexp.last_match(1)
@@ -339,6 +333,7 @@ module Oppen
       else
         tokens << Oppen.string(value, width: width)
       end
+      self
     end
 
     # Create a new breakable element.
@@ -350,11 +345,12 @@ module Oppen
     # @param width             [Integer]
     #   the width of the token.
     #
-    # @return [Nil]
+    # @return [self]
     #
     # @see Wadler#break example on `line_continuation`.
     def breakable(str = ' ', line_continuation: '', width: str.length)
       tokens << Oppen.break(str, width: width, line_continuation: line_continuation, offset: current_indent)
+      self
     end
 
     # Create a new break element.
@@ -376,9 +372,10 @@ module Oppen
     #   # b#
     #   # c
     #
-    # @return [Nil]
+    # @return [self]
     def break(line_continuation: '')
       tokens << Oppen.line_break(line_continuation: line_continuation, offset: current_indent)
+      self
     end
 
     # @!group Helpers
@@ -390,7 +387,7 @@ module Oppen
     # @param indent       [Integer]
     #   the amount of indentation of the group.
     #
-    # @return [Nil]
+    # @return [self]
     #
     # @see Oppen.begin_consistent
     # @see Oppen.begin_inconsistent
@@ -401,13 +398,15 @@ module Oppen
         else
           Oppen.begin_consistent(offset: indent)
         end
+      self
     end
 
     # Close a group.
     #
-    # @return [Nil]
+    # @return [self]
     def group_close
       tokens << Oppen.end
+      self
     end
 
     # Open a consistent group and add indent amount.
@@ -415,7 +414,7 @@ module Oppen
     # @param indent [Integer]
     #   the amount of indentation of the group.
     #
-    # @return [Nil]
+    # @return [self]
     def indent_open(indent: @indent)
       @current_indent += indent
       group_open
@@ -426,7 +425,7 @@ module Oppen
     # @param indent [Integer]
     #   the amount of indentation of the group.
     #
-    # @return [Nil]
+    # @return [self]
     def indent_close(group, indent: @indent)
       @current_indent -= indent
       group_close
@@ -437,9 +436,10 @@ module Oppen
     # @param indent [Integer]
     #   the amount of indentation of the nest.
     #
-    # @return [Nil]
+    # @return [self]
     def nest_open(indent: @indent)
       @current_indent += indent
+      self
     end
 
     # Close a nest by subtracting indent.
@@ -447,9 +447,10 @@ module Oppen
     # @param indent [Integer]
     #   the amount of indentation of the nest.
     #
-    # @return [Nil]
+    # @return [self]
     def nest_close(indent: @indent)
       @current_indent -= indent
+      self
     end
 
     # @!endgroup
