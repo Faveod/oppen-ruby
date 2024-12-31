@@ -7,7 +7,7 @@ def customization_build_output(printer)
     printer.text 'function'
     printer.breakable
     printer.text 'test('
-    printer.group('', '', :inconsistent, indent: 2) {
+    printer.group(:inconsistent, indent: 2) {
       printer.break
       printer.text 'int index,'
       printer.breakable
@@ -29,7 +29,7 @@ describe 'Inconsistent break tests' do
       printer.text 'function'
       printer.breakable
       printer.text 'test('
-      printer.group('', '', :inconsistent, indent: 2) {
+      printer.group(:inconsistent, indent: 2) {
         printer.breakable
         printer.text 'int index,'
         printer.breakable
@@ -195,9 +195,9 @@ describe 'Break delimiter tests' do
   it 'must work with a different delimiter' do
     printer = Oppen::Wadler.new(width: 45)
     printer.group {
-      printer.breakable('')
+      printer.breakable ''
       printer.text 'Hello'
-      printer.breakable(', ')
+      printer.breakable ', '
       printer.text 'World!'
     }
     _(printer.output).must_equal 'Hello, World!'
@@ -206,9 +206,9 @@ describe 'Break delimiter tests' do
   it 'must work with an UTF-8 delimiter' do
     printer = Oppen::Wadler.new(width: 45)
     printer.group {
-      printer.breakable('')
+      printer.breakable ''
       printer.text 'Hello'
-      printer.breakable(' ʃ ')
+      printer.breakable ' ʃ '
       printer.text 'World!'
     }
     _(printer.output).must_equal 'Hello ʃ World!'
@@ -216,7 +216,7 @@ describe 'Break delimiter tests' do
 end
 
 describe 'Nest delimiter tests' do
-  def nest_delimiter_build_output(printer, open_obj, close_obj)
+  def nest_delimiter_build_output(printer, delim)
     printer.group {
       printer.group(indent: 2) {
         printer.text 'function'
@@ -224,7 +224,7 @@ describe 'Nest delimiter tests' do
         printer.text 'foo()'
       }
       printer.break
-      printer.nest(open_obj, close_obj, indent: 2) {
+      printer.nest(delim: delim, indent: 2) {
         printer.group {
           printer.text 'Hello'
           printer.breakable(', ')
@@ -236,7 +236,7 @@ describe 'Nest delimiter tests' do
 
   it 'must work with an open and close object' do
     printer = Oppen::Wadler.new(width: 5)
-    nest_delimiter_build_output(printer, '{', '}')
+    nest_delimiter_build_output(printer, %w[{ }])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -249,7 +249,7 @@ describe 'Nest delimiter tests' do
 
   it 'must work with no open and close object' do
     printer = Oppen::Wadler.new(width: 5)
-    nest_delimiter_build_output(printer, '', '')
+    nest_delimiter_build_output(printer, [])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -260,7 +260,7 @@ describe 'Nest delimiter tests' do
 
   it 'must work with only an open object' do
     printer = Oppen::Wadler.new(width: 5)
-    nest_delimiter_build_output(printer, '{', '')
+    nest_delimiter_build_output(printer, ['{', ''])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -272,7 +272,7 @@ describe 'Nest delimiter tests' do
 
   it 'must work with only a close object' do
     printer = Oppen::Wadler.new(width: 5)
-    nest_delimiter_build_output(printer, '', '}')
+    nest_delimiter_build_output(printer, ['', '}'])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -284,7 +284,7 @@ describe 'Nest delimiter tests' do
 
   it 'must work with an UTF-8 string' do
     printer = Oppen::Wadler.new(width: 5)
-    nest_delimiter_build_output(printer, 'Ϯ', 'Ϯ')
+    nest_delimiter_build_output(printer, %w[Ϯ Ϯ])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -294,31 +294,21 @@ describe 'Nest delimiter tests' do
       Ϯ
     LANG
   end
-
-  it 'must raise an error when open_obj is nil' do
-    printer = Oppen::Wadler.new(width: 5)
-    _ { nest_delimiter_build_output(printer, nil, '}') }.must_raise ArgumentError
-  end
-
-  it 'must raise an error when close_obj is nil' do
-    printer = Oppen::Wadler.new(width: 5)
-    _ { nest_delimiter_build_output(printer, '{', nil) }.must_raise ArgumentError
-  end
 end
 
 describe 'Group delimiter tests' do
-  def group_delimiter_build_output(printer, open_obj, close_obj)
+  def group_delimiter_build_output(printer, delim)
     printer.group {
       printer.group(indent: 2) {
         printer.text 'function'
         printer.breakable
         printer.text 'foo()'
       }
-      printer.group(open_obj, close_obj, indent: 2) {
+      printer.group(delim: delim, indent: 2) {
         printer.group {
           printer.break
           printer.text 'Hello'
-          printer.breakable(', ')
+          printer.breakable ', '
           printer.text 'World!'
         }
       }
@@ -327,7 +317,7 @@ describe 'Group delimiter tests' do
 
   it 'must work with an open and close object' do
     printer = Oppen::Wadler.new(width: 5)
-    group_delimiter_build_output(printer, '{', '}')
+    group_delimiter_build_output(printer, %i[{ }])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -340,7 +330,7 @@ describe 'Group delimiter tests' do
 
   it 'must work with no open and close object' do
     printer = Oppen::Wadler.new(width: 5)
-    group_delimiter_build_output(printer, '', '')
+    group_delimiter_build_output(printer, nil)
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -351,7 +341,7 @@ describe 'Group delimiter tests' do
 
   it 'must work with only an open object' do
     printer = Oppen::Wadler.new(width: 5)
-    group_delimiter_build_output(printer, '{', '')
+    group_delimiter_build_output(printer, ['{', ''])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -363,7 +353,7 @@ describe 'Group delimiter tests' do
 
   it 'must work with only a close object' do
     printer = Oppen::Wadler.new(width: 5)
-    group_delimiter_build_output(printer, '', '}')
+    group_delimiter_build_output(printer, ['', '}'])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -375,7 +365,7 @@ describe 'Group delimiter tests' do
 
   it 'must work with an UTF-8 string' do
     printer = Oppen::Wadler.new(width: 5)
-    group_delimiter_build_output(printer, 'Ϯ', 'Ϯ')
+    group_delimiter_build_output(printer, %w[Ϯ Ϯ])
     _(printer.output).must_equal <<~LANG.chomp
       function
         foo()
@@ -384,16 +374,6 @@ describe 'Group delimiter tests' do
         World!
         Ϯ
     LANG
-  end
-
-  it 'must raise an error when open_obj is nil' do
-    printer = Oppen::Wadler.new(width: 5)
-    _ { group_delimiter_build_output(printer, nil, '}') }.must_raise ArgumentError
-  end
-
-  it 'must raise an error when close_obj is nil' do
-    printer = Oppen::Wadler.new(width: 5)
-    _ { group_delimiter_build_output(printer, '{', nil) }.must_raise ArgumentError
   end
 end
 
@@ -401,17 +381,17 @@ describe 'Line continuation tests' do
   def line_continuation_build_output(printer, break_type = :consistent,
                                      line_continuation = ',')
     printer.group {
-      printer.text('[')
-      printer.group('', '', break_type, indent: 2) {
-        printer.breakable('')
-        printer.text('1')
-        printer.breakable(', ', line_continuation: line_continuation)
-        printer.text('2')
-        printer.breakable(', ', line_continuation: line_continuation)
-        printer.text('3')
+      printer.text '['
+      printer.group(break_type, indent: 2) {
+        printer.breakable ''
+        printer.text '1'
+        printer.breakable ', ', line_continuation: line_continuation
+        printer.text '2'
+        printer.breakable ', ', line_continuation: line_continuation
+        printer.text '3'
       }
-      printer.breakable('', line_continuation: line_continuation)
-      printer.text(']')
+      printer.breakable '', line_continuation: line_continuation
+      printer.text ']'
     }
   end
   it 'must not display line continuation if line fits' do
