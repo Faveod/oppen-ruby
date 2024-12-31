@@ -378,6 +378,24 @@ module Oppen
       self
     end
 
+    # A convenient way to avoid breaking chains of calls.
+    #
+    # @example
+    #   out
+    #     .do { fn_call(fn_arg) }
+    #     .breakable
+    #     .text('=')
+    #     .breakable
+    #     .do { fn_call(fn_arg) }
+    #
+    # @yield to execute the passed block
+    #
+    # @return [self]
+    def do
+      yield
+      self
+    end
+
     # @!group Helpers
 
     # Open a consistent group.

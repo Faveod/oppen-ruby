@@ -709,4 +709,23 @@ describe 'Wadler tests' do
       _(out.output).must_equal "\n\n\n"
     end
   end
+
+  describe 'Convenience methods' do
+    it 'chains with calls of do' do
+      out = Oppen::Wadler.new(width: 10)
+      lam = -> { out.text 'from lambda' }
+      out.group(indent: 8) {
+        out
+          .do { lam.() }
+          .break
+          .do { lam.() }
+          .break
+      }
+
+      _(out.output).must_equal <<~OUT
+        from lambda
+                from lambda
+      OUT
+    end
+  end
 end

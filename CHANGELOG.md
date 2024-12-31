@@ -12,6 +12,7 @@
     - add `#consistent` and `#inconsistent` as shorthands to
     `group(:consistent)` and `group(:inconsistent)`, respectively.
     - remove args of `#group_close`.
+    - add `do` to avoid braking call chains.
 
 ## v0.9.8 (30-12-2024)
 
