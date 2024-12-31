@@ -2,9 +2,11 @@
 
 ## [unreleased]
 
-- Deprarture from the `ruby/pretty_print` API:
-  - Wadler: accept base `indent` which will apply to `nest` and `group`
-    implicitly if no `indent:` kwarg is passed.
+- Deprarture from the `ruby/pretty_print` API with Wadler:
+  - accept `indent` which will apply to `nest` and `group` implicitly if no
+    `indent:` kwarg is passed.
+  - accept `base_indent` which sets the base global indentation level for
+    the whole printer.
 
 ## v0.9.8 (30-12-2024)
 
