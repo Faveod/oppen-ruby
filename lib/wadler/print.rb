@@ -29,6 +29,8 @@ module Oppen
     #   maximum line width.
     attr_reader :width
 
+    # @param base_indent     [Integer]
+    #   the starting indentation level for the whole printer.
     # @param config     [Config]
     #   to customize the printer's behavior.
     # @param indent     [Integer]
@@ -46,11 +48,11 @@ module Oppen
     # @param width      [Integer]      maximum line width desired.
     #
     # @see Token::Whitespace
-    def initialize(config: Config.wadler, indent: 0, new_line: "\n",
+    def initialize(base_indent: 0, config: Config.wadler, indent: 0, new_line: "\n",
                    out: StringIO.new, space: ' ',
                    whitespace: ' ', width: 80)
       @config = config
-      @current_indent = 0
+      @current_indent = base_indent
       @indent = indent
       @new_line = new_line
       @out = out
@@ -330,16 +332,6 @@ module Oppen
     end
 
     # @!group Helpers
-
-    # Set a base indenetaion level for the printer.
-    #
-    # @param indent [Integer]
-    #   the amount of indentation.
-    #
-    # @return [Nil]
-    def base_indent(indent = 0)
-      @current_indent = indent if !indent.nil?
-    end
 
     # Open a consistent group.
     #
