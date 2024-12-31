@@ -10,7 +10,7 @@ describe 'Token to wadler tests' do
         printer
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
         }
 
       LANG
@@ -21,7 +21,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("Hello World!", width: 12)
         }
 
@@ -33,7 +33,7 @@ describe 'Token to wadler tests' do
         printer.text('"\'Hello World!\'"')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("\\"'Hello World!'\\"", width: 16)
         }
 
@@ -45,7 +45,7 @@ describe 'Token to wadler tests' do
         printer.text('Ḽơᶉëᶆ ȋṕšᶙṁ ḍỡḽǭᵳ')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("Ḽơᶉëᶆ ȋṕšᶙṁ ḍỡḽǭᵳ", width: 17)
         }
 
@@ -57,7 +57,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!', width: 42)
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("Hello World!", width: 42)
         }
 
@@ -69,7 +69,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!  ')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("Hello World!", width: 12)
           printer.text("  ", width: 2)
         }
@@ -80,7 +80,7 @@ describe 'Token to wadler tests' do
       title: 'displays a simple break token',
       block: proc(&:break),
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.break(line_continuation: "")
         }
 
@@ -92,7 +92,7 @@ describe 'Token to wadler tests' do
         printer.break(line_continuation: '##')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.break(line_continuation: "##")
         }
 
@@ -102,7 +102,7 @@ describe 'Token to wadler tests' do
       title: 'displays a simple breakable token',
       block: proc(&:breakable),
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.breakable(" ", width: 1, line_continuation: "")
         }
 
@@ -114,7 +114,7 @@ describe 'Token to wadler tests' do
         printer.breakable('**', width: 42, line_continuation: '##')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.breakable("**", width: 42, line_continuation: "##")
         }
 
@@ -128,7 +128,7 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("Hello World!", width: 12)
         }
 
@@ -137,12 +137,12 @@ describe 'Token to wadler tests' do
     {
       title: 'displays a group token with arguments',
       block: proc { |printer|
-        printer.group(2, '{', '}', :inconsistent) {
+        printer.group('{', '}', :inconsistent, indent: 2) {
           printer.text('Hello World!')
         }
       },
       expected: <<~LANG,
-        printer.group(2, '', '', :inconsistent) {
+        printer.group('', '', :inconsistent, indent: 2) {
           printer.break(line_continuation: "")
           printer.text("{", width: 1)
           printer.text("Hello World!", width: 12)
@@ -166,7 +166,7 @@ describe 'Token to wadler tests' do
         printer.text('Hello World!')
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("Hello World!", width: 12)
           printer.break(line_continuation: "")
           printer.breakable(" ", width: 1, line_continuation: "")
@@ -196,11 +196,11 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
-          printer.group(0, '', '', :consistent) {
-            printer.group(0, '', '', :consistent) {
-              printer.group(0, '', '', :consistent) {
-                printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
+          printer.group('', '', :consistent, indent: 0) {
+            printer.group('', '', :consistent, indent: 0) {
+              printer.group('', '', :consistent, indent: 0) {
+                printer.group('', '', :consistent, indent: 0) {
                   printer.text("Hello World!", width: 12)
                 }
               }
@@ -213,19 +213,19 @@ describe 'Token to wadler tests' do
     {
       title: 'displays a simple nest token',
       block: proc { |printer|
-        printer.nest(2) {
+        printer.nest(indent: 2) {
           printer.breakable
           printer.text('Hello World!')
           printer.break
         }
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
-          printer.nest(2, '', '') {
+        printer.group('', '', :consistent, indent: 0) {
+          printer.nest('', '', indent: 2) {
             printer.breakable(" ", width: 1, line_continuation: "")
           }
           printer.text("Hello World!", width: 12)
-          printer.nest(2, '', '') {
+          printer.nest('', '', indent: 2) {
             printer.break(line_continuation: "")
           }
         }
@@ -235,23 +235,23 @@ describe 'Token to wadler tests' do
     {
       title: 'displays a nest token with arguments',
       block: proc { |printer|
-        printer.nest(2, '{', '}') {
+        printer.nest('{', '}', indent: 2) {
           printer.breakable
           printer.text('Hello World!')
           printer.break
         }
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
+        printer.group('', '', :consistent, indent: 0) {
           printer.text("{", width: 1)
-          printer.nest(2, '', '') {
+          printer.nest('', '', indent: 2) {
             printer.break(line_continuation: "")
           }
-          printer.nest(2, '', '') {
+          printer.nest('', '', indent: 2) {
             printer.breakable(" ", width: 1, line_continuation: "")
           }
           printer.text("Hello World!", width: 12)
-          printer.nest(2, '', '') {
+          printer.nest('', '', indent: 2) {
             printer.break(line_continuation: "")
           }
           printer.break(line_continuation: "")
@@ -263,9 +263,9 @@ describe 'Token to wadler tests' do
     {
       title: 'displays nested nest tokens',
       block: proc { |printer|
-        printer.nest(2) {
-          printer.nest(2) {
-            printer.nest(2) {
+        printer.nest(indent: 2) {
+          printer.nest(indent: 2) {
+            printer.nest(indent: 2) {
               printer.breakable
               printer.text('Hello World!')
               printer.break
@@ -274,12 +274,12 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(0, '', '', :consistent) {
-          printer.nest(6, '', '') {
+        printer.group('', '', :consistent, indent: 0) {
+          printer.nest('', '', indent: 6) {
             printer.breakable(" ", width: 1, line_continuation: "")
           }
           printer.text("Hello World!", width: 12)
-          printer.nest(6, '', '') {
+          printer.nest('', '', indent: 6) {
             printer.break(line_continuation: "")
           }
         }
@@ -289,10 +289,10 @@ describe 'Token to wadler tests' do
     {
       title: 'displays nested nest and group tokens',
       block: proc { |printer|
-        printer.group(2) {
-          printer.nest(2) {
-            printer.group(2) {
-              printer.nest(2) {
+        printer.group(indent: 2) {
+          printer.nest(indent: 2) {
+            printer.group(indent: 2) {
+              printer.nest(indent: 2) {
                 printer.breakable
                 printer.text('Hello World!')
                 printer.break
@@ -302,13 +302,13 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(2, '', '', :consistent) {
-          printer.group(2, '', '', :consistent) {
-            printer.nest(4, '', '') {
+        printer.group('', '', :consistent, indent: 2) {
+          printer.group('', '', :consistent, indent: 2) {
+            printer.nest('', '', indent: 4) {
               printer.breakable(" ", width: 1, line_continuation: "")
             }
             printer.text("Hello World!", width: 12)
-            printer.nest(4, '', '') {
+            printer.nest('', '', indent: 4) {
               printer.break(line_continuation: "")
             }
           }

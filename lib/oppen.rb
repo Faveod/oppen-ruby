@@ -64,8 +64,8 @@ module Oppen
     #   config = Oppen::Config.new(indent_anchor: :end_of_previous_line)
     #   out = Oppen::Wadler.new config:, width: 13
     #   out.text 'And she said:'
-    #   out.group(4) {
-    #     out.group(4) {
+    #   out.group(indent: 4) {
+    #     out.group(indent: 4) {
     #       out.break
     #       out.text 'Hello, World!'
     #     }
@@ -80,8 +80,8 @@ module Oppen
     #   config = Oppen::Config.new(indent_anchor: :current_offset)
     #   out = Oppen::Wadler.new config:, width: 13
     #   out.text 'And she said:'
-    #   out.group(4) {
-    #     out.group(4) {
+    #   out.group(indent: 4) {
+    #     out.group(indent: 4) {
     #       out.break
     #       out.text 'Hello, World!'
     #     }

@@ -3,11 +3,11 @@
 require_relative 'lib'
 
 def customization_build_output(printer)
-  printer.group(2) {
+  printer.group(indent: 2) {
     printer.text 'function'
     printer.breakable
     printer.text 'test('
-    printer.group(2, '', '', :inconsistent) {
+    printer.group('', '', :inconsistent, indent: 2) {
       printer.break
       printer.text 'int index,'
       printer.breakable
@@ -25,11 +25,11 @@ end
 describe 'Inconsistent break tests' do
   it 'must work in a group if the line fits' do
     printer = Oppen::Wadler.new(width: 100)
-    printer.group(2) {
+    printer.group(indent: 2) {
       printer.text 'function'
       printer.breakable
       printer.text 'test('
-      printer.group(2, '', '', :inconsistent) {
+      printer.group('', '', :inconsistent, indent: 2) {
         printer.breakable
         printer.text 'int index,'
         printer.breakable
@@ -160,7 +160,7 @@ describe 'Spaces tests' do
   # In these cases, the fixed sized string should not be displayed if the indentation is 0.
   it 'calls space only when indent is positive' do
     printer = Oppen::Wadler.new(width: 10, space: ->(_n) { '*******' })
-    printer.group(0) {
+    printer.group {
       printer.text 'Hello'
       printer.break
       printer.text 'World'
@@ -217,15 +217,15 @@ end
 
 describe 'Nest delimiter tests' do
   def nest_delimiter_build_output(printer, open_obj, close_obj)
-    printer.group(0) {
-      printer.group(2) {
+    printer.group {
+      printer.group(indent: 2) {
         printer.text 'function'
         printer.breakable
         printer.text 'foo()'
       }
       printer.break
-      printer.nest(2, open_obj, close_obj) {
-        printer.group(0) {
+      printer.nest(open_obj, close_obj, indent: 2) {
+        printer.group {
           printer.text 'Hello'
           printer.breakable(', ')
           printer.text 'World!'
@@ -308,14 +308,14 @@ end
 
 describe 'Group delimiter tests' do
   def group_delimiter_build_output(printer, open_obj, close_obj)
-    printer.group(0) {
-      printer.group(2) {
+    printer.group {
+      printer.group(indent: 2) {
         printer.text 'function'
         printer.breakable
         printer.text 'foo()'
       }
-      printer.group(2, open_obj, close_obj) {
-        printer.group(0) {
+      printer.group(open_obj, close_obj, indent: 2) {
+        printer.group {
           printer.break
           printer.text 'Hello'
           printer.breakable(', ')
@@ -400,9 +400,9 @@ end
 describe 'Line continuation tests' do
   def line_continuation_build_output(printer, break_type = :consistent,
                                      line_continuation = ',')
-    printer.group(0) {
+    printer.group {
       printer.text('[')
-      printer.group(2, '', '', break_type) {
+      printer.group('', '', break_type, indent: 2) {
         printer.breakable('')
         printer.text('1')
         printer.breakable(', ', line_continuation: line_continuation)

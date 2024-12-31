@@ -13,9 +13,9 @@ printer.group(2) {
 }
 
 puts printer.show_print_commands
-# out.group(2, "", "", :consistent) {
+# out.group("", "", :consistent, indent: 2) {
 #   out.text("Hello, World!", width: 13)
-#   out.nest(4, "", "") {
+#   out.nest("", "", indent: 4) {
 #     out.break(line_continuation: "")
 #   }
 #   out.text("GoodBye, World!", width: 15)

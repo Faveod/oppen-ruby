@@ -31,6 +31,8 @@ module Oppen
 
     # @param config     [Config]
     #   to customize the printer's behavior.
+    # @param indent     [Integer]
+    #   the default indentation amount for {group} and {nest}.
     # @param new_line   [String]
     #   the new line String.
     # @param out        [Object]
@@ -44,17 +46,18 @@ module Oppen
     # @param width      [Integer]      maximum line width desired.
     #
     # @see Token::Whitespace
-    def initialize(config: Config.wadler, new_line: "\n",
+    def initialize(config: Config.wadler, indent: 0, new_line: "\n",
                    out: StringIO.new, space: ' ',
                    whitespace: ' ', width: 80)
       @config = config
       @current_indent = 0
-      @space = space
-      @width = width
+      @indent = indent
       @new_line = new_line
       @out = out
+      @space = space
       @tokens = []
       @whitespace = whitespace
+      @width = width
     end
 
     # Add missing {Token::Begin}, {Token::End} or {Token::EOF}.
@@ -102,7 +105,7 @@ module Oppen
     #   out.show_print_commands(out_name: 'out')
     #
     #   # =>
-    #   # out.group(0, "", "", :consistent) {
+    #   # out.group("", "", :consistent, indent: 0) {
     #   #   out.text("Hello World!", width: 12)
     #   # }
     #
@@ -129,7 +132,7 @@ module Oppen
     # @example
     #   out = Oppen::Wadler.new
     #   out.text 'a'
-    #   out.group(2, '{', '}') {
+    #   out.group('{', '}', indent: 2) {
     #     out.break
     #     out.text 'b'
     #   }
@@ -143,7 +146,7 @@ module Oppen
     #
     # @example Consistent Breaking
     #   out = Oppen::Wadler.new
-    #   out.group(0, '', '', :consistent) {
+    #   out.group('', '', :consistent) {
     #     out.text 'a'
     #     out.break
     #     out.text 'b'
@@ -159,7 +162,7 @@ module Oppen
     #
     # @example Inconsistent Breaking
     #   out = Oppen::Wadler.new
-    #   out.group(0, '', '', :inconsistent) {
+    #   out.group('', '', :inconsistent) {
     #     out.text 'a'
     #     out.break
     #     out.text 'b'
@@ -176,8 +179,8 @@ module Oppen
     #
     # @see Oppen.begin_consistent
     # @see Oppen.begin_inconsistent
-    def group(indent = 0, open_obj = '', close_obj = '',
-              break_type = :consistent)
+    def group(open_obj = '', close_obj = '',
+              break_type = :consistent, indent: @indent)
       raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
         if open_obj.nil? || close_obj.nil?
 
@@ -230,7 +233,7 @@ module Oppen
     #
     # @example
     #   out = Oppen::Wadler.new
-    #   out.nest(2, '{', '}') {
+    #   out.nest('{', '}', indent: 2) {
     #     out.text 'a'
     #     out.break
     #     out.text 'b'
@@ -244,7 +247,7 @@ module Oppen
     #   # }
     #
     # @return [Nil]
-    def nest(indent, open_obj = '', close_obj = '')
+    def nest(open_obj = '', close_obj = '', indent: @indent)
       raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
         if open_obj.nil? || close_obj.nil?
 
@@ -371,7 +374,7 @@ module Oppen
     #   the amount of indentation of the group.
     #
     # @return [Nil]
-    def indent_open(indent)
+    def indent_open(indent: @indent)
       @current_indent += indent
       group_open
     end
@@ -382,7 +385,7 @@ module Oppen
     #   the amount of indentation of the group.
     #
     # @return [Nil]
-    def indent_close(group, indent)
+    def indent_close(group, indent: @indent)
       @current_indent -= indent
       group_close(group)
     end
@@ -393,7 +396,7 @@ module Oppen
     #   the amount of indentation of the nest.
     #
     # @return [Nil]
-    def nest_open(indent)
+    def nest_open(indent: @indent)
       @current_indent += indent
     end
 
@@ -403,7 +406,7 @@ module Oppen
     #   the amount of indentation of the nest.
     #
     # @return [Nil]
-    def nest_close(indent)
+    def nest_close(indent: @indent)
       @current_indent -= indent
     end
 

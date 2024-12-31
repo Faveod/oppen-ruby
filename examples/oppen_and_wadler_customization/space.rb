@@ -9,13 +9,13 @@ _space = '#'
 # By using a callable:
 space = ->(n) { '---' * n }
 
-printer = Oppen::Wadler.new(space: space)
+printer = Oppen::Wadler.new(indent: 2, space: space)
 
-printer.group(2) {
+printer.group {
   printer.text 'Hello, World!'
   printer.break
   printer.text 'How are you doing?'
-  printer.group(2) {
+  printer.group {
     printer.break
     printer.text 'I am fine'
   }

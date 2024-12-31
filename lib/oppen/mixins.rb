@@ -24,14 +24,13 @@ module Oppen
 
     # @return [String]
     def tokens_to_wadler(tokens, base_indent: 0, printer_name: 'out', width: tokens.length * 3)
-      printer = Oppen::Wadler.new(width: width)
+      printer = Oppen::Wadler.new(width: width, indent: 2)
       printer.base_indent(base_indent)
-      indent = 2
 
       handle_break_token = ->(token) {
         if token.offset.positive?
-          printer.text "#{printer_name}.nest(#{token.offset}, '', '') {"
-          printer.nest_open indent
+          printer.text "#{printer_name}.nest('', '', indent: #{token.offset}) {"
+          printer.nest_open
           printer.break
         end
 
@@ -46,7 +45,7 @@ module Oppen
         )
 
         if token.offset.positive?
-          printer.nest_close indent
+          printer.nest_close
           printer.break
           printer.text '}'
         end
@@ -59,10 +58,10 @@ module Oppen
         in Token::Break
           handle_break_token.(token)
         in Token::Begin
-          printer.text "#{printer_name}.group(#{token.offset}, '', '', #{token.break_type.inspect}) {"
-          printer.nest_open indent
+          printer.text "#{printer_name}.group('', '', #{token.break_type.inspect}, indent: #{token.offset}) {"
+          printer.nest_open
         in Token::End
-          printer.nest_close indent
+          printer.nest_close
           printer.break
           printer.text '}'
         in Token::EOF
