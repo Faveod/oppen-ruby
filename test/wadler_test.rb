@@ -2,12 +2,6 @@
 
 require_relative 'lib'
 
-def assert_wadler(width, expected, builder_block)
-  printer = Oppen::Wadler.new(width: width)
-  builder_block.(printer)
-  _(printer.output).must_equal expected, 'Oppen failed the test'
-end
-
 describe 'Wadler tests' do
   describe 'must work like ruby\'s PrettyPrint library' do
     builder_block = proc { |out|

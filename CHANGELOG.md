@@ -14,6 +14,7 @@
     - remove args of `group_close`.
     - add `do` to avoid braking call chains.
     - `group_open` accepts a symbol `break_type` instead of a boolean.
+    - add `separate` to separate a list of items.
 
 ## v0.9.8 (30-12-2024)
 

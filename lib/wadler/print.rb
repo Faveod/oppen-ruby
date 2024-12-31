@@ -396,6 +396,123 @@ module Oppen
       self
     end
 
+    # A means to wrap a piece of code in several ways.
+    #
+    # @example
+    #   out
+    #     .wrap {
+    #       # all printing instructions here will be deferred.
+    #       # they will be executed in `when` blocks by calling the `wrapped`.
+    #       out.text(...)
+    #       # ...
+    #     } # This is "wrapped".
+    #     .when(cond1){ |wrapped|
+    #       # when cond1 is true you execute this block.
+    #       out.text("before wrapped")
+    #       # call the wrapped
+    #       wrapped.call
+    #       # and continue printing
+    #       out.text("after wrapped)
+    #     }
+    #     .when(cond2){ |wrapped|
+    #       # and you cand define many conditions.
+    #     }
+    #     .end
+    #
+    # @example Calling `end` is not needed if there's another call after the last `when`:
+    #   out
+    #     .wrap{...} # This is "wrapped".
+    #     .when(cond1){ |wrapped| ... }
+    #     .when(cond2){ |wrapped| ... }
+    #     .text('foo')
+    #
+    # @return [Wrap]
+    def wrap(&blk)
+      Wrap.new(blk)
+    end
+
+    # Produce a separated list.
+    #
+    # @example Consistent Breaking
+    #  puts out.separate((1..3).map(&:to_s), ',') { |i| out.text i}
+    #
+    #  # =>
+    #  # 1,
+    #  # 2,
+    #  # 3
+    #
+    # @example Inconsistent Breaking
+    #  puts out.separate((1..3).map(&:to_s), ',', break_type: :inconsistent) { |i| out.text i}
+    #
+    #  # =>
+    #  # 1, 2,
+    #  # 3
+    #
+    # @param args              [String]
+    #   a list of values.
+    # @param sep               [String]
+    #   a separator.
+    # @param breakable         [String|Nil]
+    #   adds a `breakable` after the separator.
+    # @param break_pos         [Symbol]
+    #   whether to break :before or :after the seraparator.
+    # @param break_type        [Symbol|Nil]
+    #   whether the break is :consistent or :inconsistent.
+    #   If nil is given, the tokens will not be surrounded by a group.
+    # @param indent            [Boolean]
+    #   whether to indent.
+    # @param force_break       [Boolean]
+    #   adds a `break` after the separator.
+    # @param line_continuation [String]
+    #   string to display before new line.
+    #
+    # @yield to execute the passed block.
+    #
+    # @return [self]
+    def separate(args, sep, breakable: ' ', break_pos: :after,
+                 break_type: nil, indent: false,
+                 force_break: false, line_continuation: '')
+      if args.is_a?(Enumerator) ? args.count == 1 : args.length == 1
+        yield(*args[0])
+        return self
+      end
+
+      first = true
+      wrap {
+        wrap {
+          args&.each do |*as|
+            if first
+              breakable '' if !line_continuation.empty? && break_pos == :after
+              first = false
+            elsif break_pos == :after
+              text sep
+              breakable(breakable, line_continuation: line_continuation) if breakable && !force_break
+              self.break(line_continuation: line_continuation) if force_break
+            else
+              breakable(breakable, line_continuation: line_continuation) if breakable && !force_break
+              self.break(line_continuation: line_continuation) if force_break
+              text sep
+            end
+            yield(*as)
+          end
+        }
+          .when(break_type) { |body|
+            group(break_type) {
+              body.()
+            }
+          }
+          .end
+      }
+        .when(indent) { |body|
+          nest {
+            body.()
+          }
+        }.end
+      breakable('', line_continuation: line_continuation) if !line_continuation.empty? && !break_type
+
+      self
+    end
+
     # @!group Helpers
 
     # Open a consistent group.
@@ -471,5 +588,36 @@ module Oppen
     end
 
     # @!endgroup
+
+    # Helper class to allow conditional printing.
+    class Wrap
+      def initialize(blk)
+        @wrapped = blk
+        @wrapper = nil
+      end
+
+      # Conditional.
+      def when(cond, &blk)
+        if cond
+          @wrapper = blk
+        end
+        self
+      end
+
+      # Flush.
+      def end
+        @wrapper ? @wrapper.(@wrapped) : @wrapped.()
+      end
+
+      # To re-enable chaining.
+      def method_missing(meth, ...)
+        self.end.send(meth, ...)
+      end
+
+      # To re-enable chaining.
+      def respond_to_missing?(meth, include_private)
+        self.end.respond_to_missing?(meth, include_private)
+      end
+    end
   end
 end
