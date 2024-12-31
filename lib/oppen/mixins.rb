@@ -28,7 +28,7 @@ module Oppen
 
       handle_break_token = ->(token) {
         if token.offset.positive?
-          printer.text "#{printer_name}.nest('', '', indent: #{token.offset}) {"
+          printer.text "#{printer_name}.nest(indent: #{token.offset}) {"
           printer.nest_open
           printer.break
         end
@@ -57,7 +57,7 @@ module Oppen
         in Token::Break
           handle_break_token.(token)
         in Token::Begin
-          printer.text "#{printer_name}.group('', '', #{token.break_type.inspect}, indent: #{token.offset}) {"
+          printer.text "#{printer_name}.group(#{token.break_type.inspect}, indent: #{token.offset}) {"
           printer.nest_open
         in Token::End
           printer.nest_close

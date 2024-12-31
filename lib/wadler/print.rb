@@ -107,7 +107,7 @@ module Oppen
     #   out.show_print_commands(out_name: 'out')
     #
     #   # =>
-    #   # out.group("", "", :consistent, indent: 0) {
+    #   # out.group(:consistent, indent: 0) {
     #   #   out.text("Hello World!", width: 12)
     #   # }
     #
@@ -119,22 +119,53 @@ module Oppen
 
     # Create a new group.
     #
-    # @param indent     [Integer]
+    # @param indent    [Integer]
     #   indentation.
-    # @param open_obj   [String]
-    #   opening delimiter.
-    # @param close_obj  [String]
-    #   closing delimiter.
+    # @param delim     [Nil|String|Symbol|Array<Nil, String, Symbol>]
+    #   delimiters, to be printed at the start and the end of the group:
+    #   - If it's nil, nothing will be printed
+    #   - If it's a Strings or a Symbol, it will be printed at both positions.
+    #   - If it's an Array of many items, the first two elements will be used
+    #     for the start and end of the group.
     # @param break_type [Token::BreakType]
     #   break type.
     #
     # @yield
     #   the block of text in a group.
     #
-    # @example
+    # @example 1 String Delimiter
     #   out = Oppen::Wadler.new
     #   out.text 'a'
-    #   out.group('{', '}', indent: 2) {
+    #   out.group(indent: 2, delim: '|') {
+    #     out.break
+    #     out.text 'b'
+    #   }
+    #   puts out.output
+    #
+    #   # =>
+    #   # a
+    #   #   |
+    #   #   b
+    #   #   |
+    #
+    # @example 1 Delimiter in Array
+    #   out = Oppen::Wadler.new
+    #   out.text 'a'
+    #   out.group(indent: 2, delim: ['|']) {
+    #     out.break
+    #     out.text 'b'
+    #   }
+    #   puts out.output
+    #
+    #   # =>
+    #   # a
+    #   #   |
+    #   #   b
+    #
+    # @example 2 Delimiters
+    #   out = Oppen::Wadler.new
+    #   out.text 'a'
+    #   out.group(indent: 2, delim: %i[{ }]) {
     #     out.break
     #     out.text 'b'
     #   }
@@ -148,14 +179,14 @@ module Oppen
     #
     # @example Consistent Breaking
     #   out = Oppen::Wadler.new
-    #   out.group('', '', :consistent) {
+    #   out.group(:consistent) {
     #     out.text 'a'
     #     out.break
     #     out.text 'b'
     #     out.breakable
     #     out.text 'c'
     #   }
-    #   out.output
+    #   puts out.output
     #
     #   # =>
     #   # a
@@ -164,14 +195,14 @@ module Oppen
     #
     # @example Inconsistent Breaking
     #   out = Oppen::Wadler.new
-    #   out.group('', '', :inconsistent) {
+    #   out.group(:inconsistent) {
     #     out.text 'a'
     #     out.break
     #     out.text 'b'
     #     out.breakable
     #     out.text 'c'
     #   }
-    #   out.output
+    #   puts out.output
     #
     #   # =>
     #   # a
@@ -181,10 +212,13 @@ module Oppen
     #
     # @see Oppen.begin_consistent
     # @see Oppen.begin_inconsistent
-    def group(open_obj = '', close_obj = '',
-              break_type = :consistent, indent: @indent)
-      raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
-        if open_obj.nil? || close_obj.nil?
+    def group(break_type = :consistent, delim: nil, indent: @indent)
+      lft, rgt =
+        case delim
+        in nil then ['', '']
+        in String | Symbol then [delim, delim]
+        in Array then delim.values_at(0, 1).map(&:to_s)
+        end
 
       tokens <<
         case break_type
@@ -194,16 +228,16 @@ module Oppen
           Oppen.begin_inconsistent(offset: indent)
         end
 
-      if !open_obj.empty?
+      if !lft.empty?
         self.break
-        text(open_obj)
+        text lft
       end
 
       yield
 
-      if !close_obj.empty?
+      if !rgt.empty?
         self.break
-        text(close_obj)
+        text rgt
       end
 
       tokens << Oppen.end
@@ -223,19 +257,21 @@ module Oppen
     # @note a {nest} will not forcibly indent its content if the break type of
     # the enclosing {group} is `:inconsistent`.
     #
-    # @param indent    [Integer]
+    # @param delim [Nil|String|Symbol|Array<Nil, String, Symbol>]
+    #   delimiters, to be printed at the start and the end of the group:
+    #   - `nil` is always the empty string.
+    #   - If it's a Strings or a Symbol, it will be printed at both positions.
+    #   - If it's an Array of many items, the first two elements will be used
+    #     for the start and end of the group.
+    # @param indent [Integer]
     #   indentation.
-    # @param open_obj  [String]
-    #   opening delimiter. A {break} is implicitly slipped after it if it's not empty.
-    # @param close_obj [String]
-    #   closing delimiter. A {break} is implicitly slipped before it if it's not empty.
     #
     # @yield
     #   the block of text in a nest.
     #
     # @example
     #   out = Oppen::Wadler.new
-    #   out.nest('{', '}', indent: 2) {
+    #   out.nest(delim: %i[{ }], indent: 2) {
     #     out.text 'a'
     #     out.break
     #     out.text 'b'
@@ -249,14 +285,18 @@ module Oppen
     #   # }
     #
     # @return [Nil]
-    def nest(open_obj = '', close_obj = '', indent: @indent)
-      raise ArgumentError, "#{open_obj.nil? ? 'open_obj' : 'close_obj'} cannot be nil" \
-        if open_obj.nil? || close_obj.nil?
+    def nest(delim: nil, indent: @indent)
+      lft, rgt =
+        case delim
+        in nil then ['', '']
+        in String | Symbol then [delim, delim]
+        in Array then delim.values_at(0, 1).map(&:to_s)
+        end
 
       @current_indent += indent
 
-      if !open_obj.empty?
-        text(open_obj)
+      if !lft.empty?
+        text lft
         self.break
       end
 
@@ -266,10 +306,10 @@ module Oppen
         @current_indent -= indent
       end
 
-      return if close_obj.empty?
+      return if rgt.empty?
 
       self.break
-      text(close_obj)
+      text rgt
     end
 
     # Create a new text element.
@@ -319,7 +359,7 @@ module Oppen
     #   out.text 'b'
     #   out.break line_continuation: '#'
     #   out.text 'c'
-    #   out.output
+    #   puts out.output
     #
     #   # =>
     #   # a
