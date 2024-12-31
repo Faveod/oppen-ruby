@@ -39,3 +39,9 @@ class PrettyPrint
     current_group.break
   end
 end
+
+def assert_wadler(width, expected, builder_block)
+  printer = Oppen::Wadler.new(width: width)
+  builder_block.(printer)
+  _(printer.output).must_equal expected, 'Oppen failed the test'
+end

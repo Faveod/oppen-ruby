@@ -79,6 +79,9 @@ Style/Lambda:
 Style/LambdaCall:
   EnforcedStyle: braces
 
+Style/MultilineBlockChain:
+  Enabled: false
+
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
 
