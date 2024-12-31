@@ -14,19 +14,19 @@ describe 'Wadler tests' do
       out.group {
         out.group {
           out.group {
-            out.group {
-              out.text 'hello'
-              out.breakable
-              out.text 'a'
-            }
-            out.breakable
-            out.text 'b'
+            out
+              .group {
+                out
+                  .text('hello')
+                  .breakable
+                  .text('a')
+              }
+              .breakable
+              .text('b')
           }
-          out.breakable
-          out.text 'c'
+          out.breakable.text 'c'
         }
-        out.breakable
-        out.text 'd'
+        out.breakable.text 'd'
       }
     }
 
@@ -87,25 +87,26 @@ describe 'Wadler tests' do
 
       def show(out)
         out.group {
-          out.text string
-          out.nest(indent: string.length) {
-            unless children.empty?
-              out.text '['
-              out.nest(indent: 1) {
-                first = true
-                children.each { |t|
-                  if first
-                    first = false
-                  else
-                    out.text ','
-                    out.breakable
-                  end
-                  t.show(out)
-                }
-              }
-              out.text ']'
-            end
-          }
+          out
+            .text(string)
+            .nest(indent: string.length) {
+              unless children.empty?
+                out
+                  .text('[')
+                  .nest(indent: 1) {
+                    first = true
+                    children.each { |t|
+                      if first
+                        first = false
+                      else
+                        out.text(',').breakable
+                      end
+                      t.show(out)
+                    }
+                  }
+                  .text ']'
+              end
+            }
         }
       end
     end

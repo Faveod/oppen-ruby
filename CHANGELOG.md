@@ -7,6 +7,7 @@
     `indent:` kwarg is passed.
   - accept `base_indent` which sets the base global indentation level for
     the whole printer.
+  - all printing methods return `self` for call chaining.
 - Wadler:
     - add `#consistent` and `#inconsistent` as shorthands to
     `group(:consistent)` and `group(:inconsistent)`, respectively.

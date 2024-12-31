@@ -28,9 +28,10 @@ module Oppen
 
       handle_break_token = ->(token) {
         if token.offset.positive?
-          printer.text "#{printer_name}.nest(indent: #{token.offset}) {"
-          printer.nest_open
-          printer.break
+          printer
+            .text("#{printer_name}.nest(indent: #{token.offset}) {")
+            .nest_open
+            .break
         end
 
         printer.text(
@@ -43,11 +44,7 @@ module Oppen
           end,
         )
 
-        if token.offset.positive?
-          printer.nest_close
-          printer.break
-          printer.text '}'
-        end
+        printer.nest_close.break.text '}' if token.offset.positive?
       }
 
       tokens.each_with_index do |token, idx|
@@ -57,17 +54,17 @@ module Oppen
         in Token::Break
           handle_break_token.(token)
         in Token::Begin
-          printer.text "#{printer_name}.group(#{token.break_type.inspect}, indent: #{token.offset}) {"
-          printer.nest_open
+          printer
+            .text("#{printer_name}.group(#{token.break_type.inspect}, indent: #{token.offset}) {")
+            .nest_open
         in Token::End
-          printer.nest_close
-          printer.break
-          printer.text '}'
+          printer.nest_close.break.text '}'
         in Token::EOF
           nil
         end
         printer.break if !tokens[idx + 1].is_a?(Token::End)
       end
+
       printer.output
     end
   end
