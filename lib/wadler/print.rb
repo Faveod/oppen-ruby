@@ -513,6 +513,13 @@ module Oppen
       self
     end
 
+    # A shorhand for `text ' '`.
+    #
+    # @return [self]
+    def space
+      text ' '
+    end
+
     # @!group Helpers
 
     # Open a consistent group.

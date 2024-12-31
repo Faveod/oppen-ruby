@@ -721,5 +721,12 @@ describe 'Wadler tests' do
                 from lambda
       OUT
     end
+
+    it 'produces an actual space' do
+      out = Oppen::Wadler.new(width: 10)
+      out.text('Hello').space.text('World!')
+
+      _(out.output).must_equal 'Hello World!'
+    end
   end
 end
