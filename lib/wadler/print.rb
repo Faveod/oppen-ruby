@@ -520,6 +520,80 @@ module Oppen
       text ' '
     end
 
+    # Surround a block with +lft+ and +rgt+
+    #
+    # @param lft [String]  lft
+    #   left surrounding string.
+    # @param rgt [String]  rgt
+    #   right surrounding string.
+    #
+    # @yield the passed block to be surrounded with `lft` and `rgt`.
+    #
+    # @option opts [Boolean] :group           (true)
+    #   whether to create a group enclosing `lft`, `rgt`, and the passed block.
+    # @option opts [Boolean] :indent          (@indent)
+    #   whether to indent the passed block.
+    # @option opts [String]  :lft_breakable   ('')
+    #   left breakable string.
+    # @option opts [Boolean] :lft_can_break   (true)
+    #   injects `break` or `breakable` only if true;
+    #   i.e. `lft_breakable` will be ignored if false.
+    # @option opts [Boolean] :lft_force_break (false)
+    #   force break instead of using `lft_breakable`.
+    # @option opts [String]  :rgt_breakable   ('')
+    #   right breakable string.
+    # @option opts [Boolean] :rgt_can_break   (true)
+    #   injects `break` or `breakable` only if true.
+    #   i.e. `rgt_breakable` will be ignored if false.
+    # @option opts [Boolean] :rgt_force_break (false)
+    #   force break instead of using `rgt_breakable`.
+    #
+    # @return [self]
+    def surround(lft, rgt, **opts)
+      group = opts.fetch(:group, true)
+      group_open(break_type: :inconsistent) if group
+
+      text lft if lft
+
+      indent = opts.fetch(:indent, @indent)
+      nest_open(indent: indent)
+
+      lft_breakable = opts.fetch(:lft_breakable, '')
+      lft_can_break = opts.fetch(:lft_can_break, true)
+      lft_force_break = opts.fetch(:lft_force_break, false)
+      if lft && lft_can_break
+        if lft_force_break
+          self.break
+        else
+          breakable lft_breakable
+        end
+      end
+
+      if block_given?
+        yield
+      end
+
+      nest_close
+
+      rgt_breakable = opts.fetch(:rgt_breakable, '')
+      rgt_can_break = opts.fetch(:rgt_can_break, true)
+      rgt_force_break = opts.fetch(:rgt_force_break, false)
+      if rgt
+        if rgt_can_break
+          if rgt_force_break
+            self.break
+          else
+            breakable rgt_breakable
+          end
+        end
+        text rgt
+      end
+
+      group_close if group
+
+      self
+    end
+
     # @!group Helpers
 
     # Open a consistent group.
