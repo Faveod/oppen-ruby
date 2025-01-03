@@ -17,6 +17,7 @@
     - `group_open` accepts a symbol `break_type` instead of a boolean.
     - add `separate` to separate a list of items.
     - add `space` to generate a literal space.
+    - add `surround` as a glorified `group` that add breakables next to delimiters.
 
 ## v0.9.8 (30-12-2024)
 
