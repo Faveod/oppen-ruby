@@ -594,6 +594,8 @@ module Oppen
       self
     end
 
+    # @!group Convenience Methods Built On {separate}
+
     # Separate args into lines.
     #
     # This is a wrapper around {separate} where `breakable: true`.
@@ -612,7 +614,147 @@ module Oppen
       separate(*args, **kwargs.merge(breakable: false), &block)
     end
 
-    # @!group Helpers
+    # @!endgroup
+    # @!group Convenience Methods Built On {surround}
+
+    # YARD doesn't drop into blocks, so we can't use metaprogramming
+    # to generate all these functions, so we're copy-pastring.
+
+    # {surround} with `< >`. New lines can appear after and before the delimiters.
+    #
+    # @param padding [String] ('')
+    #   Passed to `lft_breakable` and `rgt_breakable`.
+    #
+    # @return [self]
+    def angles(padding: '', **kwargs, &block)
+      surround(
+        '<', '>',
+        **kwargs.merge(lft_breakable: padding, rgt_breakable: padding),
+        &block
+      )
+    end
+
+    # {surround} with `< >`. New lines cannot appear after and before the delimiters.
+    #
+    # @return [self]
+    def angles_break_both(**kwargs, &block)
+      angles(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    end
+
+    # {surround} with `< >`. New lines will appear after and before the delimiters.
+    #
+    # @return [self]
+    def angles_break_none(**kwargs, &block)
+      angles(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    end
+
+    # {surround} with `{ }`. New lines can appear after and before the delimiters.
+    #
+    # @param padding [String] ('')
+    #   Passed to `lft_breakable` and `rgt_breakable`.
+    #
+    # @return [self]
+    def braces(padding: '', **kwargs, &block)
+      surround(
+        '{', '}',
+        **kwargs.merge(lft_breakable: padding, rgt_breakable: padding),
+        &block
+      )
+    end
+
+    # {surround} with `{ }`. New lines cannot appear after and before the delimiters.
+    #
+    # @return [self]
+    def braces_break_both(**kwargs, &block)
+      braces(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    end
+
+    # {surround} with `{ }`. New lines will appear after and before the delimiters.
+    #
+    # @return [self]
+    def braces_break_none(**kwargs, &block)
+      braces(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    end
+
+    # {surround} with `[ ]`. New lines can appear after and before the delimiters.
+    #
+    # @param padding [String] ('')
+    #   Passed to `lft_breakable` and `rgt_breakable`.
+    #
+    # @return [self]
+    def brackets(padding: '', **kwargs, &block)
+      surround(
+        '[', ']',
+        **kwargs.merge(lft_breakable: padding, rgt_breakable: padding),
+        &block
+      )
+    end
+
+    # {surround} with `[ ]`. New lines cannot appear after and before the delimiters.
+    #
+    # @return [self]
+    def brackets_break_both(**kwargs, &block)
+      brackets(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    end
+
+    # {surround} with `[ ]`. New lines will appear after and before the delimiters.
+    #
+    # @return [self]
+    def brackets_break_none(**kwargs, &block)
+      brackets(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    end
+
+    # {surround} with `( )`. New lines can appear after and before the delimiters.
+    #
+    # @param padding [String] ('')
+    #   Passed to `lft_breakable` and `rgt_breakable`.
+    #
+    # @return [self]
+    def parens(padding: '', **kwargs, &block)
+      surround(
+        '(', ')',
+        **kwargs.merge(lft_breakable: padding, rgt_breakable: padding),
+        &block
+      )
+    end
+
+    # {surround} with `( )`. New lines cannot appear after and before the delimiters.
+    #
+    # @return [self]
+    def parens_break_both(**kwargs, &block)
+      parens(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    end
+
+    # {surround} with `( )`. New lines will appear after and before the delimiters.
+    #
+    # @return [self]
+    def parens_break_none(**kwargs, &block)
+      parens(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    end
+
+    # {surround} with `` ` ` ``. New lines cannot appear after and before the delimiters
+    # unless you specify it with `rgt_can_break` and `lft_can_break`.
+    #
+    # @return [self]
+    def backticks(**kwargs, &block)
+      surround('`', '`', lft_can_break: false, rgt_can_break: false, **kwargs, &block)
+    end
+
+    # {surround} with `" "`. New lines cannot appear after and before the delimiters
+    # unless you specify it with `rgt_can_break` and `lft_can_break`.
+    #
+    # @return [self]
+    def quote_double(**kwargs, &block)
+      surround('"', '"', lft_can_break: false, rgt_can_break: false, **kwargs, &block)
+    end
+
+    # {surround} with `' '`. New lines cannot appear after and before the delimiters
+    # unless you specify it with `rgt_can_break` and `lft_can_break`.
+    #
+    # @return [self]
+    def quote_single(**kwargs, &block)
+      surround("'", "'", lft_can_break: false, rgt_can_break: false, **kwargs, &block)
+    end
 
     # Open a consistent group.
     #
