@@ -98,3 +98,38 @@ describe 'separate' do
   # 1. indent doesn't work
   # 1. breaking inconsistently :before deos not make sense.
 end
+
+describe 'helpers built on separate' do
+  it 'creates lines from a list' do
+    width = 10
+    block = proc { |out|
+      out.lines((1..10).map(&:to_s), ',') { |i|
+        out.text i
+      }
+    }
+    assert_wadler width, <<~OUT.chomp, block
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    OUT
+  end
+
+  it 'concatenates args from a list' do
+    width = 10
+    block = proc { |out|
+      out.concat((1..10).map(&:to_s), ',') { |i|
+        out.text i
+      }
+    }
+    assert_wadler width, <<~OUT.chomp, block
+      1,2,3,4,5,6,7,8,9,10
+    OUT
+  end
+end

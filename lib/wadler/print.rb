@@ -594,6 +594,24 @@ module Oppen
       self
     end
 
+    # Separate args into lines.
+    #
+    # This is a wrapper around {separate} where `breakable: true`.
+    #
+    # @see [separate]
+    def lines(*args, **kwargs, &block)
+      separate(*args, **kwargs.merge(force_break: true), &block)
+    end
+
+    # Concatenates args.
+    #
+    # This is a wrapper around {separate} where `breakable: false`.
+    #
+    # @see [separate]
+    def concat *args, **kwargs, &block
+      separate(*args, **kwargs.merge(breakable: false), &block)
+    end
+
     # @!group Helpers
 
     # Open a consistent group.
