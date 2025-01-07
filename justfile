@@ -30,6 +30,12 @@ doc:
 doc-stats:
   bundle exec yard stats --list-undoc
 
+[group('test')]
+examples:
+  find examples/ -mindepth 2 -type f -name "*.rb" | while IFS= read -r file; do \
+    bundle exec ruby "$file" > /dev/null || exit 1; \
+  done
+
 [group('publish')]
 gem:
   mkdir -p {{PKG_OUT}}
