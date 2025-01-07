@@ -129,7 +129,9 @@ describe 'Token to wadler tests' do
       },
       expected: <<~LANG,
         printer.group(:consistent, indent: 0) {
-          printer.text("Hello World!", width: 12)
+          printer.group(:consistent, indent: 0) {
+            printer.text("Hello World!", width: 12)
+          }
         }
 
       LANG
@@ -142,12 +144,14 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(:inconsistent, indent: 2) {
-          printer.break(line_continuation: "")
-          printer.text("{", width: 1)
-          printer.text("Hello World!", width: 12)
-          printer.break(line_continuation: "")
-          printer.text("}", width: 1)
+        printer.group(:consistent, indent: 0) {
+          printer.group(:inconsistent, indent: 2) {
+            printer.break(line_continuation: "")
+            printer.text("{", width: 1)
+            printer.text("Hello World!", width: 12)
+            printer.break(line_continuation: "")
+            printer.text("}", width: 1)
+          }
         }
 
       LANG
@@ -201,7 +205,9 @@ describe 'Token to wadler tests' do
             printer.group(:consistent, indent: 0) {
               printer.group(:consistent, indent: 0) {
                 printer.group(:consistent, indent: 0) {
-                  printer.text("Hello World!", width: 12)
+                  printer.group(:consistent, indent: 0) {
+                    printer.text("Hello World!", width: 12)
+                  }
                 }
               }
             }
@@ -302,14 +308,16 @@ describe 'Token to wadler tests' do
         }
       },
       expected: <<~LANG,
-        printer.group(:consistent, indent: 2) {
+        printer.group(:consistent, indent: 0) {
           printer.group(:consistent, indent: 2) {
-            printer.nest(indent: 4) {
-              printer.breakable(" ", width: 1, line_continuation: "")
-            }
-            printer.text("Hello World!", width: 12)
-            printer.nest(indent: 4) {
-              printer.break(line_continuation: "")
+            printer.group(:consistent, indent: 2) {
+              printer.nest(indent: 4) {
+                printer.breakable(" ", width: 1, line_continuation: "")
+              }
+              printer.text("Hello World!", width: 12)
+              printer.nest(indent: 4) {
+                printer.break(line_continuation: "")
+              }
             }
           }
         }

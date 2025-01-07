@@ -66,10 +66,8 @@ module Oppen
     #
     # @return [Nil]
     def add_missing_begin_and_end
-      if !tokens.first.is_a? Token::Begin
-        tokens.unshift Oppen.begin_consistent(offset: 0)
-        tokens << Oppen.end
-      end
+      tokens.unshift Oppen.begin_consistent(offset: 0)
+      tokens << Oppen.end
       tokens << Oppen.eof if !tokens.last.is_a?(Oppen::Token::EOF)
     end
 
