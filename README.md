@@ -22,16 +22,12 @@ transition from `ruby/prettyprint` to this gem.
 
 `Wadler` is implemented on top of `Oppen`, and it provides more options than
 `ruby/prettyprint`, notably:
-1. Consistent and inconsistent breaking.
-1. Explicit breaking, which is achievable in `ruby/prettyprint` with some
-monkeypatching.
-
-> [!CAUTION]
-> This is still under development.
-
-## Usage
-
-A few examples of the API usage can be found in [examples/](examples/README.md).
+1. [Consistent](examples/wadler_group/consistent.rb) and [inconsistent](examples/wadler_group/inconsistent.rb) breaking.
+1. [Explicit breaking](examples/wadler_break_and_breakable/break.rb), which is achievable in `ruby/prettyprint` with some monkeypatching.
+1. [Trimming of trailing whitespaces](examples/oppen_and_wadler_customization/whitespace.rb).
+1. [Display a `String` on line break](examples/wadler_break_and_breakable/line_continuation.rb).
+1. A bunch of helper methods to simplify common patterns like [surrounding](examples/wadler_utils/surround.rb) or
+[separating](examples/wadler_utils/surround.rb) tokens.
 
 ## Oppen vs Wadler
 
@@ -39,34 +35,109 @@ A few examples of the API usage can be found in [examples/](examples/README.md).
 and it's not calling ruby's `prettyprint`.
 
 Both implementations have their use cases:
-1. Oppen gives more control over tokens sent to the printer.
-1. Wadler gives a more _"functional"_ API, which is far nicer to work with.
+- Oppen gives more control over tokens sent to the printer.
+- Wadler gives a more _"functional"_ API, which is far nicer to work with.
 
 That being said, both APIs in this gem can achieve the same results, especially
 on consistent and inconsistent breaking.
 
-## Noteworthy details
+## Oppen's API Example
 
-### Difference with Oppen's original algorithm
+```ruby
+tokens = [
+  Oppen.begin_inconsistent,
+  Oppen.string('Hello'),
+  Oppen.break(', '),
+  Oppen.string('World!'),
+  Oppen.line_break,
+  Oppen.string('How are you doing?'),
+  Oppen.end,
+  Oppen.eof,
+]
 
-1. We took liberty to rename functions to make the API more modern and closer to
+puts Oppen.print(tokens:)
+# Hello, World!
+#   How are you doing?
+```
+
+## Wadler's API Example
+
+```ruby
+out = Oppen::Wadler.new(width: 20)
+
+out.group(indent: 2) {
+  out.group {
+    out.text('def').breakable.text('foo')
+  }
+  out.parens_break_none {
+    out.separate(%w[bar baz bat qux], ',', break_type: :inconsistent) { |param|
+      out.text(param)
+    }
+  }
+}
+out.group(indent: 2) {
+  out
+    .break
+    .nest(indent: 2) {
+      out
+        .text('puts')
+        .breakable(line_continuation: ' \\')
+        .text('42')
+  }
+}
+out.break.text('end')
+
+puts out.output
+# def foo(bar, baz,
+#   bat, qux)
+#   puts \
+#     42
+# end
+```
+
+## More Examples
+
+An easy way to add colors to the output on the terminal is wrap `oppen` and expose your own vocabulary:
+
+```ruby
+require 'colored'
+class ColoredTty
+  KW_PALETTE = { Hello: :red, World: :green }.freeze
+  def initialize(...) = @out = Oppen::Wadler.new(...)
+  def breakable(...) = @out.breakable(...) && self
+  def keyword(value, width: value.length) = @out.text(value.send(KW_PALETTE[value.to_sym] || :white), width:) && self
+  def output = @out.output
+  def text(...) = @out.text(...) && self
+end
+
+out = ColoredTty.new(width: 12)
+out.keyword('Hello').breakable.text('World')
+
+puts out.output
+# \e[31mHello\e[0m World
+```
+
+The same idea can be applied an adapted to make an HTML printer; all you need to take care of is the correct width of the text to preserve the width of the text and get an output identical to that of the tty colored printer.
+
+Check out the [examples/](examples/README.md) folder for more details on how to use the Oppen and Wadler APIs.
+
+## Difference With Oppen's Original Algorithm
+
+1. We took the liberty to rename functions to make the API more modern and closer to
 what we expect when writing Ruby code.  All correspondences with the algorithm
 as described in Oppen's paper are noted in the comments of classes and methods.
 1. We do not raise exceptions when we overflow the margin. The only exceptions
 that we raise indicate a bug in the implementation. Please report them.
+1. The stacks described by the algorithm do not have a fixed size in our
+implementation: we upsize them when they are full.
+1. We can optionally trim trailing whitespaces (this feature is on by default for the `Wadler` API).
+1. We added support for an additional new line anchors, see [examples/configs/indent_anchor.rb](examples/configs/indent_anchor.rb).
+1. We added support for eager printing of `groups`; see [examples/configs/eager_print.rb](examples/configs/eager_print.rb).
+1. We introduced a new token (`Whitespace`) and added more customizations to one of the originals (`Break`).
 
-### Difference with `ruby/prettyprint`
+For more insight on how Oppen's algorithm works, check out [docs/oppen_algorithm.md](docs/oppen_algorithm.md).
 
-Oppen's algorithm and `ruby/prettyprint` do not have the same starting positions
-for a group's indentation. That's why you need to pay particular attention to
-calls for `nest`; you might want to decrease them by `1` if you care about keeping
-the same behavior.
-
-This is what we do in our test suite to verify the correspondence of the `Wadler`
-API and the `ruby/prettyprint`. We decided to shift the burden to the user because
-we think that the deicision taken by `ruby/prettyprint` does not suit us.
-
-## Related projects
+## Related Projects
 
 1. [`ruby/prettyprint`](https://github.com/ruby/prettyprint)
 1. [rustc implementation](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast_pretty/pp/index.html)
