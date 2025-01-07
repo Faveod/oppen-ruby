@@ -459,8 +459,9 @@ module Oppen
     # @param break_type        [Symbol|Nil]
     #   whether the break is :consistent or :inconsistent.
     #   If nil is given, the tokens will not be surrounded by a group.
-    # @param indent            [Boolean]
-    #   whether to indent.
+    # @param indent            [Boolean|Integer]
+    #   - If `true`, indent by @indent.
+    #   - If an 'Integer', indent by its value.
     # @param force_break       [Boolean]
     #   adds a `break` after the separator.
     # @param line_continuation [String]
@@ -497,14 +498,14 @@ module Oppen
           end
         }
           .when(break_type) { |body|
-            group(break_type) {
+            group(break_type, indent: 0) {
               body.()
             }
           }
           .end
       }
         .when(indent) { |body|
-          nest {
+          nest(indent: indent.is_a?(Integer) ? indent : @indent) {
             body.()
           }
         }.end

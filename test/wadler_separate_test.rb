@@ -94,8 +94,38 @@ describe 'separate' do
     OUT
   end
 
+  it 'indents when using a Boolean' do
+    width = 10
+    block = proc { |out|
+      out.separate((1..10).map(&:to_s), ',', break_type: :inconsistent, indent: true) { |i|
+        out.text i
+      }
+    }
+    assert_wadler width, <<~OUT.chomp, block, indent: 4
+      1, 2, 3,
+          4, 5,
+          6, 7,
+          8, 9,
+          10
+    OUT
+  end
+
+  it 'indents when using an Integer' do
+    width = 10
+    block = proc { |out|
+      out.separate((1..10).map(&:to_s), ',', break_type: :inconsistent, indent: 2) { |i|
+        out.text i
+      }
+    }
+    assert_wadler width, <<~OUT.chomp, block
+      1, 2, 3,
+        4, 5, 6,
+        7, 8, 9,
+        10
+    OUT
+  end
+
   # TODO: the rest of the params
-  # 1. indent doesn't work
   # 1. breaking inconsistently :before deos not make sense.
 end
 
