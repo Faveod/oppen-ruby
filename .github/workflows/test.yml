@@ -37,6 +37,8 @@ jobs:
         run: just lint
       - name: test
         run: just test
+      - name: examples
+        run: just examples
       - name: doc
         run: just doc
       - name: package gem
