@@ -2,10 +2,10 @@
 
 require_relative '../helper'
 
-printer = Oppen::Wadler.new(width: 999_999)
+printer = Oppen::Wadler.new(indent: 2, width: 999_999)
 
 # Groups have no delimiters by default.
-printer.group(2, '<<', '>>') {
+printer.group(delim: %w[<< >>]) {
   printer.text 'Hello, World!'
   printer.break
   printer.text 'How are you doing?'
@@ -16,6 +16,7 @@ printer.group(2, '<<', '>>') {
 }
 
 puts printer.output
+#
 #   <<Hello, World!
 #   How are you doing?
 #   I am fine, thanks.

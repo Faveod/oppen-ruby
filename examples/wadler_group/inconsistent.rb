@@ -7,7 +7,7 @@ require_relative '../helper'
 
 printer = Oppen::Wadler.new(width: 999_999)
 
-printer.group(0, '', '', :inconsistent) {
+printer.inconsistent { # alias for printer.group(:inconsistent)
   printer.text 'Hello, World!'
   printer.breakable
   printer.text 'How are you doing?'

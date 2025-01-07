@@ -8,7 +8,7 @@ require_relative '../helper'
 printer = Oppen::Wadler.new(width: 999_999)
 
 # Groups are consistent by default.
-printer.group {
+printer.consistent { # alias for printer.group(:consistent) and same as printer.group
   printer.text 'Hello, World!'
   printer.breakable
   printer.text 'How are you doing?'

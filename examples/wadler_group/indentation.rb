@@ -2,10 +2,10 @@
 
 require_relative '../helper'
 
-printer = Oppen::Wadler.new(width: 999_999)
+printer = Oppen::Wadler.new(indent: 4, width: 999_999)
 
 # Groups have an indentation of 0 by default.
-printer.group(4) {
+printer.group {
   printer.text 'Hello, World!'
   printer.break
   printer.text 'How are you doing?'

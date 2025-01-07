@@ -5,17 +5,19 @@ require_relative '../helper'
 printer_with_config =
   Oppen::Wadler.new(
     config: Oppen::Config.new(indent_anchor: :current_offset),
+    indent: 4,
     width: 13,
   )
 printer_no_config =
   Oppen::Wadler.new(
     config: Oppen::Config.new(indent_anchor: :end_of_previous_line),
+    indent: 4,
     width: 13,
   )
 test_block = ->(printer) {
   printer.text 'And she said:'
-  printer.group(4) {
-    printer.group(4) {
+  printer.group {
+    printer.group {
       printer.break
       printer.text 'Hello, World!'
     }
