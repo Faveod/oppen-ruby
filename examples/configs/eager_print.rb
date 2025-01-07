@@ -24,7 +24,7 @@ test_block.(printer_no_config)
 title 'With eager printing:'
 puts printer_with_config.output
 # abc defghi
-# jkl
+#        jkl
 
 puts ''
 

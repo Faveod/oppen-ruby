@@ -2,10 +2,10 @@
 
 require_relative '../helper'
 
-printer = Oppen::Wadler.new(width: 999_999)
+printer = Oppen::Wadler.new(indent: 2, width: 999_999)
 
 # Nests have no delimiters by default.
-printer.nest(2, '<<', '>>') {
+printer.nest(delim: %w[<< >>]) {
   printer.text 'Hello, World!'
   printer.break
   printer.text 'How are you doing?'

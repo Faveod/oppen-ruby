@@ -2,9 +2,9 @@
 
 require_relative '../helper'
 
-printer = Oppen::Wadler.new(width: 999_999)
+printer = Oppen::Wadler.new(indent: 4, width: 999_999)
 
-printer.nest(4) {
+printer.nest {
   printer.text 'Hello, World!'
   printer.break
   printer.text 'How are you doing?'
