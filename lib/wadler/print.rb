@@ -99,9 +99,7 @@ module Oppen
     #
     # @example
     #   out = Oppen::Wadler.new
-    #   out.group {
-    #     out.text('Hello World!')
-    #   }
+    #   out.text('Hello World!')
     #   out.show_print_commands(out_name: 'out')
     #
     #   # =>
