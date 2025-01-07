@@ -123,7 +123,7 @@ module Oppen
     #   #
     #   # eager_print: true =>
     #   # abc defghi
-    #   # jkl
+    #   #        jkl
     #
     # @return [Boolean]
     def eager_print? = @eager_print
