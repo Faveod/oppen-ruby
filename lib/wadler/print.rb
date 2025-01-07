@@ -236,13 +236,13 @@ module Oppen
     end
 
     # An alias for `group(:consistent, ...)`
-    def consistent(**kwargs)
-      group(:consistent, **kwargs)
+    def consistent(...)
+      group(:consistent, ...)
     end
 
     # An alias for `group(:inconsistent, ...)`
-    def inconsistent(**kwargs)
-      group(:inconsistent, **kwargs)
+    def inconsistent(...)
+      group(:inconsistent, ...)
     end
 
     # Create a new non-strict {group}.
