@@ -9,7 +9,7 @@ require_relative '../helper'
 # to prevent trailing whitespaces can be specified using the `whitespace` parameter.
 whitespace = '**'
 
-printer = Oppen::Wadler.new(indent: 2, whitespace: whitespace)
+printer = Oppen::Wadler.new(indent: 2, whitespace:)
 
 printer.group {
   printer.text '******Hello, World!******'

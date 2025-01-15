@@ -24,7 +24,7 @@ module Oppen
 
     # @return [String]
     def tokens_to_wadler(tokens, base_indent: 0, printer_name: 'out', width: tokens.length * 3)
-      printer = Oppen::Wadler.new(base_indent: base_indent, indent: 2, width: width)
+      printer = Oppen::Wadler.new(base_indent:, indent: 2, width:)
 
       handle_break_token = ->(token) {
         if token.offset.positive?

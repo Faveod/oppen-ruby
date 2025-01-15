@@ -293,7 +293,7 @@ module Oppen
         end
       trim_on_break ||= 0
 
-      print_stack.print(token, token_width, trim_on_break: trim_on_break)
+      print_stack.print(token, token_width, trim_on_break:)
 
       case token
       when Token::Break

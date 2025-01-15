@@ -1,6 +1,6 @@
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.1
   SuggestExtensions: false
   Exclude:
     - .vendor/**/*
@@ -70,6 +70,7 @@ Style/BlockDelimiters:
 Style/GlobalVars:
   Exclude:
     - ext/tree_sitter/extconf.rb
+
 Style/IfUnlessModifier:
   Enabled: false
 

@@ -74,7 +74,7 @@ module Oppen
       end
 
       def initialize(line_continuation: '', offset: 0)
-        super(LineBreakString.new, line_continuation: line_continuation, offset: offset)
+        super(LineBreakString.new, line_continuation:, offset:)
       end
     end
 

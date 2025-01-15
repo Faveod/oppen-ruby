@@ -154,10 +154,10 @@ module Oppen
     # @return [Config]
     def self.wadler(eager_print: true, trim_trailing_whitespaces: true, upsize_stack: true)
       new(
-        eager_print: eager_print,
+        eager_print:,
         indent_anchor: :current_offset,
-        trim_trailing_whitespaces: trim_trailing_whitespaces,
-        upsize_stack: upsize_stack,
+        trim_trailing_whitespaces:,
+        upsize_stack:,
       )
     end
   end
@@ -172,7 +172,7 @@ module Oppen
   # @return [Token::String]
   #   a new String token.
   def self.string(value, width: value.length)
-    Token::String.new(value, width: width)
+    Token::String.new(value, width:)
   end
 
   # @return [Token::Whitespace] a new Whitespace token.
@@ -196,7 +196,7 @@ module Oppen
   #
   # @see Wadler#break example on `line_continuation`.
   def self.break(str = ' ', line_continuation: '', offset: 0, width: str.length)
-    Token::Break.new(str, width: width, line_continuation: line_continuation, offset: offset)
+    Token::Break.new(str, width:, line_continuation:, offset:)
   end
 
   # @param line_continuation [String]
@@ -209,7 +209,7 @@ module Oppen
   #
   # @see Wadler#break example on `line_continuation`.
   def self.line_break(line_continuation: '', offset: 0)
-    Token::LineBreak.new(line_continuation: line_continuation, offset: offset)
+    Token::LineBreak.new(line_continuation:, offset:)
   end
 
   # In a consistent group, the presence of a new line inside the group will
@@ -232,7 +232,7 @@ module Oppen
   #
   # @see Wadler#group
   def self.begin_consistent(offset: 2)
-    Token::Begin.new(break_type: :consistent, offset: offset)
+    Token::Begin.new(break_type: :consistent, offset:)
   end
 
   # In an inconsistent group, the presence of a new line inside the group will
@@ -251,7 +251,7 @@ module Oppen
   #
   # @see Wadler#group
   def self.begin_inconsistent(offset: 2)
-    Token::Begin.new(break_type: :inconsistent, offset: offset)
+    Token::Begin.new(break_type: :inconsistent, offset:)
   end
 
   # @return [Token::End] a new End token.
