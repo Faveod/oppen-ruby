@@ -81,7 +81,7 @@ module Oppen
       in Token::End
         handle_end
       in Token::Break
-        handle_break token, token_width, trim_on_break: trim_on_break
+        handle_break token, token_width, trim_on_break:
       in Token::String
         handle_string token, token_width
       end

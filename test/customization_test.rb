@@ -224,7 +224,7 @@ describe 'Nest delimiter tests' do
         printer.text 'foo()'
       }
       printer.break
-      printer.nest(delim: delim, indent: 2) {
+      printer.nest(delim:, indent: 2) {
         printer.group {
           printer.text 'Hello'
           printer.breakable(', ')
@@ -304,7 +304,7 @@ describe 'Group delimiter tests' do
         printer.breakable
         printer.text 'foo()'
       }
-      printer.group(delim: delim, indent: 2) {
+      printer.group(delim:, indent: 2) {
         printer.group {
           printer.break
           printer.text 'Hello'
@@ -385,12 +385,12 @@ describe 'Line continuation tests' do
       printer.group(break_type, indent: 2) {
         printer.breakable ''
         printer.text '1'
-        printer.breakable ', ', line_continuation: line_continuation
+        printer.breakable(', ', line_continuation:)
         printer.text '2'
-        printer.breakable ', ', line_continuation: line_continuation
+        printer.breakable(', ', line_continuation:)
         printer.text '3'
       }
-      printer.breakable '', line_continuation: line_continuation
+      printer.breakable('', line_continuation:)
       printer.text ']'
     }
   end

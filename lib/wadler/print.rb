@@ -77,12 +77,12 @@ module Oppen
     def output
       add_missing_begin_and_end
       Oppen.print(
-        tokens: tokens,
-        new_line: new_line,
-        config: config,
+        tokens:,
+        new_line:,
+        config:,
         space: space_gen,
-        out: out,
-        width: width,
+        out:,
+        width:,
       )
     end
 
@@ -327,7 +327,7 @@ module Oppen
         end
         tokens << Oppen.whitespace(match)
       else
-        tokens << Oppen.string(value, width: width)
+        tokens << Oppen.string(value, width:)
       end
       self
     end
@@ -345,7 +345,7 @@ module Oppen
     #
     # @see Wadler#break example on `line_continuation`.
     def breakable(str = ' ', line_continuation: '', width: str.length)
-      tokens << Oppen.break(str, width: width, line_continuation: line_continuation, offset: current_indent)
+      tokens << Oppen.break(str, width:, line_continuation:, offset: current_indent)
       self
     end
 
@@ -370,7 +370,7 @@ module Oppen
     #
     # @return [self]
     def break(line_continuation: '')
-      tokens << Oppen.line_break(line_continuation: line_continuation, offset: current_indent)
+      tokens << Oppen.line_break(line_continuation:, offset: current_indent)
       self
     end
 
@@ -483,11 +483,11 @@ module Oppen
               first = false
             elsif break_pos == :after
               text sep
-              breakable(breakable, line_continuation: line_continuation) if breakable && !force_break
-              self.break(line_continuation: line_continuation) if force_break
+              breakable(breakable, line_continuation:) if breakable && !force_break
+              self.break(line_continuation:) if force_break
             else
-              breakable(breakable, line_continuation: line_continuation) if breakable && !force_break
-              self.break(line_continuation: line_continuation) if force_break
+              breakable(breakable, line_continuation:) if breakable && !force_break
+              self.break(line_continuation:) if force_break
               text sep
             end
             yield(*as)
@@ -505,7 +505,7 @@ module Oppen
             body.()
           }
         }.end
-      breakable('', line_continuation: line_continuation) if !line_continuation.empty? && !break_type
+      breakable('', line_continuation:) if !line_continuation.empty? && !break_type
 
       self
     end
@@ -553,7 +553,7 @@ module Oppen
       text lft if lft
 
       indent = opts.fetch(:indent, @indent)
-      nest_open(indent: indent)
+      nest_open(indent:)
 
       lft_breakable = opts.fetch(:lft_breakable, '')
       lft_can_break = opts.fetch(:lft_can_break, true)
@@ -598,8 +598,8 @@ module Oppen
     # This is a wrapper around {separate} where `breakable: true`.
     #
     # @see [separate]
-    def lines(*args, **kwargs, &block)
-      separate(*args, **kwargs.merge(force_break: true), &block)
+    def lines(*args, **kwargs, &)
+      separate(*args, **kwargs.merge(force_break: true), &)
     end
 
     # Concatenates args.
@@ -607,8 +607,8 @@ module Oppen
     # This is a wrapper around {separate} where `breakable: false`.
     #
     # @see [separate]
-    def concat *args, **kwargs, &block
-      separate(*args, **kwargs.merge(breakable: false), &block)
+    def concat(*args, **kwargs, &)
+      separate(*args, **kwargs.merge(breakable: false), &)
     end
 
     # @!endgroup
@@ -634,15 +634,15 @@ module Oppen
     # {surround} with `< >`. New lines cannot appear after and before the delimiters.
     #
     # @return [self]
-    def angles_break_both(**kwargs, &block)
-      angles(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    def angles_break_both(**kwargs, &)
+      angles(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &)
     end
 
     # {surround} with `< >`. New lines will appear after and before the delimiters.
     #
     # @return [self]
-    def angles_break_none(**kwargs, &block)
-      angles(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    def angles_break_none(**kwargs, &)
+      angles(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &)
     end
 
     # {surround} with `{ }`. New lines can appear after and before the delimiters.
@@ -662,15 +662,15 @@ module Oppen
     # {surround} with `{ }`. New lines cannot appear after and before the delimiters.
     #
     # @return [self]
-    def braces_break_both(**kwargs, &block)
-      braces(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    def braces_break_both(**kwargs, &)
+      braces(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &)
     end
 
     # {surround} with `{ }`. New lines will appear after and before the delimiters.
     #
     # @return [self]
-    def braces_break_none(**kwargs, &block)
-      braces(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    def braces_break_none(**kwargs, &)
+      braces(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &)
     end
 
     # {surround} with `[ ]`. New lines can appear after and before the delimiters.
@@ -690,15 +690,15 @@ module Oppen
     # {surround} with `[ ]`. New lines cannot appear after and before the delimiters.
     #
     # @return [self]
-    def brackets_break_both(**kwargs, &block)
-      brackets(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    def brackets_break_both(**kwargs, &)
+      brackets(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &)
     end
 
     # {surround} with `[ ]`. New lines will appear after and before the delimiters.
     #
     # @return [self]
-    def brackets_break_none(**kwargs, &block)
-      brackets(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    def brackets_break_none(**kwargs, &)
+      brackets(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &)
     end
 
     # {surround} with `( )`. New lines can appear after and before the delimiters.
@@ -718,39 +718,39 @@ module Oppen
     # {surround} with `( )`. New lines cannot appear after and before the delimiters.
     #
     # @return [self]
-    def parens_break_both(**kwargs, &block)
-      parens(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &block)
+    def parens_break_both(**kwargs, &)
+      parens(**kwargs.merge(lft_force_break: true, rgt_force_break: true), &)
     end
 
     # {surround} with `( )`. New lines will appear after and before the delimiters.
     #
     # @return [self]
-    def parens_break_none(**kwargs, &block)
-      parens(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &block)
+    def parens_break_none(**kwargs, &)
+      parens(**kwargs.merge(lft_can_break: false, rgt_can_break: false), &)
     end
 
     # {surround} with `` ` ` ``. New lines cannot appear after and before the delimiters
     # unless you specify it with `rgt_can_break` and `lft_can_break`.
     #
     # @return [self]
-    def backticks(**kwargs, &block)
-      surround('`', '`', lft_can_break: false, rgt_can_break: false, **kwargs, &block)
+    def backticks(**kwargs, &)
+      surround('`', '`', lft_can_break: false, rgt_can_break: false, **kwargs, &)
     end
 
     # {surround} with `" "`. New lines cannot appear after and before the delimiters
     # unless you specify it with `rgt_can_break` and `lft_can_break`.
     #
     # @return [self]
-    def quote_double(**kwargs, &block)
-      surround('"', '"', lft_can_break: false, rgt_can_break: false, **kwargs, &block)
+    def quote_double(**kwargs, &)
+      surround('"', '"', lft_can_break: false, rgt_can_break: false, **kwargs, &)
     end
 
     # {surround} with `' '`. New lines cannot appear after and before the delimiters
     # unless you specify it with `rgt_can_break` and `lft_can_break`.
     #
     # @return [self]
-    def quote_single(**kwargs, &block)
-      surround("'", "'", lft_can_break: false, rgt_can_break: false, **kwargs, &block)
+    def quote_single(**kwargs, &)
+      surround("'", "'", lft_can_break: false, rgt_can_break: false, **kwargs, &)
     end
 
     # Open a consistent group.

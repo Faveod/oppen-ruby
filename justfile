@@ -45,6 +45,10 @@ gem:
 lint:
   bundle exec rubocop --config .rubocop.yml
 
+[group('lint')]
+lint-fix:
+  bundle exec rubocop --config .rubocop.yml -A
+
 [group('publish')]
 publish:
   gem -C {{PKG_OUT}} push {{GEM_FILE}}
