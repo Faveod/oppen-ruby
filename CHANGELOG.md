@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+## v1.0.0 (21-01-2025)
+
 - Drop support for Ruby < 3.1.
 - Deprarture from the `ruby/pretty_print` API with Wadler:
   - accept `indent` which will apply to `nest` and `group` implicitly if no
