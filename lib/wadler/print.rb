@@ -345,6 +345,9 @@ module Oppen
     #
     # @see Wadler#break example on `line_continuation`.
     def breakable(str = ' ', line_continuation: '', width: str.length)
+      if config.trim_trailing_whitespaces? && line_continuation
+        line_continuation = line_continuation.sub(/(?:#{Regexp.escape(whitespace)})+\z/, '')
+      end
       tokens << Oppen.break(str, width:, line_continuation:, offset: current_indent)
       self
     end
@@ -370,6 +373,9 @@ module Oppen
     #
     # @return [self]
     def break(line_continuation: '')
+      if line_continuation && config.trim_trailing_whitespaces?
+        line_continuation = line_continuation.sub(/(?:#{Regexp.escape(whitespace)})+\z/, '')
+      end
       tokens << Oppen.line_break(line_continuation:, offset: current_indent)
       self
     end
