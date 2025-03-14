@@ -189,6 +189,20 @@ describe 'Trim trailing whitespaces tests' do
         },
         expected: "#{whitespace}a\n\n#{whitespace}a\n\n",
       },
+      {
+        title: "trims `#{whitespace}` from line_continuation",
+        block: proc { |printer|
+          printer.text('Hello World!')
+          printer.break(line_continuation: "#{whitespace}^_^#{whitespace}")
+          printer.text('How are you doing?')
+          printer.breakable(line_continuation: "#{whitespace}^_^#{whitespace}")
+        },
+        expected: <<~LANG.chomp,
+          Hello World!#{whitespace}^_^
+          How are you doing?#{whitespace}^_^
+
+        LANG
+      },
     ].each do |test|
       it test[:title] do
         printer = Oppen::Wadler.new(width: 5, whitespace:)

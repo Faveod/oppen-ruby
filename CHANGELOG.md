@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+- Trim trailing whitespaces of line_continuation when enabled.
+
 ## v1.0.0 (21-01-2025)
 
 - Drop support for Ruby < 3.1.
